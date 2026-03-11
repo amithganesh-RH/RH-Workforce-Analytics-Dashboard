@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Redesign Health — Workforce Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Public+Sans:wght@100;300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── Brand Tokens ── */
+:root{
+  /* Redesign Health Brand Colors */
+  --galaxy:   #3F1046;   /* Primary dark */
+  --galaxy2:  #5a1860;   /* Gradient pair */
+  --uv:       #9425C9;   /* Ultraviolet — primary action */
+  --uv-light: #c27de0;   /* Lighter UV for accents */
+  --uv-faint: #f3e5fb;   /* Very light UV tint */
+  --bone:     #F0E9DF;   /* Bone — background */
+  --bone-dark:#e0d5c5;   /* Slightly deeper bone for borders */
+
+  /* Semantic */
+  --dark:   var(--galaxy);
+  --navy:   var(--galaxy2);
+  --blue:   var(--uv);
+  --teal:   var(--uv-light);
+  --gold:   #c97825;
+  --green:  #2d8f58;
+  --red:    #c0392b;
+  --purple: #6b0f7a;
+
+  /* Surface */
+  --bg:      var(--bone);
+  --surface: #ffffff;
+  --border:  var(--bone-dark);
+  --text:    var(--galaxy);
+  --muted:   #7a5875;
+
+  --shadow: 0 4px 20px rgba(63,16,70,.10);
+  --r: 12px;
+
+  /* Fonts */
+  --font-head: 'Oranienbaum', Georgia, serif;
+  --font-ui:   'Public Sans', 'Inter', system-ui, sans-serif;
+  --font-body: 'Public Sans', 'Inter', system-ui, sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font-body);
+  font-weight:300; /* Public Sans Light */
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+header{
+  background:linear-gradient(135deg,var(--galaxy) 0%,var(--galaxy2) 100%);
+  padding:0 32px;display:flex;align-items:center;justify-content:space-between;
+  height:64px;position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 20px rgba(63,16,70,.4);
+}
+.logo{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--uv-light),var(--uv));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-ui);font-weight:700;color:#fff;font-size:14px;flex-shrink:0;
+  letter-spacing:.5px;
+}
+.header-left{display:flex;align-items:center;gap:12px}
+.htitle{
+  color:#fff;font-size:17px;font-family:var(--font-ui);
+  letter-spacing:.3px;font-weight:400;
+}
+.hsub{color:rgba(240,233,223,.5);font-size:11px;font-family:var(--font-ui);font-weight:300;margin-top:2px;letter-spacing:.5px;text-transform:uppercase}
+.hmeta{display:flex;align-items:center;gap:8px;color:rgba(240,233,223,.5);font-size:12px;font-family:var(--font-ui);font-weight:300}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--uv-light);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── TAB NAV ── */
+.tabnav{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 32px;display:flex;gap:2px;overflow-x:auto;
+  position:sticky;top:64px;z-index:190;
+}
+.tabBtn{
+  padding:14px 18px;border:none;background:transparent;cursor:pointer;
+  font-family:var(--font-ui);font-size:13px;font-weight:100; /* Public Sans Thin */
+  color:var(--muted);border-bottom:3px solid transparent;
+  white-space:nowrap;transition:all .2s;
+  display:flex;align-items:center;gap:7px;letter-spacing:.3px;
+  text-transform:uppercase;
+}
+.tabBtn:hover{color:var(--uv)}
+.tabBtn.active{
+  color:var(--galaxy);border-bottom-color:var(--uv);
+  font-weight:600; /* Public Sans Bold for active */
+}
+.tabBadge{
+  background:var(--uv);color:#fff;border-radius:10px;
+  padding:1px 7px;font-size:10px;font-weight:700;font-family:var(--font-ui);
+}
+.tabBtn.active .tabBadge{background:var(--galaxy)}
+
+/* ── MAIN ── */
+main{padding:28px 32px;max-width:1600px;margin:0 auto}
+.panel{display:none}.panel.active{display:block}
+
+/* ── SECTION HEADERS ── */
+.sh{margin-bottom:22px}
+.sh h2{font-family:var(--font-ui);font-size:20px;font-weight:100;color:var(--galaxy);letter-spacing:.5px;text-transform:uppercase}
+.sh p{color:var(--muted);font-size:13px;font-weight:300;margin-top:4px;font-family:var(--font-ui)}
+
+/* ── KPI GRID ── */
+.kpiGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin-bottom:28px}
+.kpi{
+  background:var(--surface);border-radius:var(--r);padding:20px 22px;
+  box-shadow:var(--shadow);border:1px solid var(--border);
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+  position:relative;overflow:hidden;
+}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(63,16,70,.18)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--ac,var(--uv))}
+.kpi-label{
+  font-family:var(--font-ui);font-size:10px;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.8px;
+}
+.kpi-val{
+  font-family:var(--font-ui);font-size:36px;font-weight:700;
+  margin:8px 0 3px;color:var(--galaxy);line-height:1;
+}
+.kpi-sub{font-size:12px;color:var(--muted);font-weight:300;font-family:var(--font-ui)}
+.kpi-hint{font-size:10px;color:var(--uv);margin-top:8px;font-weight:600;opacity:.8;font-family:var(--font-ui);letter-spacing:.3px}
+
+/* ── CHART GRID ── */
+.chartGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px;margin-bottom:28px}
+.analyticsSec{grid-column:1/-1;font-family:var(--font-ui);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:20px 0 4px;border-top:1px solid var(--border);margin-top:4px}
+.chartWide{grid-column:1/-1}
+.chartCard{background:var(--surface);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.chartCard h3{font-family:var(--font-ui);font-size:16px;font-weight:400;color:var(--galaxy);margin-bottom:4px;letter-spacing:.2px}
+.chartCard .chartSub{font-size:11px;color:var(--muted);margin-bottom:16px;font-weight:300;font-family:var(--font-ui)}
+.chartWrap{position:relative}
+.chartWrap canvas{max-height:280px;cursor:pointer}
+.chartNote{font-size:11px;color:var(--uv);margin-top:10px;text-align:center;font-weight:600;font-family:var(--font-ui)}
+
+/* ── OVERVIEW FILTER BAR ── */
+.ovFilterBar{display:flex;align-items:center;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.ovFilterLabel{font-family:var(--font-ui);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-right:2px}
+.ovPill{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:6px 18px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.3px}
+.ovPill:hover{border-color:var(--uv);color:var(--uv)}
+.ovPill.active{background:var(--galaxy);border-color:var(--galaxy);color:#fff}
+.ovFilterCount{font-family:var(--font-ui);font-size:12px;color:var(--muted);font-weight:300;margin-left:4px}
+
+/* ── OVERVIEW SECTIONS ── */
+.ovSection{margin-bottom:32px}
+.ovSectionTitle{
+  font-family:var(--font-ui);font-size:11px;font-weight:700;
+  color:var(--galaxy);text-transform:uppercase;letter-spacing:1px;
+  margin-bottom:14px;display:flex;align-items:center;gap:10px;
+}
+.ovSectionTitle::after{content:'';flex:1;height:1px;background:var(--bone-dark)}
+.compositionGrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.typeStatList{margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.typeStat{display:flex;align-items:center;gap:10px;cursor:pointer;padding:7px 8px;border-radius:8px;transition:background .12s}
+.typeStat:hover{background:var(--bone)}
+.typeStatDot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.typeStatName{font-size:13px;font-weight:300;font-family:var(--font-ui);flex:1;color:var(--galaxy)}
+.typeStatCount{font-size:14px;font-weight:700;font-family:var(--font-ui);color:var(--galaxy)}
+.typeStatPct{font-size:11px;color:var(--muted);width:36px;text-align:right;font-family:var(--font-ui)}
+.typeStatBar{flex:1;height:5px;background:var(--bone-dark);border-radius:3px;overflow:hidden;max-width:80px}
+.typeStatFill{height:100%;border-radius:3px}
+
+/* ── PAYROLL CYCLES ── */
+.payrollGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;margin-bottom:4px}
+.payrollCard{
+  background:var(--surface);border-radius:var(--r);padding:22px;
+  box-shadow:var(--shadow);border:1px solid var(--border);
+  cursor:pointer;transition:transform .15s,box-shadow .15s;
+  border-top:4px solid var(--pc,var(--uv));
+}
+.payrollCard:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(63,16,70,.18)}
+.payrollCardHeader{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.payrollEntityName{font-family:var(--font-ui);font-size:16px;font-weight:400;color:var(--galaxy)}
+.payrollEntityCountry{font-size:12px;color:var(--muted);margin-top:3px;font-weight:300;font-family:var(--font-ui)}
+.payrollBadge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--bone);color:var(--muted);font-family:var(--font-ui)}
+.payrollRow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.payrollRow:last-child{border-bottom:none}
+.payrollRowLabel{color:var(--muted);font-weight:300;font-family:var(--font-ui)}
+.payrollRowVal{font-weight:600;color:var(--galaxy);font-family:var(--font-ui)}
+.payrollHeadCount{font-family:var(--font-ui);font-size:36px;font-weight:700;color:var(--pc,var(--uv));margin:8px 0 4px}
+.payrollHCSub{font-size:12px;color:var(--muted);font-weight:300;font-family:var(--font-ui)}
+
+/* ── OVERVIEW WORKERS TABLE ── */
+.ovTableCard{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.ovToolbar{padding:14px 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border);background:var(--bone)}
+
+/* ── TABLE ── */
+.tableCard{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.toolbar{padding:14px 18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border);background:var(--bone)}
+.srch{
+  flex:1;min-width:180px;padding:8px 14px;
+  border:1px solid var(--border);border-radius:8px;
+  font-size:13px;font-family:var(--font-ui);font-weight:300;
+  outline:none;background:var(--surface);color:var(--galaxy);
+}
+.srch:focus{border-color:var(--uv);outline:2px solid var(--uv-faint)}
+.fsel{
+  padding:8px 10px;border:1px solid var(--border);border-radius:8px;
+  font-size:13px;font-family:var(--font-ui);font-weight:300;
+  background:var(--surface);outline:none;cursor:pointer;color:var(--galaxy);
+}
+.fsel:focus{border-color:var(--uv)}
+.tcnt{font-size:12px;color:var(--muted);margin-left:auto;white-space:nowrap;font-family:var(--font-ui);font-weight:300}
+.dtbl{width:100%;border-collapse:collapse}
+.dtbl th{
+  padding:10px 16px;text-align:left;
+  font-family:var(--font-ui);font-size:10px;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.7px;
+  background:var(--bone);border-bottom:1px solid var(--border);
+  cursor:pointer;white-space:nowrap;user-select:none;
+}
+.dtbl th:hover{color:var(--uv)}
+.dtbl td{
+  padding:11px 16px;font-size:13px;font-family:var(--font-ui);font-weight:300;
+  border-bottom:1px solid var(--border);vertical-align:middle;color:var(--galaxy);
+}
+.dtbl td strong{font-weight:600}
+.dtbl tr:last-child td{border-bottom:none}
+.dtbl tbody tr{cursor:pointer;transition:background .12s}
+.dtbl tbody tr:hover{background:var(--uv-faint)}
+.dtbl tbody tr.highlight{background:#fdf5e0}
+.tscroll{overflow-x:auto}
+.tpager{padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);font-size:12px;color:var(--muted);font-family:var(--font-ui);font-weight:300}
+.pgBtns{display:flex;gap:5px}
+.pgBtn{
+  padding:4px 10px;border:1px solid var(--border);border-radius:6px;
+  background:var(--surface);cursor:pointer;font-size:12px;
+  font-family:var(--font-ui);transition:background .15s;color:var(--galaxy);
+}
+.pgBtn:hover,.pgBtn.on{background:var(--uv);color:#fff;border-color:var(--uv)}
+
+/* ── BADGES ── */
+.b{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;font-family:var(--font-ui)}
+.b-active{background:#d6f0e4;color:#1a5e38}
+.b-inactive{background:#fde0dc;color:#7c1a12}
+.b-invited{background:#f3e5fb;color:#6b0f7a}
+.b-pending_invite{background:#e8dff5;color:#3d1265}
+.b-onboarded{background:#e8dff5;color:#3d1265}
+.b-no_active_contracts{background:#f0e9df;color:#7a5875}
+.b-peo{background:#e8dff5;color:#3F1046}
+.b-eor{background:#f3e5fb;color:#6b0f7a}
+.b-contractor{background:#fdf5e0;color:#7a4d00}
+.b-in_progress{background:#d6f0e4;color:#1a5e38}
+.b-completed{background:#e8dff5;color:#3F1046}
+.b-cancelled{background:#fde0dc;color:#7c1a12}
+.b-user_cancelled{background:#fdf5e0;color:#7a4d00}
+.b-rejected{background:#fde0dc;color:#7c1a12}
+.b-ongoing_time_based{background:#fdf5e0;color:#7a4d00}
+.b-pay_as_you_go_time_based{background:#e8dff5;color:#3d1265}
+
+/* ── SLIDE PANEL ── */
+.overlay{position:fixed;inset:0;background:rgba(63,16,70,.45);z-index:500;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(3px)}
+.overlay.open{opacity:1;pointer-events:all}
+.slidePanel{position:fixed;top:0;right:0;bottom:0;width:520px;max-width:100vw;background:var(--surface);z-index:501;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:-8px 0 40px rgba(63,16,70,.25)}
+.slidePanel.open{transform:translateX(0)}
+.spHeader{padding:20px 24px;background:linear-gradient(135deg,var(--galaxy),var(--galaxy2));display:flex;align-items:flex-start;justify-content:space-between}
+.spClose{background:rgba(240,233,223,.12);border:none;color:#fff;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.spClose:hover{background:rgba(240,233,223,.25)}
+.spBody{padding:24px}
+.spAvatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:var(--font-ui);color:#fff;border:3px solid rgba(240,233,223,.3);flex-shrink:0}
+.spName{color:#F0E9DF;font-size:18px;font-family:var(--font-ui);font-weight:400;margin-top:12px;letter-spacing:.2px}
+.spRole{color:rgba(240,233,223,.65);font-size:13px;margin-top:3px;font-weight:300;font-family:var(--font-ui)}
+.spBadgeRow{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+
+/* Info rows */
+.infoGrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px}
+.infoCell{background:var(--surface);padding:12px 14px}
+.infoCell label{display:block;font-size:10px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.infoCell span{font-size:13px;font-weight:600;font-family:var(--font-ui);color:var(--galaxy)}
+
+/* Section dividers in panel */
+.spSection{margin-bottom:22px}
+.spSection h4{font-size:11px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.contractBlock{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s,background .15s}
+.contractBlock:hover{border-color:var(--uv);background:var(--uv-faint)}
+.contractBlock .ctitle{font-size:13px;font-weight:600;font-family:var(--font-ui);color:var(--galaxy);margin-bottom:6px}
+.contractBlock .cmeta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.contractBlock .cid{font-size:10px;color:var(--muted);font-family:monospace}
+
+/* Scope text */
+.scopeBox{background:var(--bone);border-radius:8px;padding:14px;font-size:12px;font-weight:300;font-family:var(--font-ui);color:var(--muted);line-height:1.8;max-height:200px;overflow-y:auto;margin-top:8px}
+
+/* DRILL PANEL */
+.drillHeader{padding:16px 20px;background:var(--galaxy);color:var(--bone);font-size:14px;font-family:var(--font-ui);font-weight:400;letter-spacing:.2px;display:flex;align-items:center;gap:10px;justify-content:space-between}
+.drillList{padding:12px}
+.drillRow{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .12s;border-bottom:1px solid var(--border)}
+.drillRow:last-child{border-bottom:none}
+.drillRow:hover{background:var(--bone)}
+.drillAvatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:var(--font-ui);color:#fff;flex-shrink:0}
+.drillName{font-size:13px;font-weight:600;font-family:var(--font-ui);color:var(--galaxy)}
+.drillMeta{font-size:11px;color:var(--muted);font-weight:300;font-family:var(--font-ui);margin-top:1px}
+
+/* ENTITY CARDS */
+.entityGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;margin-bottom:28px}
+.entityCard{background:var(--surface);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);border:1px solid var(--border);border-left:5px solid var(--uv);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.entityCard:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(63,16,70,.18)}
+.entityName{font-family:var(--font-ui);font-size:17px;font-weight:400;color:var(--galaxy);margin-bottom:4px}
+.entityType{font-size:12px;color:var(--muted);font-weight:300;font-family:var(--font-ui);margin-bottom:16px}
+.entityRow{font-size:13px;color:var(--muted);font-weight:300;font-family:var(--font-ui);margin-bottom:7px}
+.entityRow span{color:var(--galaxy);font-weight:600}
+
+/* PROFILE TAB */
+.profileGrid{display:grid;grid-template-columns:360px 1fr;gap:24px}
+.profileCard{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.profileBanner{height:88px;background:linear-gradient(135deg,var(--galaxy),var(--uv))}
+.profileBody{padding:0 24px 24px}
+.profAvatarWrap{margin-top:-36px;margin-bottom:10px}
+.profAvatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;font-family:var(--font-ui);color:#fff;border:4px solid #fff}
+.profName{font-family:var(--font-ui);font-size:20px;font-weight:400;color:var(--galaxy);margin-bottom:2px;letter-spacing:.2px}
+.profRole{font-size:13px;font-weight:300;font-family:var(--font-ui);color:var(--muted);margin-bottom:18px}
+.profRow{display:flex;gap:8px;margin-bottom:11px;font-size:13px;align-items:flex-start}
+.profLabel{color:var(--muted);width:118px;flex-shrink:0;font-weight:300;font-size:12px;font-family:var(--font-ui)}
+.profVal{color:var(--galaxy);font-weight:600;font-family:var(--font-ui)}
+
+.detailCard{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);padding:24px}
+.detailCard h3{font-family:var(--font-ui);font-size:16px;font-weight:400;color:var(--galaxy);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);letter-spacing:.2px}
+.detGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.detItem label{display:block;font-size:10px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.detItem span{font-size:13px;font-weight:600;font-family:var(--font-ui);color:var(--galaxy)}
+.scopeSection{margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.scopeSection label{display:block;font-size:10px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.scopeTxt{font-size:12px;font-weight:300;font-family:var(--font-ui);color:var(--muted);line-height:1.9;max-height:240px;overflow-y:auto}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--galaxy);color:var(--bone);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;font-family:var(--font-ui);opacity:0;transition:opacity .2s,transform .2s;z-index:600;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px;color:var(--muted);font-size:14px;font-weight:300;font-family:var(--font-ui)}
+
+@media(max-width:860px){.profileGrid{grid-template-columns:1fr}}
+@media(max-width:640px){main{padding:16px};.kpiGrid{grid-template-columns:1fr 1fr};.chartGrid{grid-template-columns:1fr};.slidePanel{width:100vw}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo">RH</div>
+    <div><div class="htitle">Redesign Health</div><div class="hsub">Workforce Analytics Dashboard</div></div>
+  </div>
+  <div class="hmeta"><div class="dot"></div>Live · Deel · <span id="ts"></span></div>
+</header>
+
+<nav class="tabnav">
+  <button class="tabBtn active" data-tab="overview">📊 Overview <span class="tabBadge" id="badge-overview">86</span></button>
+  <button class="tabBtn" data-tab="people">👥 People <span class="tabBadge" id="badge-people">86</span></button>
+  <button class="tabBtn" data-tab="contracts">📋 Contracts <span class="tabBadge" id="badge-contracts">50</span></button>
+  <button class="tabBtn" data-tab="analytics">📈 Analytics</button>
+  <button class="tabBtn" data-tab="entities">🏢 Legal Entities <span class="tabBadge">2</span></button>
+  <button class="tabBtn" data-tab="profile">🙋 My Profile</button>
+</nav>
+
+<main>
+  <!-- OVERVIEW -->
+  <div class="panel active" id="tab-overview">
+    <div class="sh"><h2>Workforce Overview</h2><p>Redesign Health · All metrics from Deel · Click any card, chart, or row for details</p></div>
+
+    <div class="ovFilterBar">
+      <span class="ovFilterLabel">View:</span>
+      <button class="ovPill active" data-filter="active" onclick="setOvFilter(this)">All Active</button>
+      <button class="ovPill" data-filter="peo" onclick="setOvFilter(this)">PEO</button>
+      <button class="ovPill" data-filter="eor" onclick="setOvFilter(this)">EOR</button>
+      <button class="ovPill" data-filter="contractor" onclick="setOvFilter(this)">Contractor</button>
+      <span class="ovFilterCount" id="ovFilterCount"></span>
+    </div>
+
+    <!-- ── 1. KPI CARDS ── -->
+    <div class="ovSection">
+      <div class="ovSectionTitle">📊 Workforce Snapshot</div>
+      <div class="kpiGrid" id="kpiGrid"></div>
+    </div>
+
+    <!-- ── 2. WORKFORCE COMPOSITION + TOP COUNTRIES ── -->
+    <div class="ovSection">
+      <div class="ovSectionTitle">🧩 Workforce Composition</div>
+      <div class="compositionGrid">
+        <div class="chartCard">
+          <h3>By Hiring Type</h3>
+          <div class="chartSub">Click a segment or row to drill into that group</div>
+          <div class="chartWrap"><canvas id="cType" style="max-height:220px"></canvas></div>
+          <div class="typeStatList" id="typeStatList"></div>
+        </div>
+        <div class="chartCard">
+          <h3 id="ovCountryTitle">Active Workers — Top Countries</h3>
+          <div class="chartSub">Click a bar to see people</div>
+          <div class="chartWrap"><canvas id="cCountry" style="max-height:280px"></canvas></div>
+          <div class="chartNote">Click any bar to drill down →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 3. ACTIVE WORKERS BY DEPARTMENT ── -->
+    <div class="ovSection">
+      <div class="ovSectionTitle">🏗 Active Workers by Department</div>
+      <div class="chartCard chartWide">
+        <h3 id="ovDeptTitle">Department Headcount — All Active</h3>
+        <div class="chartSub">Click a bar to see people in that department</div>
+        <div class="chartWrap"><canvas id="cDept" style="max-height:260px"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ── 4. PAYROLL CYCLES ── -->
+    <div class="ovSection">
+      <div class="ovSectionTitle">💳 Payroll Cycles</div>
+      <div class="payrollGrid" id="payrollGrid"></div>
+    </div>
+
+    <!-- ── 5. ALL WORKERS LIST ── -->
+    <div class="ovSection">
+      <div class="ovSectionTitle">👥 All Workers</div>
+      <div class="ovTableCard">
+        <div class="ovToolbar">
+          <input class="srch" id="ovSrch" placeholder="🔍  Search name…" oninput="filterOvWorkers()"/>
+          <select class="fsel" id="ovStatus" onchange="filterOvWorkers()">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="invited">Invited</option>
+            <option value="onboarded">Onboarded</option>
+            <option value="pending_invite">Pending Invite</option>
+            <option value="no_active_contracts">No Active Contracts</option>
+          </select>
+          <select class="fsel" id="ovType" onchange="filterOvWorkers()">
+            <option value="">All Types</option>
+            <option value="peo">PEO</option>
+            <option value="eor">EOR</option>
+            <option value="contractor">Contractor</option>
+                      </select>
+          <select class="fsel" id="ovCountry" onchange="filterOvWorkers()"><option value="">All Countries</option></select>
+          <select class="fsel" id="ovDept" onchange="filterOvWorkers()"><option value="">All Departments</option></select>
+          <span class="tcnt" id="ovCnt"></span>
+        </div>
+        <div class="tscroll">
+          <table class="dtbl">
+            <thead><tr>
+              <th>Name</th><th>Type</th><th>Status</th><th>Department</th><th>Country</th><th>Start Date</th><th>Contracts</th>
+            </tr></thead>
+            <tbody id="ovBody"></tbody>
+          </table>
+        </div>
+        <div class="tpager" id="ovPager"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PEOPLE -->
+  <div class="panel" id="tab-people">
+    <div class="sh"><h2>People Directory</h2><p>All 86 workers · Click any row for full profile &amp; contract details</p></div>
+    <div class="tableCard">
+      <div class="toolbar">
+        <input class="srch" id="pSrch" placeholder="🔍  Search name…"/>
+        <select class="fsel" id="pStatus"><option value="">All Statuses</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="invited">Invited</option><option value="onboarded">Onboarded</option><option value="pending_invite">Pending Invite</option><option value="no_active_contracts">No Active Contracts</option></select>
+        <select class="fsel" id="pType"><option value="">All Types</option><option value="peo">PEO</option><option value="eor">EOR</option><option value="contractor">Contractor</option></select>
+        <select class="fsel" id="pCountry"><option value="">All Countries</option></select>
+        <span class="tcnt" id="pCnt"></span>
+      </div>
+      <div class="tscroll"><table class="dtbl" id="pTbl"><thead><tr><th data-c="full_name">Name ↕</th><th data-c="hiring_type">Type ↕</th><th data-c="hiring_status">Status ↕</th><th data-c="country">Country ↕</th><th data-c="start_date">Start Date ↕</th><th>Contracts</th></tr></thead><tbody id="pBody"></tbody></table></div>
+      <div class="tpager" id="pPager"></div>
+    </div>
+  </div>
+
+  <!-- CONTRACTS -->
+  <div class="panel" id="tab-contracts">
+    <div class="sh"><h2>Contracts</h2><p>50 contracts · Click any row for full details</p></div>
+    <div class="tableCard">
+      <div class="toolbar">
+        <input class="srch" id="cSrch" placeholder="🔍  Search title or name…"/>
+        <select class="fsel" id="cType"><option value="">All Types</option><option value="peo">PEO</option><option value="eor">EOR</option><option value="ongoing_time_based">Ongoing Time Based</option><option value="pay_as_you_go_time_based">Pay As You Go</option></select>
+        <select class="fsel" id="cStatus"><option value="">All Statuses</option><option value="in_progress">In Progress</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option><option value="user_cancelled">User Cancelled</option><option value="rejected">Rejected</option></select>
+        <span class="tcnt" id="cCnt"></span>
+      </div>
+      <div class="tscroll"><table class="dtbl" id="cTbl"><thead><tr><th data-c="id">ID</th><th data-c="title">Title ↕</th><th data-c="type">Type ↕</th><th data-c="status">Status ↕</th><th data-c="worker_name">Worker ↕</th></tr></thead><tbody id="cBody"></tbody></table></div>
+      <div class="tpager" id="cPager"></div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="panel" id="tab-analytics">
+    <div class="sh"><h2>Workforce Analytics</h2><p>Click charts to explore segment details</p></div>
+    <div class="chartGrid">
+      <div class="chartCard chartWide">
+        <h3>Headcount by Country &amp; Employment Type</h3><div class="chartSub">Click a segment to see people in that group</div>
+        <div class="chartWrap"><canvas id="cStacked" style="max-height:320px"></canvas></div>
+      </div>
+      <div class="chartCard">
+        <h3>Active vs Inactive by Type</h3><div class="chartSub">Click a bar for breakdown</div>
+        <div class="chartWrap"><canvas id="cActiveType"></canvas></div>
+      </div>
+      <div class="chartCard">
+        <h3>Contract Type Distribution</h3><div class="chartSub">Click a slice to filter contracts</div>
+        <div class="chartWrap"><canvas id="cCtypePie"></canvas></div>
+      </div>
+      <div class="chartCard chartWide">
+        <h3>Hire Timeline by Quarter</h3><div class="chartSub">Click a bar to see who joined that period</div>
+        <div class="chartWrap"><canvas id="cTimeline" style="max-height:300px"></canvas></div>
+      </div>
+
+      <!-- ── Headcount Growth Trend ── -->
+      <div class="analyticsSec">Headcount Growth Trend</div>
+      <div class="chartCard chartWide">
+        <h3>Headcount Addition Trend</h3><div class="chartSub">Cumulative workforce growth by month · click a point to see joiners</div>
+        <div class="chartWrap"><canvas id="cAddTrend" style="max-height:300px"></canvas></div>
+      </div>
+
+      <!-- ── Department Breakdown ── -->
+      <div class="analyticsSec">Department Breakdown</div>
+      <div class="chartCard chartWide">
+        <h3>Headcount by Department L1 — PEO &amp; EOR Split</h3><div class="chartSub">Click a bar to drill into that department and employment type</div>
+        <div class="chartWrap"><canvas id="cDeptSplit" style="max-height:320px"></canvas></div>
+      </div>
+
+      <!-- ── Geographic Distribution ── -->
+      <div class="analyticsSec">Geographic Distribution</div>
+      <div class="chartCard">
+        <h3>Active Workers by Country</h3><div class="chartSub">Click a bar to see workers in that country</div>
+        <div class="chartWrap"><canvas id="cGeoBar"></canvas></div>
+      </div>
+      <div class="chartCard">
+        <h3>Country Distribution</h3><div class="chartSub">Visual breakdown by geography · click a slice to explore</div>
+        <div class="chartWrap"><canvas id="cGeoPie"></canvas></div>
+      </div>
+
+      <!-- ── Workforce Movement ── -->
+      <div class="analyticsSec">Workforce Movement</div>
+      <div class="chartCard chartWide">
+        <h3>Net Workforce Change by Month</h3><div class="chartSub">Additions vs Attritions · click a bar to explore that cohort</div>
+        <div class="chartWrap"><canvas id="cNetChange" style="max-height:300px"></canvas></div>
+      </div>
+
+      <!-- ── Workforce Demographics ── -->
+      <div class="analyticsSec">Workforce Demographics</div>
+      <div class="chartCard">
+        <h3>Gender Distribution</h3><div class="chartSub">Active workers by gender · click to see the group</div>
+        <div class="chartWrap"><canvas id="cGender"></canvas></div>
+      </div>
+      <div class="chartCard">
+        <h3>Headcount by Age Group</h3><div class="chartSub">Age calculated from date of birth · click to explore</div>
+        <div class="chartWrap"><canvas id="cAgeGroup"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENTITIES -->
+  <div class="panel" id="tab-entities">
+    <div class="sh"><h2>Legal Entities</h2><p>Registered entities under Redesign Health · Click for details</p></div>
+    <div class="entityGrid" id="entityGrid"></div>
+  </div>
+
+  <!-- MY PROFILE -->
+  <div class="panel" id="tab-profile">
+    <div class="sh"><h2>My Profile — Amith Nag Ganeshappa</h2><p>Personal profile &amp; EOR contract</p></div>
+    <div class="profileGrid">
+      <div>
+        <div class="profileCard">
+          <div class="profileBanner"></div>
+          <div class="profileBody">
+            <div class="profAvatarWrap"><div class="profAvatar">AG</div></div>
+            <div class="profName">Amith Nag Ganeshappa</div>
+            <div class="profRole">People Operations Senior Lead · Platform</div>
+            <div class="profRow"><span class="profLabel">Preferred Name</span><span class="profVal">Amith Ganesh</span></div>
+            <div class="profRow"><span class="profLabel">Worker ID</span><span class="profVal">#51</span></div>
+            <div class="profRow"><span class="profLabel">Work Email</span><span class="profVal">amith.ganesh@redesignhealth.com</span></div>
+            <div class="profRow"><span class="profLabel">Country</span><span class="profVal">🇮🇳 India</span></div>
+            <div class="profRow"><span class="profLabel">Location</span><span class="profVal">Bengaluru, Karnataka</span></div>
+            <div class="profRow"><span class="profLabel">Timezone</span><span class="profVal">IST (Asia/Calcutta)</span></div>
+            <div class="profRow"><span class="profLabel">Start Date</span><span class="profVal">Dec 15, 2025</span></div>
+            <div class="profRow"><span class="profLabel">Employment</span><span class="profVal"><span class="b b-eor">EOR</span></span></div>
+            <div class="profRow"><span class="profLabel">Status</span><span class="profVal"><span class="b b-active">Active</span></span></div>
+            <div class="profRow"><span class="profLabel">Seniority</span><span class="profVal">Level 6 — Sr. Lead (IC3)</span></div>
+            <div class="profRow"><span class="profLabel">Department</span><span class="profVal">Platform</span></div>
+            <div class="profRow"><span class="profLabel">Team</span><span class="profVal">Business, People &amp; Admin Ops</span></div>
+            <div class="profRow"><span class="profLabel">Direct Manager</span><span class="profVal">Brett Kempker</span></div>
+            <div class="profRow"><span class="profLabel">Legal Entity</span><span class="profVal">RHI Services Co. Inc</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="detailCard">
+          <h3>📋 Contract 34ygvg4 — EOR Employee of Record</h3>
+          <div class="detGrid">
+            <div class="detItem"><label>Contract Title</label><span>People Operations Senior Lead</span></div>
+            <div class="detItem"><label>Type</label><span><span class="b b-eor">EOR</span></span></div>
+            <div class="detItem"><label>Status</label><span><span class="b b-in_progress">In Progress</span></span></div>
+            <div class="detItem"><label>Employment</label><span>Full-Time</span></div>
+            <div class="detItem"><label>Start Date</label><span>Dec 15, 2025</span></div>
+            <div class="detItem"><label>Probation</label><span>180 days</span></div>
+            <div class="detItem"><label>Currency</label><span>INR</span></div>
+            <div class="detItem"><label>Frequency</label><span>Calendar Month</span></div>
+            <div class="detItem"><label>Work Schedule</label><span>Mon–Fri · 9–17 · 40h/wk</span></div>
+            <div class="detItem"><label>Signed By (Client)</label><span>Travis DeMar</span></div>
+            <div class="detItem"><label>Signed Date</label><span>Oct 13, 2025</span></div>
+            <div class="detItem"><label>Client Entity</label><span>RHI Services Co. Inc</span></div>
+            <div class="detItem"><label>VAT / EIN</label><span>84-4245540</span></div>
+          </div>
+          <div class="scopeSection">
+            <label>Scope of Work</label>
+            <div class="scopeTxt">
+              People Operations Lead will play a critical role in enabling global hiring, optimizing HR processes, ensuring compliance, and enhancing the employee experience across markets including India, Singapore, and Saudi Arabia.<br><br>
+              <strong>Enable Global Hiring</strong> — Implement EoR models, design compensation &amp; benefits, ensure local compliance, convert AoRs to EoRs, coordinate equity issuance with legal.<br><br>
+              <strong>Optimize HR Operations &amp; Automation</strong> — Implement PEO/benefits approach for the USA; streamline onboarding/offboarding; manage UKG, Carta, Maven, Forma, Lattice; ensure compliance across all regions.<br><br>
+              <strong>Manage Global Total Rewards</strong> — Oversee cash compensation &amp; equity; maintain competitive, financially responsible global benefits offering.<br><br>
+              <strong>Drive People Experience</strong> — Oversee performance management, promotion processes, engagement surveys, and ad-hoc people initiatives (parental leave, COBRA, etc).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- SLIDE PANEL OVERLAY -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="slidePanel" id="slidePanel">
+  <div id="spContent"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+const PEOPLE=[
+  {id:"c53b7dea",full_name:"Aayush Agarwal",hiring_status:"inactive",hiring_type:"contractor",start_date:"2025-01-13",country:"IN"},
+  {id:"230c30f4",full_name:"Adam Jones",hiring_status:"active",hiring_type:"peo",start_date:"2023-05-08",country:"US"},
+  {id:"90e1523c",full_name:"Ahmed Samir Hanaphy Muhamed Zakadan",hiring_status:"active",hiring_type:"eor",start_date:"2025-05-16",country:"SA"},
+  {id:"7c9e731f",full_name:"Akash Lodha",hiring_status:"active",hiring_type:"eor",start_date:"2024-11-20",country:"IN"},
+  {id:"571ff348",full_name:"Alhanoof Alnafesah",hiring_status:"inactive",hiring_type:"eor",start_date:"2025-05-19",country:"SA"},
+  {id:"f4b956f2",full_name:"Alysa Langburt",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-11-04",country:"CA"},
+  {id:"97070746",full_name:"Amin Mahmoud Ahmed Mohamed",hiring_status:"pending_invite",hiring_type:"hris_direct_employee",start_date:"2025-05-08",country:null},
+  {id:"8bd66394",full_name:"Anthony Herrera",hiring_status:"inactive",hiring_type:"peo",start_date:"2021-05-24",country:"US"},
+  {id:"906c4daf",full_name:"Aron Szanto",hiring_status:"active",hiring_type:"peo",start_date:"2024-11-18",country:"US"},
+  {id:"66c5a6a4",full_name:"Ashita Gupta",hiring_status:"active",hiring_type:"eor",start_date:"2026-02-09",country:"IN"},
+  {id:"ba7d9125",full_name:"Babar Khan",hiring_status:"inactive",hiring_type:"eor",start_date:"2025-10-27",country:"SA"},
+  {id:"e40a90e6",full_name:"Brett Kempker",hiring_status:"active",hiring_type:"peo",start_date:"2021-11-17",country:"US"},
+  {id:"97b8661c",full_name:"Brett Shaheen",hiring_status:"active",hiring_type:"peo",start_date:"2018-04-02",country:"US"},
+  {id:"0a477c7a",full_name:"Chantal Halvorsen",hiring_status:"inactive",hiring_type:"contractor",start_date:null,country:"GB"},
+  {id:"ce2f1bb8",full_name:"Chew Yu Foon",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-08-05",country:"SG"},
+  {id:"a3b8f3a7",full_name:"Clark Jennison",hiring_status:"active",hiring_type:"peo",start_date:"2022-05-16",country:"US"},
+  {id:"c029345a",full_name:"Dan Costanza",hiring_status:"active",hiring_type:"peo",start_date:"2025-10-30",country:"US"},
+  {id:"f429e047",full_name:"Danny Pan",hiring_status:"active",hiring_type:"peo",start_date:"2025-11-07",country:"US"},
+  {id:"7bc3876a",full_name:"Divyanshu Bali",hiring_status:"inactive",hiring_type:"eor",start_date:"2025-02-10",country:"IN"},
+  {id:"0bb5cd4e",full_name:"Elias Tsikhlakis",hiring_status:"active",hiring_type:"contractor",start_date:"2026-02-02",country:"AE"},
+  {id:"28e77c9d",full_name:"Eric Fedio",hiring_status:"inactive",hiring_type:"contractor",start_date:null,country:"IN"},
+  {id:"be621311",full_name:"Erin Jones",hiring_status:"inactive",hiring_type:"contractor",start_date:null,country:"IN"},
+  {id:"f51a2627",full_name:"Eugene Wong",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-08-12",country:"SG"},
+  {id:"400eb927",full_name:"FieldGuide IT",hiring_status:"active",hiring_type:"hris_direct_employee",start_date:"2025-07-04",country:"US"},
+  {id:"70dc4822",full_name:"Folayemi Adeola",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-09-30",country:"NG"},
+  {id:"21a76df5",full_name:"Frederick Owen Lloyd George",hiring_status:"active",hiring_type:"contractor",start_date:"2024-10-11",country:"GB"},
+  {id:"be357a16",full_name:"Harshel Bahl",hiring_status:"active",hiring_type:"peo",start_date:"2025-10-03",country:"US"},
+  {id:"1502af69",full_name:"Hassan Chafi",hiring_status:"invited",hiring_type:"hris_direct_employee",start_date:"2025-12-12",country:"SA"},
+  {id:"e71eb01b",full_name:"Hello H",hiring_status:"inactive",hiring_type:"contractor",start_date:null,country:"AL"},
+  {id:"69d2c82d",full_name:"Jaakko Kullervo Soini",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-09-18",country:"FI"},
+  {id:"83f26955",full_name:"Jack Roland",hiring_status:"active",hiring_type:"peo",start_date:"2026-01-09",country:"US"},
+  {id:"9f920f14",full_name:"Jainam Bipin Chudgar",hiring_status:"active",hiring_type:"eor",start_date:"2025-03-31",country:"IN"},
+  {id:"5f8ca7ee",full_name:"Jasper Jack Clements",hiring_status:"inactive",hiring_type:"contractor",start_date:"2025-03-14",country:"GB"},
+  {id:"b4830820",full_name:"Jorge Campos",hiring_status:"active",hiring_type:"peo",start_date:"2025-05-31",country:"US"},
+  {id:"503195d6",full_name:"Josef Brewster",hiring_status:"active",hiring_type:"peo",start_date:"2023-08-28",country:"US"},
+  {id:"7dceec55",full_name:"Joshua Chauvin",hiring_status:"inactive",hiring_type:"contractor",start_date:"2025-04-01",country:"GB"},
+  {id:"0ee0519f",full_name:"Joshua Ford",hiring_status:"active",hiring_type:"peo",start_date:"2024-03-01",country:"US"},
+  {id:"2b19b5f2",full_name:"Justin Gernot",hiring_status:"inactive",hiring_type:"peo",start_date:"2024-11-29",country:"US"},
+  {id:"74ed1c00",full_name:"Kamarunisha Binte Mohamed Idris",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-11-04",country:"SG"},
+  {id:"f2b42f2b",full_name:"Karandeep Singh Saini",hiring_status:"inactive",hiring_type:"eor",start_date:null,country:"IN"},
+  {id:"e9d1326d",full_name:"Karan Jakhar",hiring_status:"inactive",hiring_type:"eor",start_date:"2025-06-02",country:"IN"},
+  {id:"1dc5f7a0",full_name:"Katherine O'Neill",hiring_status:"active",hiring_type:"peo",start_date:"2020-05-12",country:"US"},
+  {id:"e99e302d",full_name:"Khalid Fahad O Almoaikel",hiring_status:"active",hiring_type:"eor",start_date:"2025-07-14",country:"SA"},
+  {id:"c7ff3689",full_name:"Kienan O'Brien",hiring_status:"active",hiring_type:"peo",start_date:"2023-07-31",country:"US"},
+  {id:"ca5d38b2",full_name:"Kshitija Pawar",hiring_status:"active",hiring_type:"eor",start_date:"2025-07-28",country:"IN"},
+  {id:"3fa02a62",full_name:"Kumar Patodia",hiring_status:"active",hiring_type:"contractor",start_date:"2024-10-18",country:"IN"},
+  {id:"1340e547",full_name:"Litto Panackel",hiring_status:"inactive",hiring_type:"contractor",start_date:"2025-04-07",country:"IN"},
+  {id:"e0844e64",full_name:"Luke John Sheen",hiring_status:"active",hiring_type:"contractor",start_date:"2024-11-01",country:"CA"},
+  {id:"c7bc29e4",full_name:"Matthew Ripkey",hiring_status:"active",hiring_type:"peo",start_date:"2026-02-17",country:"US"},
+  {id:"c523fe93",full_name:"Mie McCooey",hiring_status:"active",hiring_type:"peo",start_date:"2024-04-08",country:"US"},
+  {id:"e7114f6e",full_name:"Nathan Mapp",hiring_status:"active",hiring_type:"peo",start_date:"2021-07-26",country:"US"},
+  {id:"3ad307bd",full_name:"Nathan Marinoff",hiring_status:"active",hiring_type:"peo",start_date:"2019-04-01",country:"US"},
+  {id:"56b8eb3e",full_name:"Neil Patel",hiring_status:"active",hiring_type:"peo",start_date:"2022-08-22",country:"US"},
+  {id:"72b13c26",full_name:"Niharika Garg",hiring_status:"active",hiring_type:"eor",start_date:"2025-04-14",country:"IN"},
+  {id:"4c96ef56",full_name:"Noam Ramillon",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-08-26",country:"FR"},
+  {id:"66bd23c0",full_name:"Oluwatoni Ruth Abraham",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-09-30",country:"NG"},
+  {id:"ca8217ca",full_name:"Oscar Lizarzaburu Azabache",hiring_status:"active",hiring_type:"peo",start_date:"2021-05-10",country:"US"},
+  {id:"f3c89ef6",full_name:"Parker Hayden",hiring_status:"inactive",hiring_type:"peo",start_date:"2021-04-12",country:"US"},
+  {id:"e865c032",full_name:"Patrick McDonagh",hiring_status:"active",hiring_type:"peo",start_date:"2022-04-18",country:"US"},
+  {id:"7b3177d2",full_name:"Pavel Gurevich",hiring_status:"active",hiring_type:"peo",start_date:"2021-09-13",country:"US"},
+  {id:"a2cb9d4a",full_name:"Pin Kwok",hiring_status:"active",hiring_type:"eor",start_date:"2024-06-17",country:"GB"},
+  {id:"b0e06d7e",full_name:"Pooja Achar",hiring_status:"inactive",hiring_type:"eor",start_date:"2025-03-24",country:"IN"},
+  {id:"09e6b194",full_name:"Prateek Mohanty",hiring_status:"active",hiring_type:"eor",start_date:"2025-02-24",country:"IN"},
+  {id:"96e808b6",full_name:"Preston Tollinger",hiring_status:"active",hiring_type:"peo",start_date:"2025-11-21",country:"US"},
+  {id:"b61fe2d7",full_name:"Prithvi Sriram",hiring_status:"active",hiring_type:"peo",start_date:"2025-12-16",country:"US"},
+  {id:"a28c911b",full_name:"Rahul Kaushik",hiring_status:"active",hiring_type:"eor",start_date:"2025-10-30",country:"IN"},
+  {id:"736e2e24",full_name:"Rana Md.mozammil",hiring_status:"onboarded",hiring_type:"eor",start_date:"2026-03-18",country:"IN"},
+  {id:"21f142fa",full_name:"Rebecca Wiezik",hiring_status:"active",hiring_type:"peo",start_date:"2021-07-12",country:"US"},
+  {id:"c90f855a",full_name:"Rishabh Chaudhary",hiring_status:"active",hiring_type:"eor",start_date:"2025-10-20",country:"IN"},
+  {id:"3232e7b5",full_name:"Romain Sion",hiring_status:"active",hiring_type:"contractor",start_date:"2025-10-01",country:"FR"},
+  {id:"38528474",full_name:"Ryan Schneiter",hiring_status:"active",hiring_type:"peo",start_date:"2022-06-30",country:"US"},
+  {id:"d21d0304",full_name:"Samantha Lynch",hiring_status:"active",hiring_type:"peo",start_date:"2020-06-22",country:"US"},
+  {id:"695dca1d",full_name:"Sarah Cranston",hiring_status:"active",hiring_type:"peo",start_date:"2021-07-06",country:"US"},
+  {id:"5a624f97",full_name:"Saumya Rao",hiring_status:"inactive",hiring_type:"eor",start_date:"2025-05-19",country:"IN"},
+  {id:"07c27c4d",full_name:"Scott Disch",hiring_status:"active",hiring_type:"peo",start_date:"2025-11-03",country:"US"},
+  {id:"8ef203cd",full_name:"Shafiq Vallani",hiring_status:"no_active_contracts",hiring_type:"contractor",start_date:"2024-10-14",country:"CA"},
+  {id:"722154e0",full_name:"Sherin Paul",hiring_status:"active",hiring_type:"eor",start_date:"2025-06-02",country:"IN"},
+  {id:"d4569ce0",full_name:"Sourav Sarkar",hiring_status:"active",hiring_type:"eor",start_date:"2025-11-14",country:"SA"},
+  {id:"41667066",full_name:"Talal Almojel",hiring_status:"invited",hiring_type:"hris_direct_employee",start_date:"2025-12-12",country:"SA"},
+  {id:"a39f1048",full_name:"Tariq Alturkestani",hiring_status:"active",hiring_type:"hris_direct_employee",start_date:"2025-07-23",country:"SA"},
+  {id:"2fd25454",full_name:"Thomas Skiba",hiring_status:"active",hiring_type:"peo",start_date:"2023-10-16",country:"US"},
+  {id:"31084bf5",full_name:"Travis DeMar",hiring_status:"active",hiring_type:"peo",start_date:"2024-07-15",country:"US"},
+  {id:"cd774f9b",full_name:"Varun Kumar Reddy Dodla",hiring_status:"active",hiring_type:"peo",start_date:"2026-01-12",country:"US"},
+  {id:"4d829e97",full_name:"V Bhavaraju",hiring_status:"active",hiring_type:"eor",start_date:"2025-03-03",country:"IN"},
+  {id:"9b898974",full_name:"Amith Nag Ganeshappa",hiring_status:"active",hiring_type:"eor",start_date:"2025-12-15",country:"IN"},
+  {id:"4fa76554",full_name:"Zoe Mariana Loveman",hiring_status:"inactive",hiring_type:"eor",start_date:"2024-09-03",country:"GB"},
+].filter(p=>p.hiring_type!=='hris_direct_employee');
+
+const CONTRACTS=[
+  {id:"3prw57d",title:"Aayush Agarwal Ventures Insights",type:"ongoing_time_based",status:"completed",worker_name:"Aayush Agarwal",worker_pid:"c53b7dea"},
+  {id:"m25jvxk",title:"Adam Jones - Head of Global Development",type:"peo",status:"in_progress",worker_name:"Adam Jones",worker_pid:"230c30f4"},
+  {id:"32qqkzv",title:"Advisor - India",type:"ongoing_time_based",status:"in_progress",worker_name:"Kumar Patodia",worker_pid:"3fa02a62"},
+  {id:"355yv27",title:"Advisor - Nordics",type:"pay_as_you_go_time_based",status:"cancelled",worker_name:null,worker_pid:null},
+  {id:"38g6zkw",title:"Ahmed Zakadan (HRIS)",type:"hris_direct_employee",status:"cancelled",worker_name:"Ahmed Zakadan",worker_pid:"90e1523c"},
+  {id:"m29q4gz",title:"Ahmed Zakadan - Director of Platform",type:"eor",status:"in_progress",worker_name:"Ahmed Samir Hanaphy Muhamed Zakadan",worker_pid:"90e1523c"},
+  {id:"3n97p6x",title:"Akash Lodha - New Ventures Senior Associate",type:"eor",status:"in_progress",worker_name:"Akash Lodha",worker_pid:"7c9e731f"},
+  {id:"md9vvkv",title:"Alhanoof Alnafesah - New Ventures Senior Principal",type:"eor",status:"user_cancelled",worker_name:"Alhanoof Alnafesah",worker_pid:"571ff348"},
+  {id:"md94v4r",title:"Amin Mahmoud Ahmed Mohamed",type:"hris_direct_employee",status:"in_progress",worker_name:"Amin Mahmoud Ahmed Mohamed",worker_pid:"97070746"},
+  {id:"34ygvg4",title:"Amith Nag Ganeshappa - People Operations Senior Lead",type:"eor",status:"in_progress",worker_name:"Amith Nag Ganeshappa",worker_pid:"9b898974",salary:"₹52,00,000 INR",monthly:"₹4,33,333 INR",start_date:"2025-12-15",signed_by:"Travis DeMar",signed_date:"Oct 13, 2025",employment:"Full-Time",schedule:"Mon–Fri · 9:00–17:00 · 40h/wk",probation:"180 days",scope:"People Operations Lead will play a critical role in enabling global hiring, optimizing HR processes, ensuring compliance, and enhancing the employee experience. Responsibilities include: enabling global hiring in key markets (India, Singapore, Saudi Arabia) via EoR models; optimizing HR operations and process automation including UKG, Carta, Maven, Forma, Lattice; managing global total rewards (compensation and equity); driving people experience and talent development initiatives including performance management and engagement surveys."},
+  {id:"3vjwr8n",title:"Anthony Herrera - Senior Director of Capital Dev",type:"peo",status:"cancelled",worker_name:"Anthony Herrera",worker_pid:"8bd66394"},
+  {id:"mj6ye4v",title:"Aron Szanto - Head of Technology",type:"peo",status:"in_progress",worker_name:"Aron Szanto",worker_pid:"906c4daf"},
+  {id:"my4eq9j",title:"Ashita Gupta - Director of New Ventures",type:"eor",status:"in_progress",worker_name:"Ashita Gupta",worker_pid:"66c5a6a4"},
+  {id:"3yje8k8",title:"Babar Khan - Managing Director, Global Development",type:"eor",status:"cancelled",worker_name:"Babar Khan",worker_pid:"ba7d9125"},
+  {id:"3wvn2en",title:"Brett Kempker (HRIS)",type:"hris_direct_employee",status:"completed",worker_name:"Brett Kempker",worker_pid:"e40a90e6"},
+  {id:"3yjrppx",title:"Brett Kempker - Chief of Staff and Director",type:"peo",status:"in_progress",worker_name:"Brett Kempker",worker_pid:"e40a90e6"},
+  {id:"mek8zjx",title:"Brett Shaheen - Chief Executive Officer",type:"peo",status:"in_progress",worker_name:"Brett Shaheen",worker_pid:"97b8661c"},
+  {id:"3gpq24x",title:"Clark Jennison - Senior Director of Strategy",type:"peo",status:"in_progress",worker_name:"Clark Jennison",worker_pid:"a3b8f3a7"},
+  {id:"mk87gx2",title:"Dan Costanza - VP of Technology, Applied AI",type:"peo",status:"in_progress",worker_name:"Dan Costanza",worker_pid:"c029345a"},
+  {id:"mxj54qq",title:"Danny Pan - Senior Director of Engineering",type:"peo",status:"in_progress",worker_name:"Danny Pan",worker_pid:"f429e047"},
+  {id:"3d9nnv5",title:"Divyanshu Bali - New Ventures Associate",type:"eor",status:"user_cancelled",worker_name:"Divyanshu Bali",worker_pid:"7bc3876a"},
+  {id:"m7rz6gj",title:"Elias Tsikhlakis - General Manager (rejected)",type:"eor",status:"rejected",worker_name:"Elias Tsikhlakis",worker_pid:"0bb5cd4e"},
+  {id:"mz2gxpx",title:"Elias Tsikhlakis - General Manager",type:"eor",status:"cancelled",worker_name:"Elias Tsikhlakis",worker_pid:"0bb5cd4e"},
+  {id:"mdw85ex",title:"Executive Assistant - Nigeria",type:"ongoing_time_based",status:"completed",worker_name:"Oluwatoni Ruth Abraham",worker_pid:"66bd23c0"},
+  {id:"mg6jxd5",title:"Executive Assistant - Singapore",type:"pay_as_you_go_time_based",status:"completed",worker_name:"Kamarunisha Binte Mohamed Idris",worker_pid:"74ed1c00"},
+  {id:"35r2qjk",title:"FieldGuide IT",type:"hris_direct_employee",status:"in_progress",worker_name:"FieldGuide IT",worker_pid:"400eb927"},
+  {id:"mdkqzr2",title:"Fred George Fixed Contract",type:"ongoing_time_based",status:"in_progress",worker_name:"Frederick Owen Lloyd George",worker_pid:"21a76df5"},
+  {id:"3py2qjz",title:"Harshel Bahl - Senior Lead, Applied AI",type:"peo",status:"in_progress",worker_name:"Harshel Bahl",worker_pid:"be357a16"},
+  {id:"3e54pzr",title:"Hassan Chafi",type:"hris_direct_employee",status:"in_progress",worker_name:"Hassan Chafi",worker_pid:"1502af69"},
+  {id:"3845pwp",title:"Jack Roland - Capital Development Senior Associate",type:"peo",status:"in_progress",worker_name:"Jack Roland",worker_pid:"83f26955"},
+  {id:"35xd44y",title:"Jainam Bipin Chudgar - Senior Associate of Platform Strategy",type:"eor",status:"in_progress",worker_name:"Jainam Bipin Chudgar",worker_pid:"9f920f14"},
+  {id:"m2eppvw",title:"Jaspen Clements Research Role Contract",type:"ongoing_time_based",status:"completed",worker_name:"Jasper Jack Clements",worker_pid:"5f8ca7ee"},
+  {id:"mdkdr4n",title:"Jorge Campos - New Ventures Associate",type:"peo",status:"in_progress",worker_name:"Jorge Campos",worker_pid:"b4830820"},
+  {id:"36dwkej",title:"Josef Brewster - Head of Venture Traction",type:"peo",status:"in_progress",worker_name:"Josef Brewster",worker_pid:"503195d6"},
+  {id:"3kkgj4g",title:"Joshua Chauvin UK Venture Chair",type:"ongoing_time_based",status:"completed",worker_name:"Joshua Chauvin",worker_pid:"7dceec55"},
+  {id:"m8z58eg",title:"Joshua Ford - Managing Director, Global Dev",type:"peo",status:"in_progress",worker_name:"Joshua Ford",worker_pid:"0ee0519f"},
+  {id:"mwpqzwv",title:"Justin Gernot - Senior Director of Venture Traction",type:"peo",status:"user_cancelled",worker_name:"Justin Gernot",worker_pid:"2b19b5f2"},
+  {id:"329nekr",title:"Karan Jakhar - Senior AI Engineer",type:"eor",status:"user_cancelled",worker_name:"Karan Jakhar",worker_pid:"e9d1326d"},
+  {id:"mgp89gv",title:"Katherine O'Neill - Deputy General Counsel",type:"peo",status:"in_progress",worker_name:"Katherine O'Neill",worker_pid:"1dc5f7a0"},
+  {id:"3g8nq76",title:"Khalid Al Moaikel - Senior Director of Venture Traction",type:"eor",status:"in_progress",worker_name:"Khalid Fahad O Almoaikel",worker_pid:"e99e302d"},
+  {id:"m578ge9",title:"Kienan O'Brien - New Ventures Senior Principal",type:"peo",status:"in_progress",worker_name:"Kienan O'Brien",worker_pid:"c7ff3689"},
+  {id:"3n95j85",title:"Kshitija Pawar - Brand and Communications Senior Associate",type:"eor",status:"in_progress",worker_name:"Kshitija Pawar",worker_pid:"ca5d38b2"},
+  {id:"m96y9w8",title:"Litto Panackel Admin Assistant Contract",type:"ongoing_time_based",status:"user_cancelled",worker_name:"Litto Panackel",worker_pid:"1340e547"},
+  {id:"mp9vw9r",title:"Matthew Ripkey - VP, Enterprise Partnership",type:"peo",status:"in_progress",worker_name:"Matthew Ripkey",worker_pid:"c7bc29e4"},
+  {id:"38xrwk2",title:"Meg Keane",type:"hris_direct_employee",status:"in_progress",worker_name:"Meg Keane",worker_pid:"8456f7ed"},
+  {id:"mn5z8ry",title:"Mie McCooey - Managing Director, Capital Dev",type:"peo",status:"in_progress",worker_name:"Mie McCooey",worker_pid:"c523fe93"},
+  {id:"myjrpyx",title:"Nathan Mapp - Controller",type:"peo",status:"in_progress",worker_name:"Nathan Mapp",worker_pid:"e7114f6e"},
+  {id:"myjn25k",title:"Nathan Marinoff - General Counsel",type:"peo",status:"in_progress",worker_name:"Nathan Marinoff",worker_pid:"3ad307bd"},
+  {id:"37rq6eq",title:"Neil Patel - Head of Ventures",type:"peo",status:"in_progress",worker_name:"Neil Patel",worker_pid:"56b8eb3e"},
+  {id:"mrwgwwk",title:"Niharika Garg - New Ventures Senior Associate",type:"eor",status:"in_progress",worker_name:"Niharika Garg",worker_pid:"72b13c26"},
+].filter(c=>c.type!=='hris_direct_employee');
+
+const LEGAL_ENTITIES=[
+  {id:"2be29d42",name:"RHI Services Co. Inc",type:"C-Corporation",country:"US",city:"Wilmington, DE",address:"1209 Orange St",vat:"84-4245540",reg:null,created:"2024-05-06",phone:"+1 212 548 6566"},
+  {id:"5aa52242",name:"RHI INDIA IM LLP",type:"Limited Liability Partnership",country:"IN",city:"New Delhi, DL",address:"4a Plot No. 1, Local Shopping Centre, Saraswati Vihar",vat:null,reg:"ACP8413",created:"2025-09-25",phone:"+1 212 548 6566"},
+];
+
+// ── Department mapping (by person ID prefix → Deel L1 dept name) ──
+const DEPT_MAP={
+  // Office of the CEO
+  "97b8661c":"Office of the CEO","0bb5cd4e":"Office of the CEO",
+  // Platform
+  "e40a90e6":"Platform","ca8217ca":"Platform","21f142fa":"Platform",
+  "695dca1d":"Platform","2fd25454":"Platform","31084bf5":"Platform",
+  "90e1523c":"Platform","9b898974":"Platform","9f920f14":"Platform",
+  "ca5d38b2":"Platform","09e6b194":"Platform",
+  // Strategy & Finance
+  "230c30f4":"Strategy & Finance","a3b8f3a7":"Strategy & Finance",
+  "0ee0519f":"Strategy & Finance","c523fe93":"Strategy & Finance",
+  "e7114f6e":"Strategy & Finance","83f26955":"Strategy & Finance",
+  "d21d0304":"Strategy & Finance","ba7d9125":"Strategy & Finance",
+  "a2cb9d4a":"Strategy & Finance","a28c911b":"Strategy & Finance",
+  "c90f855a":"Strategy & Finance","5a624f97":"Strategy & Finance",
+  "4d829e97":"Strategy & Finance","21a76df5":"Strategy & Finance",
+  "3fa02a62":"Strategy & Finance","e0844e64":"Strategy & Finance",
+  "3232e7b5":"Strategy & Finance",
+  // Technology & AI
+  "906c4daf":"Technology & AI","c029345a":"Technology & AI",
+  "f429e047":"Technology & AI","be357a16":"Technology & AI",
+  "96e808b6":"Technology & AI","b61fe2d7":"Technology & AI",
+  "cd774f9b":"Technology & AI","b0e06d7e":"Technology & AI",
+  "d4569ce0":"Technology & AI",
+  // Ventures
+  "56b8eb3e":"Ventures","b4830820":"Ventures","503195d6":"Ventures",
+  "c7ff3689":"Ventures","c7bc29e4":"Ventures","7b3177d2":"Ventures",
+  "e865c032":"Ventures","2b19b5f2":"Ventures","f3c89ef6":"Ventures",
+  "38528474":"Ventures","07c27c4d":"Ventures","66c5a6a4":"Ventures",
+  "7bc3876a":"Ventures","e99e302d":"Ventures","72b13c26":"Ventures",
+  "736e2e24":"Ventures","4fa76554":"Ventures","7c9e731f":"Ventures",
+  // Legal
+  "1dc5f7a0":"Legal","3ad307bd":"Legal","722154e0":"Legal",
+};
+function getDept(id){return DEPT_MAP[id]||'Unassigned';}
+
+const GENDER_MAP={
+  "c53b7dea":"M","230c30f4":"M","90e1523c":"M","7c9e731f":"M","571ff348":"F",
+  "f4b956f2":"F","9b898974":"M","8bd66394":"M","906c4daf":"M","66c5a6a4":"F",
+  "ba7d9125":"M","e40a90e6":"M","97b8661c":"M","0a477c7a":"F","ce2f1bb8":"M",
+  "a3b8f3a7":"M","c029345a":"M","f429e047":"M","7bc3876a":"M","0bb5cd4e":"M",
+  "28e77c9d":"M","be621311":"F","f51a2627":"M","70dc4822":"M","21a76df5":"M",
+  "be357a16":"M","e71eb01b":"M","69d2c82d":"M","83f26955":"M","9f920f14":"M",
+  "5f8ca7ee":"M","b4830820":"M","503195d6":"M","7dceec55":"M","0ee0519f":"M",
+  "2b19b5f2":"M","74ed1c00":"F","f2b42f2b":"M","e9d1326d":"M","1dc5f7a0":"F",
+  "e99e302d":"M","c7ff3689":"M","ca5d38b2":"F","3fa02a62":"M","1340e547":"M",
+  "e0844e64":"M","c7bc29e4":"M","c523fe93":"F","e7114f6e":"M","3ad307bd":"M",
+  "56b8eb3e":"M","72b13c26":"F","4c96ef56":"M","66bd23c0":"F","ca8217ca":"M",
+  "f3c89ef6":"M","e865c032":"M","7b3177d2":"M","a2cb9d4a":"M","b0e06d7e":"F",
+  "09e6b194":"M","96e808b6":"M","b61fe2d7":"M","a28c911b":"M","736e2e24":"M",
+  "21f142fa":"F","c90f855a":"M","3232e7b5":"M","38528474":"M","d21d0304":"F",
+  "695dca1d":"F","5a624f97":"F","07c27c4d":"M","8ef203cd":"M","722154e0":"F",
+  "d4569ce0":"M","2fd25454":"M","31084bf5":"M","cd774f9b":"M","4d829e97":"M","4fa76554":"F"
+};
+const DOB_MAP={
+  "c53b7dea":"1997-08-12","230c30f4":"1985-03-22","90e1523c":"1988-11-05","7c9e731f":"1995-07-14",
+  "571ff348":"1992-04-20","f4b956f2":"1990-09-08","9b898974":"1991-06-15","8bd66394":"1983-12-01",
+  "906c4daf":"1993-05-30","66c5a6a4":"1994-02-18","ba7d9125":"1987-09-25","e40a90e6":"1982-04-17",
+  "97b8661c":"1979-08-03","0a477c7a":"1986-11-22","ce2f1bb8":"1991-03-09","a3b8f3a7":"1980-07-15",
+  "c029345a":"1984-01-28","f429e047":"1996-10-04","7bc3876a":"1997-12-21","0bb5cd4e":"1988-06-30",
+  "28e77c9d":"1985-05-11","be621311":"1992-08-16","f51a2627":"1989-04-25","70dc4822":"1993-10-07",
+  "21a76df5":"1975-02-14","be357a16":"1990-07-19","e71eb01b":"1995-01-01","69d2c82d":"1987-03-28",
+  "83f26955":"1994-09-12","9f920f14":"1998-06-22","5f8ca7ee":"1991-11-30","b4830820":"1986-08-04",
+  "503195d6":"1981-05-17","7dceec55":"1993-02-09","0ee0519f":"1988-12-03","2b19b5f2":"1990-07-27",
+  "74ed1c00":"1989-04-02","f2b42f2b":"1996-09-18","e9d1326d":"1995-03-14","1dc5f7a0":"1978-10-05",
+  "e99e302d":"1992-07-22","c7ff3689":"1984-11-16","ca5d38b2":"1997-05-03","3fa02a62":"1975-08-20",
+  "1340e547":"1988-01-14","e0844e64":"1991-04-08","c7bc29e4":"1989-09-25","c523fe93":"1983-06-11",
+  "e7114f6e":"1985-02-28","3ad307bd":"1980-11-06","56b8eb3e":"1987-07-30","72b13c26":"1994-01-26",
+  "4c96ef56":"1990-05-15","66bd23c0":"1992-12-07","ca8217ca":"1982-03-22","f3c89ef6":"1987-04-09",
+  "e865c032":"1981-10-17","7b3177d2":"1977-06-04","a2cb9d4a":"1990-08-13","b0e06d7e":"1993-11-29",
+  "09e6b194":"1995-04-11","96e808b6":"1991-08-06","b61fe2d7":"1998-02-17","a28c911b":"1994-10-03",
+  "736e2e24":"1996-07-28","21f142fa":"1986-09-14","c90f855a":"1997-11-08","3232e7b5":"1989-06-19",
+  "38528474":"1983-08-01","d21d0304":"1981-12-20","695dca1d":"1984-05-07","5a624f97":"1993-03-16",
+  "07c27c4d":"1980-10-24","8ef203cd":"1988-07-05","722154e0":"1992-06-23","d4569ce0":"1990-02-14",
+  "2fd25454":"1982-09-18","31084bf5":"1979-04-29","cd774f9b":"1999-01-15","4d829e97":"1986-11-03","4fa76554":"1994-07-12"
+};
+// Approximate end dates for inactive/departed workers (for workforce movement chart)
+const END_DATE_MAP={
+  "c53b7dea":"2025-07-01","571ff348":"2025-11-01","f4b956f2":"2025-06-01",
+  "8bd66394":"2023-03-01","ba7d9125":"2026-02-01","0a477c7a":"2024-08-01",
+  "ce2f1bb8":"2025-01-01","7bc3876a":"2025-10-01","28e77c9d":"2024-06-01",
+  "be621311":"2024-06-01","f51a2627":"2025-01-01","70dc4822":"2025-03-01",
+  "e71eb01b":"2024-05-01","69d2c82d":"2025-04-01","5f8ca7ee":"2025-10-01",
+  "7dceec55":"2025-12-01","2b19b5f2":"2025-07-01","74ed1c00":"2025-06-01",
+  "f2b42f2b":"2024-09-01","e9d1326d":"2026-01-01","1340e547":"2025-11-01",
+  "4c96ef56":"2025-03-01","66bd23c0":"2025-04-01","f3c89ef6":"2022-10-01",
+  "b0e06d7e":"2025-11-01","5a624f97":"2025-12-01","4fa76554":"2025-05-01"
+};
+
+const CN={US:"United States",IN:"India",SA:"Saudi Arabia",GB:"United Kingdom",SG:"Singapore",CA:"Canada",FR:"France",AE:"UAE",NG:"Nigeria",FI:"Finland",AL:"Albania"};
+const CF={US:"🇺🇸",IN:"🇮🇳",SA:"🇸🇦",GB:"🇬🇧",SG:"🇸🇬",CA:"🇨🇦",FR:"🇫🇷",AE:"🇦🇪",NG:"🇳🇬",FI:"🇫🇮",AL:"🇦🇱"};
+function flagName(c){return c?(CF[c]||'🌍')+' '+(CN[c]||c):'—'}
+function fmt(d){if(!d)return'—';const p=d.split('-');return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})}
+function initials(n){return n.split(' ').filter(Boolean).map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+function badge(v,extra=''){const cls='b b-'+(extra||v).replace(/\s/g,'_');return`<span class="${cls}">${v.replace(/_/g,' ')}</span>`}
+function cnt(arr,k,v){return arr.filter(x=>x[k]===v).length}
+
+// ═══════════════ TABS ═══════════════
+document.querySelectorAll('.tabBtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.tabBtn').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+  });
+});
+
+// ═══════════════ SLIDE PANEL ═══════════════
+function openPanel(html){
+  document.getElementById('spContent').innerHTML=html;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('slidePanel').classList.add('open');
+}
+function closePanel(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('slidePanel').classList.remove('open');
+}
+
+// ═══════════════ TOAST ═══════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ═══════════════ PERSON PANEL ═══════════════
+function openPerson(pid){
+  const p=PEOPLE.find(x=>x.id===pid); if(!p)return;
+  const contracts=CONTRACTS.filter(c=>c.worker_pid===pid);
+  const contractsHTML=contracts.length?contracts.map(c=>`
+    <div class="contractBlock" onclick="openContract('${c.id}');event.stopPropagation()">
+      <div class="ctitle">${c.title}</div>
+      <div class="cmeta">
+        ${badge(c.type)} ${badge(c.status)}
+        <span class="cid">${c.id}</span>
+      </div>
+    </div>
+  `).join(''):'<div style="color:var(--muted);font-size:13px;padding:8px 0">No contracts in current dataset</div>';
+
+  openPanel(`
+    <div class="spHeader">
+      <div>
+        <div class="spAvatar">${initials(p.full_name)}</div>
+        <div class="spName">${p.full_name}</div>
+        <div class="spRole">${flagName(p.country)} · ${p.hiring_type.replace(/_/g,' ').toUpperCase()}</div>
+        <div class="spBadgeRow">${badge(p.hiring_status)} ${badge(p.hiring_type)}</div>
+      </div>
+      <button class="spClose" onclick="closePanel()">✕</button>
+    </div>
+    <div class="spBody">
+      <div class="spSection">
+        <h4>👤 Profile Details</h4>
+        <div class="infoGrid">
+          <div class="infoCell"><label>Full Name</label><span>${p.full_name}</span></div>
+          <div class="infoCell"><label>Worker ID</label><span>${p.id.slice(0,8)}</span></div>
+          <div class="infoCell"><label>Country</label><span>${flagName(p.country)}</span></div>
+          <div class="infoCell"><label>Start Date</label><span>${fmt(p.start_date)}</span></div>
+          <div class="infoCell"><label>Status</label><span>${badge(p.hiring_status)}</span></div>
+          <div class="infoCell"><label>Type</label><span>${badge(p.hiring_type)}</span></div>
+        </div>
+      </div>
+      <div class="spSection">
+        <h4>📋 Contracts (${contracts.length})</h4>
+        ${contractsHTML}
+      </div>
+    </div>
+  `);
+}
+
+// ═══════════════ CONTRACT PANEL ═══════════════
+function openContract(cid){
+  const c=CONTRACTS.find(x=>x.id===cid); if(!c)return;
+  const person=c.worker_pid?PEOPLE.find(p=>p.id===c.worker_pid):null;
+
+  openPanel(`
+    <div class="spHeader">
+      <div>
+        <div class="spAvatar" style="background:linear-gradient(135deg,#8e44ad,#1e6bb8)">📋</div>
+        <div class="spName" style="font-size:15px;line-height:1.3">${c.title}</div>
+        <div class="spRole">Contract ID: ${c.id}</div>
+        <div class="spBadgeRow">${badge(c.type)} ${badge(c.status)}</div>
+      </div>
+      <button class="spClose" onclick="closePanel()">✕</button>
+    </div>
+    <div class="spBody">
+      <div class="spSection">
+        <h4>📄 Contract Details</h4>
+        <div class="infoGrid">
+          <div class="infoCell" style="grid-column:1/-1"><label>Title</label><span>${c.title}</span></div>
+          <div class="infoCell"><label>Contract ID</label><span style="font-family:monospace;font-size:12px">${c.id}</span></div>
+          <div class="infoCell"><label>Type</label><span>${badge(c.type)}</span></div>
+          <div class="infoCell"><label>Status</label><span>${badge(c.status)}</span></div>
+          <div class="infoCell"><label>Worker</label><span>${c.worker_name||'—'}</span></div>
+          ${c.start_date?`<div class="infoCell"><label>Start Date</label><span>${fmt(c.start_date)}</span></div>`:''}
+          ${c.employment?`<div class="infoCell"><label>Employment</label><span>${c.employment}</span></div>`:''}
+          ${c.schedule?`<div class="infoCell"><label>Work Schedule</label><span>${c.schedule}</span></div>`:''}
+          ${c.probation?`<div class="infoCell"><label>Probation</label><span>${c.probation}</span></div>`:''}
+          ${c.signed_by?`<div class="infoCell"><label>Signed By</label><span>${c.signed_by}</span></div>`:''}
+          ${c.signed_date?`<div class="infoCell"><label>Signed Date</label><span>${c.signed_date}</span></div>`:''}
+        </div>
+      </div>
+      ${c.scope?`<div class="spSection"><h4>📝 Scope of Work</h4><div class="scopeBox">${c.scope.replace(/\n/g,'<br>')}</div></div>`:''}
+      ${person?`
+      <div class="spSection">
+        <h4>👤 Worker Profile</h4>
+        <div class="drillRow" onclick="openPerson('${person.id}')" style="border:1px solid var(--border);border-radius:8px">
+          <div class="drillAvatar">${initials(person.full_name)}</div>
+          <div><div class="drillName">${person.full_name}</div><div class="drillMeta">${flagName(person.country)} · ${badge(person.hiring_status)} ${badge(person.hiring_type)}</div></div>
+        </div>
+      </div>`:''}
+    </div>
+  `);
+}
+
+// ═══════════════ DRILL PANEL (chart click) ═══════════════
+function openDrill(title,people,onClickCb){
+  if(!people.length){showToast('No people in this segment');return;}
+  const rows=people.map(p=>`
+    <div class="drillRow" onclick="${onClickCb?`openPerson('${p.id}')`:''}">
+      <div class="drillAvatar">${initials(p.full_name)}</div>
+      <div>
+        <div class="drillName">${p.full_name}</div>
+        <div class="drillMeta">${flagName(p.country)} · ${p.hiring_type.replace(/_/g,' ')} · ${p.hiring_status.replace(/_/g,' ')}</div>
+      </div>
+      <div style="margin-left:auto">${badge(p.hiring_status)}</div>
+    </div>
+  `).join('');
+  openPanel(`
+    <div class="drillHeader">
+      <span>🔍 ${title} <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.6)">(${people.length} people)</span></span>
+      <button class="spClose" onclick="closePanel()">✕</button>
+    </div>
+    <div class="drillList">${rows}</div>
+  `);
+}
+
+function openContractDrill(title,contracts){
+  if(!contracts.length){showToast('No contracts in this segment');return;}
+  const rows=contracts.map(c=>`
+    <div class="drillRow" onclick="openContract('${c.id}')">
+      <div class="drillAvatar" style="background:linear-gradient(135deg,#8e44ad,#1e6bb8);font-size:16px">📋</div>
+      <div>
+        <div class="drillName">${c.title}</div>
+        <div class="drillMeta">${c.worker_name||'—'} · ${c.type.replace(/_/g,' ')}</div>
+      </div>
+      <div style="margin-left:auto">${badge(c.status)}</div>
+    </div>
+  `).join('');
+  openPanel(`
+    <div class="drillHeader">
+      <span>📋 ${title} <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.6)">(${contracts.length})</span></span>
+      <button class="spClose" onclick="closePanel()">✕</button>
+    </div>
+    <div class="drillList">${rows}</div>
+  `);
+}
+
+// ═══════════════ KPI CARDS ═══════════════
+const active=cnt(PEOPLE,'hiring_status','active');
+const inactive=cnt(PEOPLE,'hiring_status','inactive');
+const eor=cnt(PEOPLE,'hiring_type','eor');
+const peo=cnt(PEOPLE,'hiring_type','peo');
+const contractor=cnt(PEOPLE,'hiring_type','contractor');
+const activeContracts=cnt(CONTRACTS,'status','in_progress');
+const activeCountries=new Set(PEOPLE.filter(p=>p.hiring_status==='active'&&p.country).map(p=>p.country)).size;
+const activeContractors=PEOPLE.filter(p=>p.hiring_type==='contractor'&&p.hiring_status==='active').length;
+const activePEO=PEOPLE.filter(p=>p.hiring_type==='peo'&&p.hiring_status==='active').length;
+const activeEOR=PEOPLE.filter(p=>p.hiring_type==='eor'&&p.hiring_status==='active').length;
+const pendingOnboarding=PEOPLE.filter(p=>['invited','pending_invite','onboarded'].includes(p.hiring_status)).length;
+
+const KPIS=[
+  {label:'Active Workers',val:active,sub:`${Math.round(active/PEOPLE.length*100)}% of total workforce`,ac:'#00b8a9',filter:{status:'active'},hint:'View all active workers'},
+  {label:'Active PEO Workers',val:activePEO,sub:'US-based payroll · Active',ac:'#1e6bb8',filter:{type:'peo',status:'active'},hint:'View active PEO staff'},
+  {label:'Active EOR Workers',val:activeEOR,sub:'Global EOR · Active',ac:'#27ae60',filter:{type:'eor',status:'active'},hint:'View active EOR staff'},
+  {label:'Active Contractors',val:activeContractors,sub:'Independent · Active only',ac:'#f5a623',filter:{type:'contractor',status:'active'},hint:'View active contractors'},
+  {label:'Inactive Employees',val:inactive,sub:'Off-boarded or ended',ac:'#e74c3c',filter:{status:'inactive'},hint:'View inactive workers'},
+  {label:'Pending Onboarding',val:pendingOnboarding,sub:'Invited · Pending · Onboarded',ac:'#8e44ad',filter:{status:'_pending'},hint:'View pending onboarding'},
+  {label:'Active Countries',val:activeCountries,sub:'Countries with active staff',ac:'#0f1b2d',filter:null,hint:'Explore by country'},
+];
+document.getElementById('kpiGrid').innerHTML=KPIS.map((k,i)=>`
+  <div class="kpi" style="--ac:${k.ac}" onclick="kpiClick(${i})" title="${k.hint}">
+    <div class="kpi-label">${k.label}</div>
+    <div class="kpi-val">${k.val}</div>
+    <div class="kpi-sub">${k.sub}</div>
+    <div class="kpi-hint">↗ ${k.hint}</div>
+  </div>
+`).join('');
+
+function kpiClick(i){
+  const k=KPIS[i];
+  if(k.label==='Active Countries'){
+    openDrill('Active Workers by Country',PEOPLE.filter(p=>p.hiring_status==='active'),true);return;
+  }
+  if(k.filter&&k.filter.status==='_pending'){
+    openDrill('Pending Onboarding',PEOPLE.filter(p=>['invited','pending_invite','onboarded'].includes(p.hiring_status)),true);return;
+  }
+  if(k.filter){
+    // Filter the inline overview table
+    document.getElementById('ovStatus').value=k.filter.status||'';
+    document.getElementById('ovType').value=k.filter.type||'';
+    filterOvWorkers();
+    document.getElementById('ovBody').closest('.ovTableCard').scrollIntoView({behavior:'smooth',block:'start'});
+    showToast('Filtered: '+k.label);
+  }
+}
+
+// ═══════════════ CHARTS ═══════════════
+const CHART_DEFAULTS={plugins:{legend:{position:'bottom',labels:{padding:14,font:{size:12}}}}};
+
+// ── Type donut (Workforce Composition) ──
+const TYPES=['peo','eor','contractor'];
+const TLABELS=['PEO (US Payroll)','EOR (Employer of Record)','Contractor'];
+const typeColors=['#3F1046','#9425C9','#7a2080','#c27de0'];
+const typeCounts=TYPES.map(t=>cnt(PEOPLE,'hiring_type',t));
+const totalPpl=PEOPLE.length;
+const chartType=new Chart(document.getElementById('cType'),{
+  type:'doughnut',
+  data:{labels:TLABELS,datasets:[{data:typeCounts,backgroundColor:typeColors,borderWidth:2,hoverOffset:10}]},
+  options:{...CHART_DEFAULTS,cutout:'60%',onClick:(e,els)=>{
+    if(!els.length)return;
+    const t=TYPES[els[0].index];
+    openDrill(TLABELS[els[0].index],PEOPLE.filter(p=>p.hiring_type===t),true);
+  }}
+});
+
+// ── Type stat rows under donut ──
+document.getElementById('typeStatList').innerHTML=TYPES.map((t,i)=>`
+  <div class="typeStat" onclick="openDrill('${TLABELS[i]}',PEOPLE.filter(p=>p.hiring_type==='${t}'),true)">
+    <div class="typeStatDot" style="background:${typeColors[i]}"></div>
+    <span class="typeStatName">${TLABELS[i]}</span>
+    <div class="typeStatBar"><div class="typeStatFill" style="width:${Math.round(typeCounts[i]/totalPpl*100)}%;background:${typeColors[i]}"></div></div>
+    <span class="typeStatCount">${typeCounts[i]}</span>
+    <span class="typeStatPct">${Math.round(typeCounts[i]/totalPpl*100)}%</span>
+  </div>
+`).join('');
+
+// ── Active workers top countries (kept for analytics stacked chart) ──
+const activeCCounts={};
+PEOPLE.filter(p=>p.hiring_status==='active').forEach(p=>{if(p.country)activeCCounts[p.country]=(activeCCounts[p.country]||0)+1});
+const topC=Object.entries(activeCCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+
+// ── Overview filterable charts ──
+const deptColors=['#3F1046','#9425C9','#5a1860','#7a2080','#b050d8','#c27de0','#d4a8ec'];
+const cPalette=['#3F1046','#5a1860','#7a2080','#9425C9','#b050d8','#c27de0','#d4a8ec','#e4c4f4'];
+let ovCountryChart=null, ovDeptChart=null;
+
+function buildOvCountryChart(people){
+  if(ovCountryChart)ovCountryChart.destroy();
+  const counts={};
+  people.forEach(p=>{if(p.country)counts[p.country]=(counts[p.country]||0)+1});
+  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  ovCountryChart=new Chart(document.getElementById('cCountry'),{
+    type:'bar',
+    data:{labels:top.map(([c])=>(CF[c]||'')+' '+(CN[c]||c)),datasets:[{label:'Workers',data:top.map(([,v])=>v),backgroundColor:top.map((_,i)=>cPalette[i%cPalette.length]),borderRadius:8,hoverBackgroundColor:'#9425C9'}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}},onClick:(e,els)=>{
+      if(!els.length)return;
+      const country=top[els[0].index][0];
+      openDrill((CF[country]||'')+' '+(CN[country]||country)+' — Workers',people.filter(p=>p.country===country),true);
+    }}
+  });
+}
+
+function buildOvDeptChart(people){
+  if(ovDeptChart)ovDeptChart.destroy();
+  const counts={};
+  people.forEach(p=>{const d=getDept(p.id);counts[d]=(counts[d]||0)+1});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  ovDeptChart=new Chart(document.getElementById('cDept'),{
+    type:'bar',
+    data:{labels:sorted.map(([d])=>d),datasets:[{label:'Workers',data:sorted.map(([,v])=>v),backgroundColor:sorted.map((_,i)=>deptColors[i%deptColors.length]),borderRadius:6,hoverBackgroundColor:'#3F1046'}]},
+    options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:1},grid:{display:false}},y:{grid:{display:false}}},onClick:(e,els)=>{
+      if(!els.length)return;
+      const dept=sorted[els[0].index][0];
+      openDrill('Department: '+dept,people.filter(p=>getDept(p.id)===dept),true);
+    }}
+  });
+}
+
+function setOvFilter(btn){
+  document.querySelectorAll('.ovPill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const filter=btn.dataset.filter;
+  const people=filter==='active'
+    ?PEOPLE.filter(p=>p.hiring_status==='active')
+    :PEOPLE.filter(p=>p.hiring_type===filter&&p.hiring_status==='active');
+  const label={active:'All Active',peo:'PEO',eor:'EOR',contractor:'Contractor'}[filter];
+  document.getElementById('ovFilterCount').textContent=people.length+' workers';
+  document.getElementById('ovCountryTitle').textContent=label+' Workers — Top Countries';
+  document.getElementById('ovDeptTitle').textContent='Department Headcount — '+label;
+  buildOvCountryChart(people);
+  buildOvDeptChart(people);
+}
+
+// Initial render
+(function(){
+  const init=PEOPLE.filter(p=>p.hiring_status==='active');
+  document.getElementById('ovFilterCount').textContent=init.length+' workers';
+  buildOvCountryChart(init);
+  buildOvDeptChart(init);
+})();
+
+// ── Payroll Cycles ──
+const payrollEntities=[
+  {id:"2be29d42",name:"RHI Services Co. Inc",country:"US",flag:"🇺🇸",color:"#3F1046",currency:"USD",cycle:"Monthly",nextRun:"Apr 1, 2026",cutoff:"Mar 25, 2026",workers:PEOPLE.filter(p=>p.country==='US'&&p.hiring_status==='active').length,type:"C-Corporation",payTypes:["PEO","HRIS Direct"]},
+  {id:"5aa52242",name:"RHI INDIA IM LLP",country:"IN",flag:"🇮🇳",color:"#9425C9",currency:"INR",cycle:"Monthly (Calendar)",nextRun:"Apr 1, 2026",cutoff:"Mar 25, 2026",workers:PEOPLE.filter(p=>p.country==='IN'&&p.hiring_status==='active').length,type:"LLP",payTypes:["EOR"]},
+];
+document.getElementById('payrollGrid').innerHTML=payrollEntities.map(e=>`
+  <div class="payrollCard" style="--pc:${e.color}" onclick="showEntityDetail('${e.id}')">
+    <div class="payrollCardHeader">
+      <div>
+        <div class="payrollEntityName">${e.flag} ${e.name}</div>
+        <div class="payrollEntityCountry">${e.type} · ${CN[e.country]||e.country}</div>
+      </div>
+      <span class="payrollBadge">${e.currency}</span>
+    </div>
+    <div class="payrollHeadCount">${e.workers}</div>
+    <div class="payrollHCSub">Active workers on this payroll</div>
+    <div style="margin-top:14px">
+      <div class="payrollRow"><span class="payrollRowLabel">Payroll Cycle</span><span class="payrollRowVal">${e.cycle}</span></div>
+      <div class="payrollRow"><span class="payrollRowLabel">Next Pay Run</span><span class="payrollRowVal">${e.nextRun}</span></div>
+      <div class="payrollRow"><span class="payrollRowLabel">Data Cutoff</span><span class="payrollRowVal">${e.cutoff}</span></div>
+      <div class="payrollRow"><span class="payrollRowLabel">Currency</span><span class="payrollRowVal">${e.currency}</span></div>
+      <div class="payrollRow"><span class="payrollRowLabel">Employment Types</span><span class="payrollRowVal">${e.payTypes.join(', ')}</span></div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:var(--blue);font-weight:600">Click to view entity details →</div>
+  </div>
+`).join('');
+
+// ── Analytics-tab charts (reused references) ──
+const cStatuses=[...new Set(CONTRACTS.map(c=>c.status))];
+const csColors={in_progress:'#9425C9',completed:'#3F1046',cancelled:'#5a1860',user_cancelled:'#c27de0',rejected:'#7a2080'};
+
+// ─── Analytics charts ───
+// Stacked country + type
+const topC7=topC.slice(0,7).map(([c])=>c);
+const chartStacked=new Chart(document.getElementById('cStacked'),{
+  type:'bar',
+  data:{labels:topC7.map(c=>(CF[c]||'')+' '+(CN[c]||c)),datasets:TYPES.map((t,i)=>({label:TLABELS[i],data:topC7.map(c=>PEOPLE.filter(p=>p.country===c&&p.hiring_type===t).length),backgroundColor:typeColors[i],borderRadius:3}))},
+  options:{...CHART_DEFAULTS,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},onClick:(e,els)=>{
+    if(!els.length)return;
+    const dsIdx=els[0].datasetIndex,barIdx=els[0].index;
+    const type=TYPES[dsIdx],country=topC7[barIdx];
+    const group=PEOPLE.filter(p=>p.country===country&&p.hiring_type===type);
+    openDrill(`${TLABELS[dsIdx]} in ${CN[country]||country}`,group,true);
+  }}
+});
+
+// Active vs inactive by type
+const chartAT=new Chart(document.getElementById('cActiveType'),{
+  type:'bar',
+  data:{labels:TLABELS,datasets:[
+    {label:'Active',data:TYPES.map(t=>PEOPLE.filter(p=>p.hiring_type===t&&p.hiring_status==='active').length),backgroundColor:'#3F1046',borderRadius:4},
+    {label:'Inactive',data:TYPES.map(t=>PEOPLE.filter(p=>p.hiring_type===t&&p.hiring_status==='inactive').length),backgroundColor:'#c27de0',borderRadius:4},
+  ]},
+  options:{...CHART_DEFAULTS,scales:{y:{beginAtZero:true}},onClick:(e,els)=>{
+    if(!els.length)return;
+    const dsIdx=els[0].datasetIndex,barIdx=els[0].index;
+    const type=TYPES[barIdx],status=dsIdx===0?'active':'inactive';
+    openDrill(`${TLABELS[barIdx]} — ${status}`,PEOPLE.filter(p=>p.hiring_type===type&&p.hiring_status===status),true);
+  }}
+});
+
+// Contract type pie
+const ctypes=[...new Set(CONTRACTS.map(c=>c.type))];
+const chartCTP=new Chart(document.getElementById('cCtypePie'),{
+  type:'doughnut',
+  data:{labels:ctypes.map(t=>t.replace(/_/g,' ')),datasets:[{data:ctypes.map(t=>cnt(CONTRACTS,'type',t)),backgroundColor:['#3F1046','#9425C9','#7a2080','#c27de0','#5a1860'],borderWidth:2,hoverOffset:8}]},
+  options:{...CHART_DEFAULTS,cutout:'55%',onClick:(e,els)=>{
+    if(!els.length)return;
+    const t=ctypes[els[0].index];
+    openContractDrill(t.replace(/_/g,' ')+' Contracts',CONTRACTS.filter(c=>c.type===t));
+  }}
+});
+
+// Hire timeline
+const tBuckets={};
+PEOPLE.forEach(p=>{
+  if(!p.start_date)return;
+  const d=new Date(p.start_date);
+  const q='Q'+(Math.ceil((d.getMonth()+1)/3))+' '+d.getFullYear();
+  tBuckets[q]=(tBuckets[q]||[]); tBuckets[q].push(p);
+});
+const tLabels=Object.keys(tBuckets).sort();
+const chartTL=new Chart(document.getElementById('cTimeline'),{
+  type:'bar',
+  data:{labels:tLabels,datasets:[{label:'New Hires',data:tLabels.map(l=>tBuckets[l].length),backgroundColor:'#9425C9',borderRadius:5,hoverBackgroundColor:'#3F1046'}]},
+  options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}},onClick:(e,els)=>{
+    if(!els.length)return;
+    const l=tLabels[els[0].index];
+    openDrill('Hired in '+l,tBuckets[l],true);
+  }}
+});
+
+// ════════════════════════════════════════════════════════
+// ── NEW ANALYTICS CHARTS ─────────────────────────────────
+// ════════════════════════════════════════════════════════
+
+// ── 1. HEADCOUNT ADDITION TREND (cumulative line) ──
+(function(){
+  const buckets={};
+  PEOPLE.filter(p=>p.start_date).forEach(p=>{
+    const d=new Date(p.start_date);
+    const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    buckets[k]=(buckets[k]||[]);buckets[k].push(p);
+  });
+  const months=Object.keys(buckets).sort();
+  let cum=0;
+  const cumData=months.map(m=>{cum+=buckets[m].length;return cum;});
+  const mLabels=months.map(m=>{const[y,mo]=m.split('-');return new Date(+y,+mo-1).toLocaleDateString('en-US',{month:'short',year:'2-digit'});});
+  new Chart(document.getElementById('cAddTrend'),{
+    type:'line',
+    data:{labels:mLabels,datasets:[{
+      label:'Cumulative Headcount',data:cumData,
+      borderColor:'#9425C9',backgroundColor:'rgba(148,37,201,0.10)',fill:true,tension:0.4,
+      pointBackgroundColor:'#3F1046',pointRadius:4,pointHoverRadius:7,borderWidth:2
+    }]},
+    options:{...CHART_DEFAULTS,scales:{y:{beginAtZero:false}},
+      onClick:(e,els)=>{if(!els.length)return;const k=months[els[0].index];openDrill('Joined '+mLabels[els[0].index],buckets[k],true);}
+    }
+  });
+})();
+
+// ── 2. DEPARTMENT BREAKDOWN — PEO & EOR SPLIT ──
+(function(){
+  const activePeople=PEOPLE.filter(p=>p.hiring_status==='active');
+  const depts=[...new Set(activePeople.map(p=>getDept(p.id)))].sort();
+  const peoD=depts.map(d=>activePeople.filter(p=>getDept(p.id)===d&&p.hiring_type==='peo').length);
+  const eorD=depts.map(d=>activePeople.filter(p=>getDept(p.id)===d&&p.hiring_type==='eor').length);
+  new Chart(document.getElementById('cDeptSplit'),{
+    type:'bar',
+    data:{labels:depts,datasets:[
+      {label:'PEO',data:peoD,backgroundColor:'#3F1046',borderRadius:4},
+      {label:'EOR',data:eorD,backgroundColor:'#9425C9',borderRadius:4}
+    ]},
+    options:{...CHART_DEFAULTS,
+      scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{stepSize:1}}},
+      onClick:(e,els)=>{
+        if(!els.length)return;
+        const dept=depts[els[0].index];
+        const type=els[0].datasetIndex===0?'peo':'eor';
+        const lbl=els[0].datasetIndex===0?'PEO':'EOR';
+        openDrill(dept+' — '+lbl,activePeople.filter(p=>getDept(p.id)===dept&&p.hiring_type===type),true);
+      }
+    }
+  });
+})();
+
+// ── 3. GEOGRAPHIC — ACTIVE WORKERS BAR ──
+(function(){
+  const counts={};
+  PEOPLE.filter(p=>p.hiring_status==='active'&&p.country).forEach(p=>{counts[p.country]=(counts[p.country]||0)+1;});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const pal=['#3F1046','#5a1860','#7a2080','#9425C9','#b050d8','#c27de0','#d4a8ec','#e4c4f4'];
+  new Chart(document.getElementById('cGeoBar'),{
+    type:'bar',
+    data:{labels:sorted.map(([c])=>(CF[c]||'')+' '+(CN[c]||c)),
+      datasets:[{label:'Active Workers',data:sorted.map(([,v])=>v),backgroundColor:sorted.map((_,i)=>pal[i%pal.length]),borderRadius:8}]},
+    options:{plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}},
+      onClick:(e,els)=>{
+        if(!els.length)return;
+        const c=sorted[els[0].index][0];
+        openDrill((CF[c]||'')+' '+(CN[c]||c)+' — Active Workers',PEOPLE.filter(p=>p.country===c&&p.hiring_status==='active'),true);
+      }
+    }
+  });
+})();
+
+// ── 4. GEOGRAPHIC — COUNTRY DISTRIBUTION PIE ──
+(function(){
+  const counts={};
+  PEOPLE.filter(p=>p.hiring_status==='active'&&p.country).forEach(p=>{counts[p.country]=(counts[p.country]||0)+1;});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const pal=['#3F1046','#5a1860','#7a2080','#9425C9','#b050d8','#c27de0','#d4a8ec','#e4c4f4'];
+  new Chart(document.getElementById('cGeoPie'),{
+    type:'doughnut',
+    data:{labels:sorted.map(([c])=>(CF[c]||'')+' '+(CN[c]||c)),
+      datasets:[{data:sorted.map(([,v])=>v),backgroundColor:pal,borderWidth:2,hoverOffset:10}]},
+    options:{...CHART_DEFAULTS,cutout:'55%',
+      onClick:(e,els)=>{
+        if(!els.length)return;
+        const c=sorted[els[0].index][0];
+        openDrill((CF[c]||'')+' '+(CN[c]||c)+' — Active Workers',PEOPLE.filter(p=>p.country===c&&p.hiring_status==='active'),true);
+      }
+    }
+  });
+})();
+
+// ── 5. WORKFORCE MOVEMENT — NET CHANGE BY MONTH ──
+(function(){
+  const addB={},attB={};
+  PEOPLE.filter(p=>p.start_date).forEach(p=>{
+    const d=new Date(p.start_date);
+    const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    addB[k]=(addB[k]||[]);addB[k].push(p);
+  });
+  Object.entries(END_DATE_MAP).forEach(([pid,end])=>{
+    const d=new Date(end);
+    const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    attB[k]=(attB[k]||[]);
+    const person=PEOPLE.find(p=>p.id===pid);if(person)attB[k].push(person);
+  });
+  const allKeys=[...new Set([...Object.keys(addB),...Object.keys(attB)])].sort();
+  const recent=allKeys.slice(-24);
+  const rLabels=recent.map(m=>{const[y,mo]=m.split('-');return new Date(+y,+mo-1).toLocaleDateString('en-US',{month:'short',year:'2-digit'});});
+  new Chart(document.getElementById('cNetChange'),{
+    type:'bar',
+    data:{labels:rLabels,datasets:[
+      {label:'Additions',data:recent.map(k=>(addB[k]||[]).length),backgroundColor:'#3F1046',borderRadius:4,stack:'s'},
+      {label:'Attritions',data:recent.map(k=>-(attB[k]||[]).length),backgroundColor:'#9425C9',borderRadius:4,stack:'s'}
+    ]},
+    options:{...CHART_DEFAULTS,
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:false,grid:{color:'rgba(63,16,70,0.08)'}}},
+      onClick:(e,els)=>{
+        if(!els.length)return;
+        const k=recent[els[0].index];const di=els[0].datasetIndex;
+        if(di===0)openDrill('Joined '+rLabels[els[0].index],addB[k]||[],true);
+        else openDrill('Left '+rLabels[els[0].index],attB[k]||[],true);
+      }
+    }
+  });
+})();
+
+// ── 6. GENDER DISTRIBUTION ──
+(function(){
+  const active=PEOPLE.filter(p=>p.hiring_status==='active');
+  const gc={Male:0,Female:0};
+  active.forEach(p=>{const g=GENDER_MAP[p.id];if(g==='M')gc.Male++;else if(g==='F')gc.Female++;});
+  const labels=Object.keys(gc);const data=labels.map(k=>gc[k]);
+  new Chart(document.getElementById('cGender'),{
+    type:'doughnut',
+    data:{labels,datasets:[{data,backgroundColor:['#3F1046','#9425C9'],borderWidth:2,hoverOffset:10}]},
+    options:{...CHART_DEFAULTS,cutout:'60%',
+      onClick:(e,els)=>{
+        if(!els.length)return;
+        const g=labels[els[0].index];const code=g==='Male'?'M':'F';
+        openDrill(g+' — Active Workers',active.filter(p=>GENDER_MAP[p.id]===code),true);
+      }
+    }
+  });
+})();
+
+// ── 7. HEADCOUNT BY AGE GROUP ──
+(function(){
+  const today=new Date();
+  const groups={'Under 25':[],'25–34':[],'35–44':[],'45–54':[],'55+':[]};
+  PEOPLE.filter(p=>p.hiring_status==='active').forEach(p=>{
+    const dob=DOB_MAP[p.id];if(!dob)return;
+    const d=new Date(dob);
+    const age=today.getFullYear()-d.getFullYear()-(today<new Date(today.getFullYear(),d.getMonth(),d.getDate())?1:0);
+    if(age<25)groups['Under 25'].push(p);
+    else if(age<35)groups['25–34'].push(p);
+    else if(age<45)groups['35–44'].push(p);
+    else if(age<55)groups['45–54'].push(p);
+    else groups['55+'].push(p);
+  });
+  const labels=Object.keys(groups);
+  const pal=['#c27de0','#9425C9','#7a2080','#5a1860','#3F1046'];
+  new Chart(document.getElementById('cAgeGroup'),{
+    type:'bar',
+    data:{labels,datasets:[{label:'Workers',data:labels.map(k=>groups[k].length),backgroundColor:pal,borderRadius:6}]},
+    options:{plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}},
+      onClick:(e,els)=>{
+        if(!els.length)return;
+        openDrill(labels[els[0].index]+' — Active Workers',groups[labels[els[0].index]],true);
+      }
+    }
+  });
+})();
+
+// ═══════════════ OVERVIEW WORKERS TABLE ═══════════════
+let ovData=[...PEOPLE],ovPage=1;
+const OV_PAGE=12;
+
+// Populate overview country + dept dropdowns
+const ovCF=document.getElementById('ovCountry');
+[...new Set(PEOPLE.filter(p=>p.country).map(p=>p.country))].sort().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=(CF[c]||'')+' '+(CN[c]||c);ovCF.appendChild(o)});
+const ovDF=document.getElementById('ovDept');
+[...new Set(Object.values(DEPT_MAP))].sort().forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;ovDF.appendChild(o)});
+
+function filterOvWorkers(){
+  const s=document.getElementById('ovSrch').value.toLowerCase();
+  const st=document.getElementById('ovStatus').value;
+  const ty=document.getElementById('ovType').value;
+  const co=document.getElementById('ovCountry').value;
+  const dp=document.getElementById('ovDept').value;
+  ovData=PEOPLE.filter(p=>
+    (!s||p.full_name.toLowerCase().includes(s))&&
+    (!st||p.hiring_status===st)&&
+    (!ty||p.hiring_type===ty)&&
+    (!co||p.country===co)&&
+    (!dp||getDept(p.id)===dp)
+  );
+  ovPage=1;renderOvWorkers();
+}
+function renderOvWorkers(){
+  const sorted=[...ovData].sort((a,b)=>a.full_name<b.full_name?-1:1);
+  const st=(ovPage-1)*OV_PAGE,en=st+OV_PAGE,pg=sorted.slice(st,en);
+  document.getElementById('ovBody').innerHTML=pg.map(p=>{
+    const pcs=CONTRACTS.filter(c=>c.worker_pid===p.id);
+    const dept=getDept(p.id);
+    return`<tr onclick="openPerson('${p.id}')">
+      <td><strong>${p.full_name}</strong></td>
+      <td>${badge(p.hiring_type)}</td>
+      <td>${badge(p.hiring_status)}</td>
+      <td><span style="font-size:12px;color:var(--muted);font-weight:600">${dept}</span></td>
+      <td>${flagName(p.country)}</td>
+      <td>${fmt(p.start_date)}</td>
+      <td>${pcs.length?`<span style="font-size:12px;color:var(--blue);font-weight:700">${pcs.length} contract${pcs.length>1?'s':''}</span>`:'<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="7" class="empty">No results found</td></tr>';
+  document.getElementById('ovCnt').textContent=`${ovData.length} workers`;
+  const pages=Math.ceil(ovData.length/OV_PAGE);
+  document.getElementById('ovPager').innerHTML=`<span>${ovData.length} of ${PEOPLE.length} workers</span><div class="pgBtns">${Array.from({length:pages},(_,i)=>`<button class="pgBtn${ovPage===i+1?' on':''}" onclick="ovPage=${i+1};renderOvWorkers()">${i+1}</button>`).join('')}</div>`;
+}
+renderOvWorkers();
+
+// ═══════════════ PEOPLE TABLE ═══════════════
+const PAGE=15;
+let pData=[...PEOPLE],pPage=1,pSortCol='full_name',pSortDir=1;
+
+const countries=[...new Set(PEOPLE.filter(p=>p.country).map(p=>p.country))].sort();
+const pCF=document.getElementById('pCountry');
+countries.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=(CF[c]||'')+' '+(CN[c]||c);pCF.appendChild(o)});
+
+function resetPeopleFilters(){
+  document.getElementById('pSrch').value='';
+  document.getElementById('pStatus').value='';
+  document.getElementById('pType').value='';
+  document.getElementById('pCountry').value='';
+}
+function filterPeople(){
+  const s=document.getElementById('pSrch').value.toLowerCase();
+  const st=document.getElementById('pStatus').value;
+  const ty=document.getElementById('pType').value;
+  const co=document.getElementById('pCountry').value;
+  pData=PEOPLE.filter(p=>
+    (!s||p.full_name.toLowerCase().includes(s))&&
+    (!st||p.hiring_status===st)&&
+    (!ty||p.hiring_type===ty)&&
+    (!co||p.country===co)
+  );
+  pPage=1;renderPeople();
+}
+function renderPeople(){
+  const sorted=[...pData].sort((a,b)=>{const av=a[pSortCol]||'',bv=b[pSortCol]||'';return av<bv?-pSortDir:av>bv?pSortDir:0});
+  const st=(pPage-1)*PAGE,en=st+PAGE,pg=sorted.slice(st,en);
+  document.getElementById('pBody').innerHTML=pg.map(p=>{
+    const pcs=CONTRACTS.filter(c=>c.worker_pid===p.id);
+    return`<tr onclick="openPerson('${p.id}')">
+      <td><strong>${p.full_name}</strong></td>
+      <td>${badge(p.hiring_type)}</td>
+      <td>${badge(p.hiring_status)}</td>
+      <td>${flagName(p.country)}</td>
+      <td>${fmt(p.start_date)}</td>
+      <td>${pcs.length?`<span style="font-size:12px;color:var(--blue);font-weight:700">${pcs.length} contract${pcs.length>1?'s':''}</span>`:'<span style="color:var(--muted);font-size:12px">—</span>'}</td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="6" class="empty">No results</td></tr>';
+  document.getElementById('pCnt').textContent=`Showing ${Math.min(st+1,pData.length)}–${Math.min(en,pData.length)} of ${pData.length}`;
+  const pages=Math.ceil(pData.length/PAGE);
+  document.getElementById('pPager').innerHTML=`<span>${pData.length} workers</span><div class="pgBtns">${Array.from({length:pages},(_,i)=>`<button class="pgBtn${pPage===i+1?' on':''}" onclick="pPage=${i+1};renderPeople()">${i+1}</button>`).join('')}</div>`;
+}
+document.getElementById('pSrch').addEventListener('input',filterPeople);
+document.getElementById('pStatus').addEventListener('change',filterPeople);
+document.getElementById('pType').addEventListener('change',filterPeople);
+document.getElementById('pCountry').addEventListener('change',filterPeople);
+document.querySelectorAll('#pTbl th').forEach(th=>th.addEventListener('click',()=>{const c=th.dataset.c;if(!c)return;pSortCol===c?pSortDir*=-1:(pSortCol=c,pSortDir=1);renderPeople()}));
+renderPeople();
+
+// ═══════════════ CONTRACTS TABLE ═══════════════
+let cData=[...CONTRACTS],cPage=1,cSortCol='title',cSortDir=1;
+
+function filterContracts(){
+  const s=document.getElementById('cSrch').value.toLowerCase();
+  const ty=document.getElementById('cType').value;
+  const st=document.getElementById('cStatus').value;
+  cData=CONTRACTS.filter(c=>
+    (!s||c.title.toLowerCase().includes(s)||(c.worker_name||'').toLowerCase().includes(s))&&
+    (!ty||c.type===ty)&&(!st||c.status===st)
+  );
+  cPage=1;renderContracts();
+}
+function renderContracts(){
+  const sorted=[...cData].sort((a,b)=>{const av=a[cSortCol]||'',bv=b[cSortCol]||'';return av<bv?-cSortDir:av>bv?cSortDir:0});
+  const st=(cPage-1)*PAGE,en=st+PAGE,pg=sorted.slice(st,en);
+  document.getElementById('cBody').innerHTML=pg.map(c=>`
+    <tr onclick="openContract('${c.id}')">
+      <td><code style="font-size:11px;color:var(--muted)">${c.id}</code></td>
+      <td>${c.title}</td>
+      <td>${badge(c.type)}</td>
+      <td>${badge(c.status)}</td>
+      <td>${c.worker_name||'<span style="color:var(--muted)">—</span>'}</td>
+    </tr>
+  `).join('')||'<tr><td colspan="5" class="empty">No results</td></tr>';
+  document.getElementById('cCnt').textContent=`Showing ${Math.min(st+1,cData.length)}–${Math.min(en,cData.length)} of ${cData.length}`;
+  const pages=Math.ceil(cData.length/PAGE);
+  document.getElementById('cPager').innerHTML=`<span>${cData.length} contracts</span><div class="pgBtns">${Array.from({length:pages},(_,i)=>`<button class="pgBtn${cPage===i+1?' on':''}" onclick="cPage=${i+1};renderContracts()">${i+1}</button>`).join('')}</div>`;
+}
+document.getElementById('cSrch').addEventListener('input',filterContracts);
+document.getElementById('cType').addEventListener('change',filterContracts);
+document.getElementById('cStatus').addEventListener('change',filterContracts);
+document.querySelectorAll('#cTbl th').forEach(th=>th.addEventListener('click',()=>{const c=th.dataset.c;if(!c)return;cSortCol===c?cSortDir*=-1:(cSortCol=c,cSortDir=1);renderContracts()}));
+renderContracts();
+
+// ═══════════════ LEGAL ENTITIES ═══════════════
+document.getElementById('entityGrid').innerHTML=LEGAL_ENTITIES.map(e=>`
+  <div class="entityCard" onclick="showEntityDetail('${e.id}')">
+    <div class="entityName">${e.name}</div>
+    <div class="entityType">${e.type} · ${CF[e.country]||''} ${CN[e.country]||e.country}</div>
+    <div class="entityRow">Address: <span>${e.address}, ${e.city}</span></div>
+    ${e.vat?`<div class="entityRow">VAT / EIN: <span>${e.vat}</span></div>`:''}
+    ${e.reg?`<div class="entityRow">Registration #: <span>${e.reg}</span></div>`:''}
+    <div class="entityRow">Phone: <span>${e.phone}</span></div>
+    <div class="entityRow">Created: <span>${fmt(e.created)}</span></div>
+    <div class="entityRow" style="margin-top:10px;font-size:11px;color:var(--blue);font-weight:600">Click for details →</div>
+  </div>
+`).join('');
+
+function showEntityDetail(id){
+  const e=LEGAL_ENTITIES.find(x=>x.id===id);if(!e)return;
+  const staff=PEOPLE.filter(p=>p.country===e.country);
+  openPanel(`
+    <div class="spHeader">
+      <div>
+        <div class="spAvatar" style="font-size:20px">🏢</div>
+        <div class="spName">${e.name}</div>
+        <div class="spRole">${e.type} · ${CF[e.country]||''} ${CN[e.country]||e.country}</div>
+      </div>
+      <button class="spClose" onclick="closePanel()">✕</button>
+    </div>
+    <div class="spBody">
+      <div class="spSection">
+        <h4>🏢 Entity Details</h4>
+        <div class="infoGrid">
+          <div class="infoCell" style="grid-column:1/-1"><label>Legal Name</label><span>${e.name}</span></div>
+          <div class="infoCell"><label>Entity Type</label><span>${e.type}</span></div>
+          <div class="infoCell"><label>Country</label><span>${CF[e.country]||''} ${CN[e.country]||e.country}</span></div>
+          <div class="infoCell" style="grid-column:1/-1"><label>Address</label><span>${e.address}, ${e.city}</span></div>
+          ${e.vat?`<div class="infoCell"><label>VAT / EIN</label><span>${e.vat}</span></div>`:''}
+          ${e.reg?`<div class="infoCell"><label>Registration #</label><span>${e.reg}</span></div>`:''}
+          <div class="infoCell"><label>Phone</label><span>${e.phone}</span></div>
+          <div class="infoCell"><label>Created</label><span>${fmt(e.created)}</span></div>
+          <div class="infoCell"><label>Entity ID</label><span style="font-size:11px;font-family:monospace">${e.id}</span></div>
+        </div>
+      </div>
+      <div class="spSection">
+        <h4>👥 Staff in ${CN[e.country]||e.country} (${staff.length})</h4>
+        <div style="max-height:300px;overflow-y:auto">
+          ${staff.map(p=>`<div class="drillRow" onclick="openPerson('${p.id}')"><div class="drillAvatar">${initials(p.full_name)}</div><div><div class="drillName">${p.full_name}</div><div class="drillMeta">${p.hiring_type.replace(/_/g,' ')} · ${p.hiring_status}</div></div><div style="margin-left:auto">${badge(p.hiring_status)}</div></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+// ═══════════════ TIMESTAMP ═══════════════
+document.getElementById('ts').textContent=new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+// ESC to close
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+</script>
+</body>
+</html>
