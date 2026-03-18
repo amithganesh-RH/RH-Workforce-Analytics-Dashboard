@@ -373,12 +373,30 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 /* EMPTY */
 .empty{text-align:center;padding:48px;color:var(--muted);font-size:14px;font-weight:300;font-family:var(--font-ui)}
 
-/* ── ANALYTICS FILTER BAR ── */
-.anFilterBar{display:flex;align-items:center;gap:8px;margin:0 0 24px;flex-wrap:wrap;padding:14px 18px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow)}
-.anTypePill{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:6px 18px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.3px}
+/* ── ANALYTICS LAYOUT ── */
+.anToolbar{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;padding:16px 20px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:20px}
+.anToolGroup{display:flex;flex-direction:column;gap:6px}
+.anToolLabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-family:var(--font-ui)}
+.anPillRow{display:flex;gap:6px}
+.anTypePill{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.3px;white-space:nowrap}
 .anTypePill:hover{border-color:var(--uv);color:var(--uv)}
 .anTypePill.active{background:var(--galaxy);border-color:var(--galaxy);color:#fff}
-.anFilterSep{width:1px;height:24px;background:var(--border);margin:0 4px;flex-shrink:0}
+.anToolDivider{width:1px;height:48px;background:var(--border);flex-shrink:0;align-self:flex-end;margin-bottom:2px}
+.anResetBtn{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--bone);color:var(--muted);cursor:pointer;transition:all .15s;margin-bottom:2px;align-self:flex-end}
+.anResetBtn:hover{border-color:var(--uv);color:var(--uv);background:var(--uv-faint)}
+.anToolCount{font-family:var(--font-ui);font-size:12px;color:var(--muted);font-weight:300;margin-left:auto;align-self:flex-end;margin-bottom:4px;white-space:nowrap}
+/* KPI strip */
+.anKpiStrip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.anKpi{background:var(--surface);border-radius:var(--r);padding:16px 20px;border:1px solid var(--border);box-shadow:var(--shadow);border-top:3px solid var(--kc,var(--uv))}
+.anKpiLabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-family:var(--font-ui);margin-bottom:6px}
+.anKpiVal{font-size:32px;font-weight:700;color:var(--galaxy);font-family:var(--font-ui);line-height:1;margin-bottom:2px}
+.anKpiSub{font-size:11px;color:var(--muted);font-weight:300;font-family:var(--font-ui)}
+/* Section headers & grids */
+.anSec{font-family:var(--font-ui);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--galaxy);padding:20px 0 12px;display:flex;align-items:center;gap:12px}
+.anSec::after{content:'';flex:1;height:1px;background:var(--bone-dark)}
+.anGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:0}
+.anWide{grid-column:1/-1}
+@media(max-width:640px){.anKpiStrip{grid-template-columns:repeat(2,1fr)}.anGrid{grid-template-columns:1fr}}
 
 @media(max-width:860px){.profileGrid{grid-template-columns:1fr}}
 @media(max-width:640px){main{padding:16px};.kpiGrid{grid-template-columns:1fr 1fr};.chartGrid{grid-template-columns:1fr};.slidePanel{width:100vw}}
@@ -552,82 +570,114 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 
   <!-- ANALYTICS -->
   <div class="panel" id="tab-analytics">
-    <div class="sh"><h2>Workforce Analytics</h2><p>Click charts to explore segment details</p></div>
-    <div class="anFilterBar">
-      <span class="ovFilterLabel">Type:</span>
-      <button class="anTypePill" data-type="peo" onclick="toggleAnType(this)">PEO</button>
-      <button class="anTypePill" data-type="eor" onclick="toggleAnType(this)">EOR</button>
-      <button class="anTypePill" data-type="contractor" onclick="toggleAnType(this)">Contractor</button>
-      <span class="anFilterSep"></span>
-      <span class="ovFilterLabel">Country:</span>
-      <select class="fsel" id="anCountryFilter" onchange="applyAnalyticsFilters()">
-        <option value="">All Countries</option>
-      </select>
-      <span class="ovFilterLabel">Dept:</span>
-      <select class="fsel" id="anDeptFilter" onchange="applyAnalyticsFilters()">
-        <option value="">All Departments</option>
-      </select>
-      <button class="ovPill" onclick="resetAnalyticsFilters()">Reset</button>
-      <span class="ovFilterCount" id="anFilterCount"></span>
+    <div class="sh"><h2>Workforce Analytics</h2><p>Active workforce · filter by type, country, or department</p></div>
+
+    <!-- Filter Toolbar -->
+    <div class="anToolbar">
+      <div class="anToolGroup">
+        <div class="anToolLabel">Employment Type</div>
+        <div class="anPillRow">
+          <button class="anTypePill" data-type="peo" onclick="toggleAnType(this)">PEO</button>
+          <button class="anTypePill" data-type="eor" onclick="toggleAnType(this)">EOR</button>
+          <button class="anTypePill" data-type="contractor" onclick="toggleAnType(this)">Contractor</button>
+        </div>
+      </div>
+      <div class="anToolDivider"></div>
+      <div class="anToolGroup">
+        <div class="anToolLabel">Country</div>
+        <select class="fsel" id="anCountryFilter" onchange="applyAnalyticsFilters()">
+          <option value="">All Countries</option>
+        </select>
+      </div>
+      <div class="anToolGroup">
+        <div class="anToolLabel">Department</div>
+        <select class="fsel" id="anDeptFilter" onchange="applyAnalyticsFilters()">
+          <option value="">All Departments</option>
+        </select>
+      </div>
+      <button class="anResetBtn" onclick="resetAnalyticsFilters()">↺ Reset</button>
+      <div class="anToolCount" id="anFilterCount"></div>
     </div>
-    <div class="chartGrid">
-      <div class="chartCard chartWide">
-        <h3>Headcount by Country &amp; Employment Type</h3><div class="chartSub">Click a segment to see people in that group</div>
-        <div class="chartWrap"><canvas id="cStacked" style="max-height:320px"></canvas></div>
+
+    <!-- KPI Strip -->
+    <div class="anKpiStrip" id="anKpiStrip"></div>
+
+    <!-- Section 1: Workforce Composition -->
+    <div class="anSec">Workforce Composition</div>
+    <div class="anGrid">
+      <div class="chartCard anWide">
+        <h3>Headcount by Country &amp; Employment Type</h3>
+        <div class="chartSub">Stacked by PEO · EOR · Contractor · click a segment to drill in</div>
+        <div class="chartWrap"><canvas id="cStacked" style="max-height:280px"></canvas></div>
       </div>
       <div class="chartCard">
-        <h3>Active Workers by Type</h3><div class="chartSub">Click a bar for breakdown</div>
+        <h3>Active Workers by Type</h3>
+        <div class="chartSub">Active vs inactive split across employment types</div>
         <div class="chartWrap"><canvas id="cActiveType"></canvas></div>
       </div>
       <div class="chartCard">
-        <h3>Contract Type Distribution</h3><div class="chartSub">Click a slice to filter contracts</div>
+        <h3>Contract Type Distribution</h3>
+        <div class="chartSub">Click a slice to explore that contract category</div>
         <div class="chartWrap"><canvas id="cCtypePie"></canvas></div>
       </div>
-      <div class="chartCard chartWide">
-        <h3>Hire Timeline by Quarter</h3><div class="chartSub">Click a bar to see who joined that period</div>
-        <div class="chartWrap"><canvas id="cTimeline" style="max-height:300px"></canvas></div>
-      </div>
+    </div>
 
-      <!-- ── Headcount Growth Trend ── -->
-      <div class="analyticsSec">Headcount Growth Trend</div>
-      <div class="chartCard chartWide">
-        <h3>Headcount Addition Trend</h3><div class="chartSub">Cumulative workforce growth by month · click a point to see joiners</div>
-        <div class="chartWrap"><canvas id="cAddTrend" style="max-height:300px"></canvas></div>
+    <!-- Section 2: Hiring & Growth -->
+    <div class="anSec">Hiring &amp; Growth</div>
+    <div class="anGrid">
+      <div class="chartCard anWide">
+        <h3>Hire Timeline by Quarter</h3>
+        <div class="chartSub">New hires per quarter · click a bar to see who joined</div>
+        <div class="chartWrap"><canvas id="cTimeline" style="max-height:240px"></canvas></div>
       </div>
-
-      <!-- ── Department Breakdown ── -->
-      <div class="analyticsSec">Department Breakdown</div>
-      <div class="chartCard chartWide">
-        <h3>Headcount by Department L1 — PEO &amp; EOR Split</h3><div class="chartSub">Click a bar to drill into that department and employment type</div>
-        <div class="chartWrap"><canvas id="cDeptSplit" style="max-height:320px"></canvas></div>
+      <div class="chartCard anWide">
+        <h3>Cumulative Headcount Growth</h3>
+        <div class="chartSub">Month-over-month total growth · click a point to see joiners</div>
+        <div class="chartWrap"><canvas id="cAddTrend" style="max-height:240px"></canvas></div>
       </div>
+    </div>
 
-      <!-- ── Geographic Distribution ── -->
-      <div class="analyticsSec">Geographic Distribution</div>
+    <!-- Section 3: Department Breakdown -->
+    <div class="anSec">Department Breakdown</div>
+    <div class="anGrid">
+      <div class="chartCard anWide">
+        <h3>Headcount by Department — PEO &amp; EOR Split</h3>
+        <div class="chartSub">Click a bar to drill into that department and employment type</div>
+        <div class="chartWrap"><canvas id="cDeptSplit" style="max-height:280px"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Section 4: Geography -->
+    <div class="anSec">Geographic Distribution</div>
+    <div class="anGrid">
       <div class="chartCard">
-        <h3>Active Workers by Country</h3><div class="chartSub">Click a bar to see workers in that country</div>
+        <h3>Workers by Country</h3>
+        <div class="chartSub">Click a bar to see workers in that country</div>
         <div class="chartWrap"><canvas id="cGeoBar"></canvas></div>
       </div>
       <div class="chartCard">
-        <h3>Country Distribution</h3><div class="chartSub">Visual breakdown by geography · click a slice to explore</div>
+        <h3>Country Mix</h3>
+        <div class="chartSub">Share by geography · click a slice to explore</div>
         <div class="chartWrap"><canvas id="cGeoPie"></canvas></div>
       </div>
+    </div>
 
-      <!-- ── Workforce Movement ── -->
-      <div class="analyticsSec">Workforce Movement</div>
-      <div class="chartCard chartWide">
-        <h3>Net Workforce Change by Month</h3><div class="chartSub">Additions vs Attritions · click a bar to explore that cohort</div>
-        <div class="chartWrap"><canvas id="cNetChange" style="max-height:300px"></canvas></div>
+    <!-- Section 5: Movement & Demographics -->
+    <div class="anSec">Movement &amp; Demographics</div>
+    <div class="anGrid">
+      <div class="chartCard anWide">
+        <h3>Net Workforce Change by Month</h3>
+        <div class="chartSub">Additions vs attritions over last 24 months · click a bar to explore</div>
+        <div class="chartWrap"><canvas id="cNetChange" style="max-height:240px"></canvas></div>
       </div>
-
-      <!-- ── Workforce Demographics ── -->
-      <div class="analyticsSec">Workforce Demographics</div>
       <div class="chartCard">
-        <h3>Gender Distribution</h3><div class="chartSub">Active workers by gender · click to see the group</div>
+        <h3>Gender Distribution</h3>
+        <div class="chartSub">Click a slice to see the group</div>
         <div class="chartWrap"><canvas id="cGender"></canvas></div>
       </div>
       <div class="chartCard">
-        <h3>Headcount by Age Group</h3><div class="chartSub">Age calculated from date of birth · click to explore</div>
+        <h3>Headcount by Age Group</h3>
+        <div class="chartSub">Age from date of birth · click to explore</div>
         <div class="chartWrap"><canvas id="cAgeGroup"></canvas></div>
       </div>
     </div>
@@ -1416,7 +1466,27 @@ new Chart(document.getElementById('cCtypePie'),{
 // ─── Filterable Analytics Charts ───
 let anCharts={};
 
+function updateAnKpis(people){
+  const total=people.length;
+  const peoN=people.filter(p=>p.hiring_type==='peo').length;
+  const eorN=people.filter(p=>p.hiring_type==='eor').length;
+  const contrN=people.filter(p=>p.hiring_type==='contractor').length;
+  const kpis=[
+    {label:'Active Workers',val:total,sub:'matching current filters',color:'#3F1046'},
+    {label:'PEO',val:peoN,sub:total?Math.round(peoN/total*100)+'% of selection':'—',color:'#1e6bb8'},
+    {label:'EOR',val:eorN,sub:total?Math.round(eorN/total*100)+'% of selection':'—',color:'#27ae60'},
+    {label:'Contractors',val:contrN,sub:total?Math.round(contrN/total*100)+'% of selection':'—',color:'#f5a623'},
+  ];
+  document.getElementById('anKpiStrip').innerHTML=kpis.map(k=>`
+    <div class="anKpi" style="--kc:${k.color}">
+      <div class="anKpiLabel">${k.label}</div>
+      <div class="anKpiVal">${k.val}</div>
+      <div class="anKpiSub">${k.sub}</div>
+    </div>`).join('');
+}
+
 function buildAnalyticsCharts(people){
+  updateAnKpis(people);
   Object.values(anCharts).forEach(c=>{try{c.destroy();}catch(e){}});
   anCharts={};
   const pal=['#3F1046','#5a1860','#7a2080','#9425C9','#b050d8','#c27de0','#d4a8ec','#e4c4f4'];
@@ -1628,7 +1698,7 @@ function applyAnalyticsFilters(){
   if(activeTypes.length)people=people.filter(p=>activeTypes.includes(p.hiring_type));
   if(country)people=people.filter(p=>p.country===country);
   if(dept)people=people.filter(p=>getDept(p.id)===dept);
-  document.getElementById('anFilterCount').textContent=people.length+' workers';
+  document.getElementById('anFilterCount').textContent=people.length+' workers shown';
   buildAnalyticsCharts(people);
 }
 
