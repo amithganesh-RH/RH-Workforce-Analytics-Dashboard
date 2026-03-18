@@ -373,6 +373,9 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 /* EMPTY */
 .empty{text-align:center;padding:48px;color:var(--muted);font-size:14px;font-weight:300;font-family:var(--font-ui)}
 
+/* ── ANALYTICS FILTER BAR ── */
+.anFilterBar{display:flex;align-items:center;gap:8px;margin:0 0 24px;flex-wrap:wrap;padding:14px 18px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow)}
+
 @media(max-width:860px){.profileGrid{grid-template-columns:1fr}}
 @media(max-width:640px){main{padding:16px};.kpiGrid{grid-template-columns:1fr 1fr};.chartGrid{grid-template-columns:1fr};.slidePanel{width:100vw}}
 </style>
@@ -546,6 +549,28 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   <!-- ANALYTICS -->
   <div class="panel" id="tab-analytics">
     <div class="sh"><h2>Workforce Analytics</h2><p>Click charts to explore segment details</p></div>
+    <div class="anFilterBar">
+      <span class="ovFilterLabel">Filter:</span>
+      <select class="fsel" id="anTypeFilter" onchange="applyAnalyticsFilters()">
+        <option value="">All Types</option>
+        <option value="peo">PEO</option>
+        <option value="eor">EOR</option>
+        <option value="contractor">Contractor</option>
+      </select>
+      <select class="fsel" id="anStatusFilter" onchange="applyAnalyticsFilters()">
+        <option value="active">Active Only</option>
+        <option value="">All Status</option>
+        <option value="inactive">Inactive Only</option>
+      </select>
+      <select class="fsel" id="anCountryFilter" onchange="applyAnalyticsFilters()">
+        <option value="">All Countries</option>
+      </select>
+      <select class="fsel" id="anDeptFilter" onchange="applyAnalyticsFilters()">
+        <option value="">All Departments</option>
+      </select>
+      <button class="ovPill" onclick="resetAnalyticsFilters()">Reset</button>
+      <span class="ovFilterCount" id="anFilterCount"></span>
+    </div>
     <div class="chartGrid">
       <div class="chartCard chartWide">
         <h3>Headcount by Country &amp; Employment Type</h3><div class="chartSub">Click a segment to see people in that group</div>
@@ -1377,39 +1402,9 @@ document.getElementById('payrollGrid').innerHTML=payrollEntities.map(e=>`
 const cStatuses=[...new Set(CONTRACTS.map(c=>c.status))];
 const csColors={in_progress:'#9425C9',completed:'#3F1046',cancelled:'#5a1860',user_cancelled:'#c27de0',rejected:'#7a2080'};
 
-// ─── Analytics charts ───
-// Stacked country + type
-const topC7=topC.slice(0,7).map(([c])=>c);
-const chartStacked=new Chart(document.getElementById('cStacked'),{
-  type:'bar',
-  data:{labels:topC7.map(c=>(CF[c]||'')+' '+(CN[c]||c)),datasets:TYPES.map((t,i)=>({label:TLABELS[i],data:topC7.map(c=>PEOPLE.filter(p=>p.country===c&&p.hiring_type===t).length),backgroundColor:typeColors[i],borderRadius:3}))},
-  options:{...CHART_DEFAULTS,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},onClick:(e,els)=>{
-    if(!els.length)return;
-    const dsIdx=els[0].datasetIndex,barIdx=els[0].index;
-    const type=TYPES[dsIdx],country=topC7[barIdx];
-    const group=PEOPLE.filter(p=>p.country===country&&p.hiring_type===type);
-    openDrill(`${TLABELS[dsIdx]} in ${CN[country]||country}`,group,true);
-  }}
-});
-
-// Active vs inactive by type
-const chartAT=new Chart(document.getElementById('cActiveType'),{
-  type:'bar',
-  data:{labels:TLABELS,datasets:[
-    {label:'Active',data:TYPES.map(t=>PEOPLE.filter(p=>p.hiring_type===t&&p.hiring_status==='active').length),backgroundColor:'#3F1046',borderRadius:4},
-    {label:'Inactive',data:TYPES.map(t=>PEOPLE.filter(p=>p.hiring_type===t&&p.hiring_status==='inactive').length),backgroundColor:'#c27de0',borderRadius:4},
-  ]},
-  options:{...CHART_DEFAULTS,scales:{y:{beginAtZero:true}},onClick:(e,els)=>{
-    if(!els.length)return;
-    const dsIdx=els[0].datasetIndex,barIdx=els[0].index;
-    const type=TYPES[barIdx],status=dsIdx===0?'active':'inactive';
-    openDrill(`${TLABELS[barIdx]} — ${status}`,PEOPLE.filter(p=>p.hiring_type===type&&p.hiring_status===status),true);
-  }}
-});
-
-// Contract type pie
+// ─── Contract Type Pie (static — not people-filtered) ───
 const ctypes=[...new Set(CONTRACTS.map(c=>c.type))];
-const chartCTP=new Chart(document.getElementById('cCtypePie'),{
+new Chart(document.getElementById('cCtypePie'),{
   type:'doughnut',
   data:{labels:ctypes.map(t=>t.replace(/_/g,' ')),datasets:[{data:ctypes.map(t=>cnt(CONTRACTS,'type',t)),backgroundColor:['#3F1046','#9425C9','#7a2080','#c27de0','#5a1860'],borderWidth:2,hoverOffset:8}]},
   options:{...CHART_DEFAULTS,cutout:'55%',onClick:(e,els)=>{
@@ -1419,201 +1414,239 @@ const chartCTP=new Chart(document.getElementById('cCtypePie'),{
   }}
 });
 
-// Hire timeline
-const tBuckets={};
-PEOPLE.forEach(p=>{
-  if(!p.start_date)return;
-  const d=new Date(p.start_date);
-  const q='Q'+(Math.ceil((d.getMonth()+1)/3))+' '+d.getFullYear();
-  tBuckets[q]=(tBuckets[q]||[]); tBuckets[q].push(p);
-});
-const tLabels=Object.keys(tBuckets).sort();
-const chartTL=new Chart(document.getElementById('cTimeline'),{
-  type:'bar',
-  data:{labels:tLabels,datasets:[{label:'New Hires',data:tLabels.map(l=>tBuckets[l].length),backgroundColor:'#9425C9',borderRadius:5,hoverBackgroundColor:'#3F1046'}]},
-  options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}},onClick:(e,els)=>{
-    if(!els.length)return;
-    const l=tLabels[els[0].index];
-    openDrill('Hired in '+l,tBuckets[l],true);
-  }}
-});
+// ─── Filterable Analytics Charts ───
+let anCharts={};
 
-// ════════════════════════════════════════════════════════
-// ── NEW ANALYTICS CHARTS ─────────────────────────────────
-// ════════════════════════════════════════════════════════
-
-// ── 1. HEADCOUNT ADDITION TREND (cumulative line) ──
-(function(){
-  const buckets={};
-  PEOPLE.filter(p=>p.start_date).forEach(p=>{
-    const d=new Date(p.start_date);
-    const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-    buckets[k]=(buckets[k]||[]);buckets[k].push(p);
-  });
-  const months=Object.keys(buckets).sort();
-  let cum=0;
-  const cumData=months.map(m=>{cum+=buckets[m].length;return cum;});
-  const mLabels=months.map(m=>{const[y,mo]=m.split('-');return new Date(+y,+mo-1).toLocaleDateString('en-US',{month:'short',year:'2-digit'});});
-  new Chart(document.getElementById('cAddTrend'),{
-    type:'line',
-    data:{labels:mLabels,datasets:[{
-      label:'Cumulative Headcount',data:cumData,
-      borderColor:'#9425C9',backgroundColor:'rgba(148,37,201,0.10)',fill:true,tension:0.4,
-      pointBackgroundColor:'#3F1046',pointRadius:4,pointHoverRadius:7,borderWidth:2
-    }]},
-    options:{...CHART_DEFAULTS,scales:{y:{beginAtZero:false}},
-      onClick:(e,els)=>{if(!els.length)return;const k=months[els[0].index];openDrill('Joined '+mLabels[els[0].index],buckets[k],true);}
-    }
-  });
-})();
-
-// ── 2. DEPARTMENT BREAKDOWN — PEO & EOR SPLIT ──
-(function(){
-  const activePeople=PEOPLE.filter(p=>p.hiring_status==='active');
-  const depts=[...new Set(activePeople.map(p=>getDept(p.id)))].sort();
-  const peoD=depts.map(d=>activePeople.filter(p=>getDept(p.id)===d&&p.hiring_type==='peo').length);
-  const eorD=depts.map(d=>activePeople.filter(p=>getDept(p.id)===d&&p.hiring_type==='eor').length);
-  new Chart(document.getElementById('cDeptSplit'),{
-    type:'bar',
-    data:{labels:depts,datasets:[
-      {label:'PEO',data:peoD,backgroundColor:'#3F1046',borderRadius:4},
-      {label:'EOR',data:eorD,backgroundColor:'#9425C9',borderRadius:4}
-    ]},
-    options:{...CHART_DEFAULTS,
-      scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{stepSize:1}}},
-      onClick:(e,els)=>{
-        if(!els.length)return;
-        const dept=depts[els[0].index];
-        const type=els[0].datasetIndex===0?'peo':'eor';
-        const lbl=els[0].datasetIndex===0?'PEO':'EOR';
-        openDrill(dept+' — '+lbl,activePeople.filter(p=>getDept(p.id)===dept&&p.hiring_type===type),true);
-      }
-    }
-  });
-})();
-
-// ── 3. GEOGRAPHIC — ACTIVE WORKERS BAR ──
-(function(){
-  const counts={};
-  PEOPLE.filter(p=>p.hiring_status==='active'&&p.country).forEach(p=>{counts[p.country]=(counts[p.country]||0)+1;});
-  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+function buildAnalyticsCharts(people){
+  Object.values(anCharts).forEach(c=>{try{c.destroy();}catch(e){}});
+  anCharts={};
   const pal=['#3F1046','#5a1860','#7a2080','#9425C9','#b050d8','#c27de0','#d4a8ec','#e4c4f4'];
-  new Chart(document.getElementById('cGeoBar'),{
-    type:'bar',
-    data:{labels:sorted.map(([c])=>(CF[c]||'')+' '+(CN[c]||c)),
-      datasets:[{label:'Active Workers',data:sorted.map(([,v])=>v),backgroundColor:sorted.map((_,i)=>pal[i%pal.length]),borderRadius:8}]},
-    options:{plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}},
-      onClick:(e,els)=>{
+
+  // 1. Stacked: Country + Type
+  {
+    const cCounts={};
+    people.forEach(p=>{if(p.country)cCounts[p.country]=(cCounts[p.country]||0)+1;});
+    const topCountries=Object.entries(cCounts).sort((a,b)=>b[1]-a[1]).slice(0,7).map(([c])=>c);
+    anCharts.stacked=new Chart(document.getElementById('cStacked'),{
+      type:'bar',
+      data:{labels:topCountries.map(c=>(CF[c]||'')+' '+(CN[c]||c)),datasets:TYPES.map((t,i)=>({label:TLABELS[i],data:topCountries.map(c=>people.filter(p=>p.country===c&&p.hiring_type===t).length),backgroundColor:typeColors[i],borderRadius:3}))},
+      options:{...CHART_DEFAULTS,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},onClick:(e,els)=>{
+        if(!els.length)return;
+        const type=TYPES[els[0].datasetIndex],country=topCountries[els[0].index];
+        openDrill(`${TLABELS[els[0].datasetIndex]} in ${CN[country]||country}`,people.filter(p=>p.country===country&&p.hiring_type===type),true);
+      }}
+    });
+  }
+
+  // 2. Active vs Inactive by Type
+  {
+    anCharts.activeType=new Chart(document.getElementById('cActiveType'),{
+      type:'bar',
+      data:{labels:TLABELS,datasets:[
+        {label:'Active',data:TYPES.map(t=>people.filter(p=>p.hiring_type===t&&p.hiring_status==='active').length),backgroundColor:'#3F1046',borderRadius:4},
+        {label:'Inactive',data:TYPES.map(t=>people.filter(p=>p.hiring_type===t&&p.hiring_status==='inactive').length),backgroundColor:'#c27de0',borderRadius:4},
+      ]},
+      options:{...CHART_DEFAULTS,scales:{y:{beginAtZero:true}},onClick:(e,els)=>{
+        if(!els.length)return;
+        const type=TYPES[els[0].index],status=els[0].datasetIndex===0?'active':'inactive';
+        openDrill(`${TLABELS[els[0].index]} — ${status}`,people.filter(p=>p.hiring_type===type&&p.hiring_status===status),true);
+      }}
+    });
+  }
+
+  // 3. Hire Timeline by Quarter
+  {
+    const tBuckets={};
+    people.forEach(p=>{
+      if(!p.start_date)return;
+      const d=new Date(p.start_date);
+      const q='Q'+(Math.ceil((d.getMonth()+1)/3))+' '+d.getFullYear();
+      tBuckets[q]=(tBuckets[q]||[]);tBuckets[q].push(p);
+    });
+    const tLabels=Object.keys(tBuckets).sort();
+    anCharts.timeline=new Chart(document.getElementById('cTimeline'),{
+      type:'bar',
+      data:{labels:tLabels,datasets:[{label:'New Hires',data:tLabels.map(l=>tBuckets[l].length),backgroundColor:'#9425C9',borderRadius:5,hoverBackgroundColor:'#3F1046'}]},
+      options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}},onClick:(e,els)=>{
+        if(!els.length)return;
+        openDrill('Hired in '+tLabels[els[0].index],tBuckets[tLabels[els[0].index]],true);
+      }}
+    });
+  }
+
+  // 4. Headcount Addition Trend (cumulative line)
+  {
+    const buckets={};
+    people.filter(p=>p.start_date).forEach(p=>{
+      const d=new Date(p.start_date);
+      const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+      buckets[k]=(buckets[k]||[]);buckets[k].push(p);
+    });
+    const months=Object.keys(buckets).sort();
+    let cum=0;
+    const cumData=months.map(m=>{cum+=buckets[m].length;return cum;});
+    const mLabels=months.map(m=>{const[y,mo]=m.split('-');return new Date(+y,+mo-1).toLocaleDateString('en-US',{month:'short',year:'2-digit'});});
+    anCharts.addTrend=new Chart(document.getElementById('cAddTrend'),{
+      type:'line',
+      data:{labels:mLabels,datasets:[{label:'Cumulative Headcount',data:cumData,borderColor:'#9425C9',backgroundColor:'rgba(148,37,201,0.10)',fill:true,tension:0.4,pointBackgroundColor:'#3F1046',pointRadius:4,pointHoverRadius:7,borderWidth:2}]},
+      options:{...CHART_DEFAULTS,scales:{y:{beginAtZero:false}},onClick:(e,els)=>{if(!els.length)return;openDrill('Joined '+mLabels[els[0].index],buckets[months[els[0].index]],true);}}
+    });
+  }
+
+  // 5. Department Breakdown — PEO & EOR Split
+  {
+    const depts=[...new Set(people.map(p=>getDept(p.id)))].sort();
+    const peoD=depts.map(d=>people.filter(p=>getDept(p.id)===d&&p.hiring_type==='peo').length);
+    const eorD=depts.map(d=>people.filter(p=>getDept(p.id)===d&&p.hiring_type==='eor').length);
+    anCharts.deptSplit=new Chart(document.getElementById('cDeptSplit'),{
+      type:'bar',
+      data:{labels:depts,datasets:[{label:'PEO',data:peoD,backgroundColor:'#3F1046',borderRadius:4},{label:'EOR',data:eorD,backgroundColor:'#9425C9',borderRadius:4}]},
+      options:{...CHART_DEFAULTS,scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{stepSize:1}}},onClick:(e,els)=>{
+        if(!els.length)return;
+        const dept=depts[els[0].index],type=els[0].datasetIndex===0?'peo':'eor',lbl=els[0].datasetIndex===0?'PEO':'EOR';
+        openDrill(dept+' — '+lbl,people.filter(p=>getDept(p.id)===dept&&p.hiring_type===type),true);
+      }}
+    });
+  }
+
+  // 6. Active Workers by Country (bar)
+  {
+    const counts={};
+    people.filter(p=>p.country).forEach(p=>{counts[p.country]=(counts[p.country]||0)+1;});
+    const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    anCharts.geoBar=new Chart(document.getElementById('cGeoBar'),{
+      type:'bar',
+      data:{labels:sorted.map(([c])=>(CF[c]||'')+' '+(CN[c]||c)),datasets:[{label:'Workers',data:sorted.map(([,v])=>v),backgroundColor:sorted.map((_,i)=>pal[i%pal.length]),borderRadius:8}]},
+      options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}},onClick:(e,els)=>{
         if(!els.length)return;
         const c=sorted[els[0].index][0];
-        openDrill((CF[c]||'')+' '+(CN[c]||c)+' — Active Workers',PEOPLE.filter(p=>p.country===c&&p.hiring_status==='active'),true);
-      }
-    }
-  });
-})();
+        openDrill((CF[c]||'')+' '+(CN[c]||c)+' — Workers',people.filter(p=>p.country===c),true);
+      }}
+    });
+  }
 
-// ── 4. GEOGRAPHIC — COUNTRY DISTRIBUTION PIE ──
-(function(){
-  const counts={};
-  PEOPLE.filter(p=>p.hiring_status==='active'&&p.country).forEach(p=>{counts[p.country]=(counts[p.country]||0)+1;});
-  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-  const pal=['#3F1046','#5a1860','#7a2080','#9425C9','#b050d8','#c27de0','#d4a8ec','#e4c4f4'];
-  new Chart(document.getElementById('cGeoPie'),{
-    type:'doughnut',
-    data:{labels:sorted.map(([c])=>(CF[c]||'')+' '+(CN[c]||c)),
-      datasets:[{data:sorted.map(([,v])=>v),backgroundColor:pal,borderWidth:2,hoverOffset:10}]},
-    options:{...CHART_DEFAULTS,cutout:'55%',
-      onClick:(e,els)=>{
+  // 7. Country Distribution (pie)
+  {
+    const counts={};
+    people.filter(p=>p.country).forEach(p=>{counts[p.country]=(counts[p.country]||0)+1;});
+    const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    anCharts.geoPie=new Chart(document.getElementById('cGeoPie'),{
+      type:'doughnut',
+      data:{labels:sorted.map(([c])=>(CF[c]||'')+' '+(CN[c]||c)),datasets:[{data:sorted.map(([,v])=>v),backgroundColor:pal,borderWidth:2,hoverOffset:10}]},
+      options:{...CHART_DEFAULTS,cutout:'55%',onClick:(e,els)=>{
         if(!els.length)return;
         const c=sorted[els[0].index][0];
-        openDrill((CF[c]||'')+' '+(CN[c]||c)+' — Active Workers',PEOPLE.filter(p=>p.country===c&&p.hiring_status==='active'),true);
-      }
-    }
-  });
-})();
+        openDrill((CF[c]||'')+' '+(CN[c]||c)+' — Workers',people.filter(p=>p.country===c),true);
+      }}
+    });
+  }
 
-// ── 5. WORKFORCE MOVEMENT — NET CHANGE BY MONTH ──
-(function(){
-  const addB={},attB={};
-  PEOPLE.filter(p=>p.start_date).forEach(p=>{
-    const d=new Date(p.start_date);
-    const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-    addB[k]=(addB[k]||[]);addB[k].push(p);
-  });
-  Object.entries(END_DATE_MAP).forEach(([pid,end])=>{
-    const d=new Date(end);
-    const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-    attB[k]=(attB[k]||[]);
-    const person=PEOPLE.find(p=>p.id===pid);if(person)attB[k].push(person);
-  });
-  const allKeys=[...new Set([...Object.keys(addB),...Object.keys(attB)])].sort();
-  const recent=allKeys.slice(-24);
-  const rLabels=recent.map(m=>{const[y,mo]=m.split('-');return new Date(+y,+mo-1).toLocaleDateString('en-US',{month:'short',year:'2-digit'});});
-  new Chart(document.getElementById('cNetChange'),{
-    type:'bar',
-    data:{labels:rLabels,datasets:[
-      {label:'Additions',data:recent.map(k=>(addB[k]||[]).length),backgroundColor:'#3F1046',borderRadius:4,stack:'s'},
-      {label:'Attritions',data:recent.map(k=>-(attB[k]||[]).length),backgroundColor:'#9425C9',borderRadius:4,stack:'s'}
-    ]},
-    options:{...CHART_DEFAULTS,
-      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:false,grid:{color:'rgba(63,16,70,0.08)'}}},
-      onClick:(e,els)=>{
+  // 8. Net Workforce Change by Month
+  {
+    const addB={},attB={};
+    people.filter(p=>p.start_date).forEach(p=>{
+      const d=new Date(p.start_date);
+      const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+      addB[k]=(addB[k]||[]);addB[k].push(p);
+    });
+    Object.entries(END_DATE_MAP).forEach(([pid,end])=>{
+      const person=people.find(p=>p.id===pid);if(!person)return;
+      const d=new Date(end);
+      const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+      attB[k]=(attB[k]||[]);attB[k].push(person);
+    });
+    const allKeys=[...new Set([...Object.keys(addB),...Object.keys(attB)])].sort();
+    const recent=allKeys.slice(-24);
+    const rLabels=recent.map(m=>{const[y,mo]=m.split('-');return new Date(+y,+mo-1).toLocaleDateString('en-US',{month:'short',year:'2-digit'});});
+    anCharts.netChange=new Chart(document.getElementById('cNetChange'),{
+      type:'bar',
+      data:{labels:rLabels,datasets:[
+        {label:'Additions',data:recent.map(k=>(addB[k]||[]).length),backgroundColor:'#3F1046',borderRadius:4,stack:'s'},
+        {label:'Attritions',data:recent.map(k=>-(attB[k]||[]).length),backgroundColor:'#9425C9',borderRadius:4,stack:'s'}
+      ]},
+      options:{...CHART_DEFAULTS,scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:false,grid:{color:'rgba(63,16,70,0.08)'}}},onClick:(e,els)=>{
         if(!els.length)return;
-        const k=recent[els[0].index];const di=els[0].datasetIndex;
+        const k=recent[els[0].index],di=els[0].datasetIndex;
         if(di===0)openDrill('Joined '+rLabels[els[0].index],addB[k]||[],true);
         else openDrill('Left '+rLabels[els[0].index],attB[k]||[],true);
-      }
-    }
-  });
-})();
+      }}
+    });
+  }
 
-// ── 6. GENDER DISTRIBUTION ──
-(function(){
-  const active=PEOPLE.filter(p=>p.hiring_status==='active');
-  const gc={Male:0,Female:0};
-  active.forEach(p=>{const g=GENDER_MAP[p.id];if(g==='M')gc.Male++;else if(g==='F')gc.Female++;});
-  const labels=Object.keys(gc);const data=labels.map(k=>gc[k]);
-  new Chart(document.getElementById('cGender'),{
-    type:'doughnut',
-    data:{labels,datasets:[{data,backgroundColor:['#3F1046','#9425C9'],borderWidth:2,hoverOffset:10}]},
-    options:{...CHART_DEFAULTS,cutout:'60%',
-      onClick:(e,els)=>{
+  // 9. Gender Distribution
+  {
+    const gc={Male:0,Female:0};
+    people.forEach(p=>{const g=GENDER_MAP[p.id];if(g==='M')gc.Male++;else if(g==='F')gc.Female++;});
+    const labels=Object.keys(gc),data=labels.map(k=>gc[k]);
+    anCharts.gender=new Chart(document.getElementById('cGender'),{
+      type:'doughnut',
+      data:{labels,datasets:[{data,backgroundColor:['#3F1046','#9425C9'],borderWidth:2,hoverOffset:10}]},
+      options:{...CHART_DEFAULTS,cutout:'60%',onClick:(e,els)=>{
         if(!els.length)return;
-        const g=labels[els[0].index];const code=g==='Male'?'M':'F';
-        openDrill(g+' — Active Workers',active.filter(p=>GENDER_MAP[p.id]===code),true);
-      }
-    }
-  });
-})();
+        const g=labels[els[0].index],code=g==='Male'?'M':'F';
+        openDrill(g+' — Workers',people.filter(p=>GENDER_MAP[p.id]===code),true);
+      }}
+    });
+  }
 
-// ── 7. HEADCOUNT BY AGE GROUP ──
-(function(){
-  const today=new Date();
-  const groups={'Under 25':[],'25–34':[],'35–44':[],'45–54':[],'55+':[]};
-  PEOPLE.filter(p=>p.hiring_status==='active').forEach(p=>{
-    const dob=DOB_MAP[p.id];if(!dob)return;
-    const d=new Date(dob);
-    const age=today.getFullYear()-d.getFullYear()-(today<new Date(today.getFullYear(),d.getMonth(),d.getDate())?1:0);
-    if(age<25)groups['Under 25'].push(p);
-    else if(age<35)groups['25–34'].push(p);
-    else if(age<45)groups['35–44'].push(p);
-    else if(age<55)groups['45–54'].push(p);
-    else groups['55+'].push(p);
-  });
-  const labels=Object.keys(groups);
-  const pal=['#c27de0','#9425C9','#7a2080','#5a1860','#3F1046'];
-  new Chart(document.getElementById('cAgeGroup'),{
-    type:'bar',
-    data:{labels,datasets:[{label:'Workers',data:labels.map(k=>groups[k].length),backgroundColor:pal,borderRadius:6}]},
-    options:{plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}},
-      onClick:(e,els)=>{
+  // 10. Headcount by Age Group
+  {
+    const today=new Date();
+    const groups={'Under 25':[],'25–34':[],'35–44':[],'45–54':[],'55+':[]};
+    people.forEach(p=>{
+      const dob=DOB_MAP[p.id];if(!dob)return;
+      const d=new Date(dob);
+      const age=today.getFullYear()-d.getFullYear()-(today<new Date(today.getFullYear(),d.getMonth(),d.getDate())?1:0);
+      if(age<25)groups['Under 25'].push(p);
+      else if(age<35)groups['25–34'].push(p);
+      else if(age<45)groups['35–44'].push(p);
+      else if(age<55)groups['45–54'].push(p);
+      else groups['55+'].push(p);
+    });
+    const ageLabels=Object.keys(groups);
+    const agePal=['#c27de0','#9425C9','#7a2080','#5a1860','#3F1046'];
+    anCharts.ageGroup=new Chart(document.getElementById('cAgeGroup'),{
+      type:'bar',
+      data:{labels:ageLabels,datasets:[{label:'Workers',data:ageLabels.map(k=>groups[k].length),backgroundColor:agePal,borderRadius:6}]},
+      options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}},onClick:(e,els)=>{
         if(!els.length)return;
-        openDrill(labels[els[0].index]+' — Active Workers',groups[labels[els[0].index]],true);
-      }
-    }
-  });
+        openDrill(ageLabels[els[0].index]+' — Workers',groups[ageLabels[els[0].index]],true);
+      }}
+    });
+  }
+}
+
+function applyAnalyticsFilters(){
+  const type=document.getElementById('anTypeFilter').value;
+  const status=document.getElementById('anStatusFilter').value;
+  const country=document.getElementById('anCountryFilter').value;
+  const dept=document.getElementById('anDeptFilter').value;
+  let people=PEOPLE;
+  if(type)people=people.filter(p=>p.hiring_type===type);
+  if(status)people=people.filter(p=>p.hiring_status===status);
+  if(country)people=people.filter(p=>p.country===country);
+  if(dept)people=people.filter(p=>getDept(p.id)===dept);
+  document.getElementById('anFilterCount').textContent=people.length+' workers';
+  buildAnalyticsCharts(people);
+}
+
+function resetAnalyticsFilters(){
+  document.getElementById('anTypeFilter').value='';
+  document.getElementById('anStatusFilter').value='active';
+  document.getElementById('anCountryFilter').value='';
+  document.getElementById('anDeptFilter').value='';
+  applyAnalyticsFilters();
+}
+
+// Populate country & dept dropdowns, then render initial charts
+(function(){
+  const countries=[...new Set(PEOPLE.filter(p=>p.country).map(p=>p.country))].sort((a,b)=>(CN[a]||a).localeCompare(CN[b]||b));
+  const cSel=document.getElementById('anCountryFilter');
+  countries.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=(CF[c]||'')+' '+(CN[c]||c);cSel.appendChild(o);});
+  const depts=[...new Set(PEOPLE.map(p=>getDept(p.id)))].sort();
+  const dSel=document.getElementById('anDeptFilter');
+  depts.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;dSel.appendChild(o);});
+  applyAnalyticsFilters();
 })();
 
 // ═══════════════ OVERVIEW WORKERS TABLE ═══════════════
