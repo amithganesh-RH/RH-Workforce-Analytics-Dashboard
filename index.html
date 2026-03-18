@@ -1348,8 +1348,8 @@ function setOvFilter(btn){
 
 // ── Payroll Cycles ──
 const payrollEntities=[
-  {id:"2be29d42",name:"RHI Services Co. Inc",country:"US",flag:"🇺🇸",color:"#3F1046",currency:"USD",cycle:"Monthly",nextRun:"Apr 1, 2026",cutoff:"Mar 25, 2026",workers:PEOPLE.filter(p=>p.country==='US'&&p.hiring_status==='active').length,type:"C-Corporation",payTypes:["PEO","HRIS Direct"]},
-  {id:"5aa52242",name:"RHI INDIA IM LLP",country:"IN",flag:"🇮🇳",color:"#9425C9",currency:"INR",cycle:"Monthly (Calendar)",nextRun:"Apr 1, 2026",cutoff:"Mar 25, 2026",workers:PEOPLE.filter(p=>p.country==='IN'&&p.hiring_status==='active').length,type:"LLP",payTypes:["EOR"]},
+  {id:"2be29d42",name:"RHI Services Co. Inc",country:"US",flag:"🇺🇸",color:"#3F1046",currency:"USD",cycle:"Semi-Monthly (1st–15th & 16th–31st)",nextRun:"Apr 1, 2026",cutoff:"Mar 24, 2026",workers:PEOPLE.filter(p=>p.hiring_type==='peo'&&p.hiring_status==='active').length,type:"C-Corporation",payTypes:["PEO"]},
+  {id:"5aa52242",name:"RHI INDIA IM LLP",country:"IN",flag:"🇮🇳",color:"#9425C9",currency:"INR",cycle:"Monthly (Calendar Month)",nextRun:"Apr 1, 2026",cutoff:"Apr 15, 2026",workers:PEOPLE.filter(p=>p.country==='IN'&&p.hiring_status==='active').length,type:"LLP",payTypes:["EOR"]},
 ];
 document.getElementById('payrollGrid').innerHTML=payrollEntities.map(e=>`
   <div class="payrollCard" style="--pc:${e.color}" onclick="showEntityDetail('${e.id}')">
