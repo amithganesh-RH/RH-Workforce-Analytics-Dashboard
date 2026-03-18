@@ -1349,7 +1349,7 @@ function setOvFilter(btn){
 // ── Payroll Cycles ──
 const payrollEntities=[
   {id:"2be29d42",name:"RHI Services Co. Inc",country:"US",flag:"🇺🇸",color:"#3F1046",currency:"USD",cycle:"Semi-Monthly (1st–15th & 16th–31st)",nextRun:"Apr 1, 2026",cutoff:"Mar 24, 2026",workers:PEOPLE.filter(p=>p.hiring_type==='peo'&&p.hiring_status==='active').length,type:"C-Corporation",payTypes:["PEO"]},
-  {id:"5aa52242",name:"RHI INDIA IM LLP",country:"IN",flag:"🇮🇳",color:"#9425C9",currency:"INR",cycle:"Monthly (Calendar Month)",nextRun:"Apr 1, 2026",cutoff:"Apr 15, 2026",workers:PEOPLE.filter(p=>p.country==='IN'&&p.hiring_status==='active').length,type:"LLP",payTypes:["EOR"]},
+  {id:"5aa52242",name:"RHI INDIA IM LLP",country:"IN",flag:"🇮🇳",color:"#9425C9",currency:"INR",cycle:"Monthly (Calendar Month)",nextRun:"Apr 1, 2026",cutoff:"Apr 15, 2026",workers:PEOPLE.filter(p=>p.hiring_type==='eor'&&p.hiring_status==='active').length,type:"LLP",payTypes:["EOR"]},
 ];
 document.getElementById('payrollGrid').innerHTML=payrollEntities.map(e=>`
   <div class="payrollCard" style="--pc:${e.color}" onclick="showEntityDetail('${e.id}')">
@@ -1766,7 +1766,16 @@ document.getElementById('entityGrid').innerHTML=LEGAL_ENTITIES.map(e=>`
 
 function showEntityDetail(id){
   const e=LEGAL_ENTITIES.find(x=>x.id===id);if(!e)return;
-  const staff=PEOPLE.filter(p=>p.country===e.country);
+  // RHI Services → PEO workers; RHI India → EOR workers; fallback → country match
+  const isPEOEntity=e.id==='2be29d42';
+  const isEOREntity=e.id==='5aa52242';
+  const staff=isPEOEntity
+    ?PEOPLE.filter(p=>p.hiring_type==='peo')
+    :isEOREntity
+      ?PEOPLE.filter(p=>p.hiring_type==='eor')
+      :PEOPLE.filter(p=>p.country===e.country);
+  const activeStaff=staff.filter(p=>p.hiring_status==='active');
+  const staffLabel=isPEOEntity?'PEO Workers':isEOREntity?'EOR Workers':`Staff in ${CN[e.country]||e.country}`;
   openPanel(`
     <div class="spHeader">
       <div>
@@ -1792,9 +1801,9 @@ function showEntityDetail(id){
         </div>
       </div>
       <div class="spSection">
-        <h4>👥 Staff in ${CN[e.country]||e.country} (${staff.length})</h4>
+        <h4>👥 ${staffLabel} — Active: ${activeStaff.length} / Total: ${staff.length}</h4>
         <div style="max-height:300px;overflow-y:auto">
-          ${staff.map(p=>`<div class="drillRow" onclick="openPerson('${p.id}')"><div class="drillAvatar">${initials(p.full_name)}</div><div><div class="drillName">${p.full_name}</div><div class="drillMeta">${p.hiring_type.replace(/_/g,' ')} · ${p.hiring_status}</div></div><div style="margin-left:auto">${badge(p.hiring_status)}</div></div>`).join('')}
+          ${staff.map(p=>`<div class="drillRow" onclick="openPerson('${p.id}')"><div class="drillAvatar">${initials(p.full_name)}</div><div><div class="drillName">${p.full_name}</div><div class="drillMeta">${flagName(p.country)} · ${p.hiring_type.replace(/_/g,' ')} · ${p.hiring_status}</div></div><div style="margin-left:auto">${badge(p.hiring_status)}</div></div>`).join('')}
         </div>
       </div>
     </div>
