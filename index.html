@@ -334,6 +334,37 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 .scopeSection label{display:block;font-size:10px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
 .scopeTxt{font-size:12px;font-weight:300;font-family:var(--font-ui);color:var(--muted);line-height:1.9;max-height:240px;overflow-y:auto}
 
+/* ── AUTH GATE ── */
+#authGate{position:fixed;inset:0;z-index:1000;background:linear-gradient(135deg,#2a0535 0%,#3F1046 50%,#1a0820 100%);display:flex;align-items:center;justify-content:center;padding:20px}
+.authCard{background:#fff;border-radius:20px;padding:44px 40px 36px;max-width:400px;width:100%;box-shadow:0 40px 100px rgba(0,0,0,.6)}
+.authLogo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-family:var(--font-ui);font-weight:700;color:#fff;font-size:18px;letter-spacing:.5px;margin:0 auto 20px;box-shadow:0 8px 20px rgba(148,37,201,.35)}
+.authTitle{font-family:var(--font-ui);font-size:22px;font-weight:400;color:var(--galaxy);text-align:center;margin-bottom:4px;letter-spacing:.3px}
+.authSub{font-family:var(--font-ui);font-size:11px;font-weight:600;color:var(--muted);text-align:center;text-transform:uppercase;letter-spacing:1px;margin-bottom:30px}
+.authBtn{width:100%;padding:13px;border-radius:10px;border:none;cursor:pointer;font-family:var(--font-ui);font-size:14px;font-weight:600;letter-spacing:.3px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:10px}
+.authBtn-google{background:#fff;color:#3c4043;border:1.5px solid var(--border);margin-bottom:0}
+.authBtn-google:hover{background:#f8f5ff;border-color:var(--uv-light)}
+.authBtn-primary{background:linear-gradient(135deg,var(--galaxy2),var(--uv));color:#fff}
+.authBtn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(148,37,201,.4)}
+.authDivider{display:flex;align-items:center;gap:12px;margin:20px 0;color:#c5b5c2;font-size:11px;font-weight:600;font-family:var(--font-ui);text-transform:uppercase;letter-spacing:.5px}
+.authDivider::before,.authDivider::after{content:'';flex:1;height:1px;background:var(--border)}
+.authInput{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:var(--font-ui);font-size:14px;color:var(--galaxy);background:#fdfcfb;outline:none;transition:border-color .15s;margin-bottom:12px;display:block}
+.authInput:focus{border-color:var(--uv)}
+.authInput::placeholder{color:#c5b5c2}
+.authError{background:#fff0f0;color:#c0392b;border:1px solid #f5c6cb;border-radius:8px;padding:10px 14px;font-size:12px;font-family:var(--font-ui);font-weight:500;margin-bottom:16px;display:none}
+.authError.show{display:block}
+.authSuccess{background:#f0fff4;color:#2d8f58;border:1px solid #b7e4c7;border-radius:8px;padding:10px 14px;font-size:12px;font-family:var(--font-ui);font-weight:500;margin-bottom:16px;display:none}
+.authSuccess.show{display:block}
+.authFooter{text-align:center;margin-top:22px;font-family:var(--font-ui);font-size:11px;color:#c5b5c2;font-weight:300}
+.authLoading{opacity:.65;pointer-events:none}
+.authSpinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* User chip in header */
+.huser{display:flex;align-items:center;gap:10px}
+.huserEmail{color:rgba(240,233,223,.65);font-size:12px;font-family:var(--font-ui);font-weight:300;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.huserAvatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-family:var(--font-ui);font-weight:700;color:#fff;font-size:11px;flex-shrink:0;border:2px solid rgba(255,255,255,.2)}
+.hlogoutBtn{padding:5px 13px;border-radius:8px;border:1px solid rgba(240,233,223,.25);background:transparent;color:rgba(240,233,223,.65);font-size:11px;font-family:var(--font-ui);font-weight:500;cursor:pointer;transition:all .15s;letter-spacing:.3px}
+.hlogoutBtn:hover{background:rgba(240,233,223,.1);color:#fff;border-color:rgba(240,233,223,.4)}
+
 /* TOAST */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--galaxy);color:var(--bone);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;font-family:var(--font-ui);opacity:0;transition:opacity .2s,transform .2s;z-index:600;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -347,12 +378,46 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 </head>
 <body>
 
+<!-- ── AUTH GATE ── -->
+<div id="authGate">
+  <div class="authCard">
+    <div class="authLogo">RH</div>
+    <div class="authTitle">Redesign Health</div>
+    <div class="authSub">Workforce Analytics Dashboard</div>
+
+    <div id="authError" class="authError"></div>
+    <div id="authSuccessMsg" class="authSuccess"></div>
+
+    <button class="authBtn authBtn-google" id="googleBtn" onclick="loginWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908C16.658 14.148 17.64 11.84 17.64 9.2z"/>
+        <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
+        <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+        <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/>
+      </svg>
+      Sign in with Google
+    </button>
+
+    <div class="authDivider">or sign in with email</div>
+
+    <input class="authInput" id="authEmail" type="email" placeholder="your@redesignhealth.com" autocomplete="email"/>
+    <input class="authInput" id="authPass" type="password" placeholder="Password" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')loginWithEmail()"/>
+    <button class="authBtn authBtn-primary" id="emailBtn" onclick="loginWithEmail()">Sign In</button>
+
+    <div class="authFooter">Access restricted to @redesignhealth.com accounts</div>
+  </div>
+</div>
+
 <header>
   <div class="header-left">
     <div class="logo">RH</div>
     <div><div class="htitle">Redesign Health</div><div class="hsub">Workforce Analytics Dashboard</div></div>
   </div>
-  <div class="hmeta"><div class="dot"></div>Live · Deel · <span id="ts"></span></div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="hmeta"><div class="dot"></div>Live · Deel · <span id="ts"></span></div>
+    <div class="huser" id="huser"></div>
+  </div>
 </header>
 
 <nav class="tabnav">
@@ -633,6 +698,116 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 <div class="toast" id="toast"></div>
 
 <script>
+// ═══════════════ AUTH MODULE ═══════════════
+const ALLOWED_DOMAIN='redesignhealth.com';
+const GOTRUE='/.netlify/identity';
+let AUTH_USER=null;
+
+function authShowError(msg){const el=document.getElementById('authError');el.textContent=msg;el.classList.add('show');document.getElementById('authSuccessMsg').classList.remove('show')}
+function authShowSuccess(msg){const el=document.getElementById('authSuccessMsg');el.textContent=msg;el.classList.add('show');document.getElementById('authError').classList.remove('show')}
+function authClearMessages(){document.getElementById('authError').classList.remove('show');document.getElementById('authSuccessMsg').classList.remove('show')}
+
+function showDashboard(){
+  document.getElementById('authGate').style.display='none';
+  if(AUTH_USER){
+    const ini=AUTH_USER.email.split('@')[0].slice(0,2).toUpperCase();
+    document.getElementById('huser').innerHTML=`
+      <span class="huserEmail">${AUTH_USER.email}</span>
+      <div class="huserAvatar">${ini}</div>
+      <button class="hlogoutBtn" onclick="logout()">Sign Out</button>`;
+  }
+}
+function showLoginScreen(){
+  document.getElementById('authGate').style.display='flex';
+  document.getElementById('huser').innerHTML='';
+}
+
+function setAuthLoading(loading){
+  document.getElementById('googleBtn').classList.toggle('authLoading',loading);
+  const eb=document.getElementById('emailBtn');
+  eb.classList.toggle('authLoading',loading);
+  eb.innerHTML=loading?'<span class="authSpinner"></span>':'Sign In';
+}
+
+async function resolveSession(accessToken,expiresIn){
+  const res=await fetch(`${GOTRUE}/user`,{headers:{Authorization:`Bearer ${accessToken}`}});
+  if(!res.ok)throw new Error('Failed to retrieve user info');
+  const user=await res.json();
+  if(!user.email.endsWith('@'+ALLOWED_DOMAIN)){
+    fetch(`${GOTRUE}/logout`,{method:'POST',headers:{Authorization:`Bearer ${accessToken}`}}).catch(()=>{});
+    throw new Error(`Access is restricted to @${ALLOWED_DOMAIN} accounts`);
+  }
+  const session={email:user.email,name:user.user_metadata?.full_name||'',access_token:accessToken,expires_at:Date.now()+(expiresIn*1000)};
+  localStorage.setItem('rh_auth_session',JSON.stringify(session));
+  AUTH_USER=session;
+}
+
+async function authInit(){
+  // Handle OAuth redirect callback (token in URL hash)
+  const hash=window.location.hash;
+  if(hash.includes('access_token=')){
+    history.replaceState(null,'',window.location.pathname);
+    const p=new URLSearchParams(hash.substring(1));
+    const token=p.get('access_token');
+    const exp=parseInt(p.get('expires_in')||'3600');
+    if(token){
+      try{await resolveSession(token,exp);showDashboard();return;}
+      catch(e){authShowError(e.message);showLoginScreen();return;}
+    }
+  }
+  // Check stored session
+  try{
+    const stored=localStorage.getItem('rh_auth_session');
+    if(stored){
+      const s=JSON.parse(stored);
+      if(s.expires_at>Date.now()){AUTH_USER=s;showDashboard();return;}
+      localStorage.removeItem('rh_auth_session');
+    }
+  }catch(e){localStorage.removeItem('rh_auth_session');}
+  showLoginScreen();
+}
+
+async function loginWithEmail(){
+  authClearMessages();
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPass').value;
+  if(!email||!pass){authShowError('Please enter your email and password.');return;}
+  if(!email.endsWith('@'+ALLOWED_DOMAIN)){authShowError(`Access restricted to @${ALLOWED_DOMAIN} accounts only.`);return;}
+  setAuthLoading(true);
+  try{
+    const res=await fetch(`${GOTRUE}/token`,{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:`grant_type=password&username=${encodeURIComponent(email)}&password=${encodeURIComponent(pass)}`
+    });
+    if(!res.ok){
+      const err=await res.json().catch(()=>({}));
+      throw new Error(err.error_description||err.msg||'Invalid email or password.');
+    }
+    const data=await res.json();
+    await resolveSession(data.access_token,data.expires_in||3600);
+    showDashboard();
+  }catch(e){authShowError(e.message||'Sign in failed. Please try again.');}
+  finally{setAuthLoading(false);}
+}
+
+function loginWithGoogle(){
+  authClearMessages();
+  const redirect=window.location.origin+window.location.pathname;
+  window.location.href=`${GOTRUE}/authorize?provider=google&redirect_to=${encodeURIComponent(redirect)}`;
+}
+
+function logout(){
+  if(AUTH_USER?.access_token){
+    fetch(`${GOTRUE}/logout`,{method:'POST',headers:{Authorization:`Bearer ${AUTH_USER.access_token}`}}).catch(()=>{});
+  }
+  localStorage.removeItem('rh_auth_session');
+  AUTH_USER=null;
+  showLoginScreen();
+}
+
+authInit();
+
 // ═══════════════ DATA ═══════════════
 const PEOPLE=[
   {id:"c53b7dea",full_name:"Aayush Agarwal",hiring_status:"inactive",hiring_type:"contractor",start_date:"2025-01-13",country:"IN"},
