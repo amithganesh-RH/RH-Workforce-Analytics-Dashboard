@@ -375,6 +375,10 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 
 /* ── ANALYTICS FILTER BAR ── */
 .anFilterBar{display:flex;align-items:center;gap:8px;margin:0 0 24px;flex-wrap:wrap;padding:14px 18px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow)}
+.anTypePill{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:6px 18px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.3px}
+.anTypePill:hover{border-color:var(--uv);color:var(--uv)}
+.anTypePill.active{background:var(--galaxy);border-color:var(--galaxy);color:#fff}
+.anFilterSep{width:1px;height:24px;background:var(--border);margin:0 4px;flex-shrink:0}
 
 @media(max-width:860px){.profileGrid{grid-template-columns:1fr}}
 @media(max-width:640px){main{padding:16px};.kpiGrid{grid-template-columns:1fr 1fr};.chartGrid{grid-template-columns:1fr};.slidePanel{width:100vw}}
@@ -550,21 +554,16 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   <div class="panel" id="tab-analytics">
     <div class="sh"><h2>Workforce Analytics</h2><p>Click charts to explore segment details</p></div>
     <div class="anFilterBar">
-      <span class="ovFilterLabel">Filter:</span>
-      <select class="fsel" id="anTypeFilter" onchange="applyAnalyticsFilters()">
-        <option value="">All Types</option>
-        <option value="peo">PEO</option>
-        <option value="eor">EOR</option>
-        <option value="contractor">Contractor</option>
-      </select>
-      <select class="fsel" id="anStatusFilter" onchange="applyAnalyticsFilters()">
-        <option value="active">Active Only</option>
-        <option value="">All Status</option>
-        <option value="inactive">Inactive Only</option>
-      </select>
+      <span class="ovFilterLabel">Type:</span>
+      <button class="anTypePill" data-type="peo" onclick="toggleAnType(this)">PEO</button>
+      <button class="anTypePill" data-type="eor" onclick="toggleAnType(this)">EOR</button>
+      <button class="anTypePill" data-type="contractor" onclick="toggleAnType(this)">Contractor</button>
+      <span class="anFilterSep"></span>
+      <span class="ovFilterLabel">Country:</span>
       <select class="fsel" id="anCountryFilter" onchange="applyAnalyticsFilters()">
         <option value="">All Countries</option>
       </select>
+      <span class="ovFilterLabel">Dept:</span>
       <select class="fsel" id="anDeptFilter" onchange="applyAnalyticsFilters()">
         <option value="">All Departments</option>
       </select>
@@ -577,7 +576,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
         <div class="chartWrap"><canvas id="cStacked" style="max-height:320px"></canvas></div>
       </div>
       <div class="chartCard">
-        <h3>Active vs Inactive by Type</h3><div class="chartSub">Click a bar for breakdown</div>
+        <h3>Active Workers by Type</h3><div class="chartSub">Click a bar for breakdown</div>
         <div class="chartWrap"><canvas id="cActiveType"></canvas></div>
       </div>
       <div class="chartCard">
@@ -1616,14 +1615,17 @@ function buildAnalyticsCharts(people){
   }
 }
 
+function toggleAnType(btn){
+  btn.classList.toggle('active');
+  applyAnalyticsFilters();
+}
+
 function applyAnalyticsFilters(){
-  const type=document.getElementById('anTypeFilter').value;
-  const status=document.getElementById('anStatusFilter').value;
+  const activeTypes=[...document.querySelectorAll('.anTypePill.active')].map(b=>b.dataset.type);
   const country=document.getElementById('anCountryFilter').value;
   const dept=document.getElementById('anDeptFilter').value;
-  let people=PEOPLE;
-  if(type)people=people.filter(p=>p.hiring_type===type);
-  if(status)people=people.filter(p=>p.hiring_status===status);
+  let people=PEOPLE.filter(p=>p.hiring_status==='active');
+  if(activeTypes.length)people=people.filter(p=>activeTypes.includes(p.hiring_type));
   if(country)people=people.filter(p=>p.country===country);
   if(dept)people=people.filter(p=>getDept(p.id)===dept);
   document.getElementById('anFilterCount').textContent=people.length+' workers';
@@ -1631,8 +1633,7 @@ function applyAnalyticsFilters(){
 }
 
 function resetAnalyticsFilters(){
-  document.getElementById('anTypeFilter').value='';
-  document.getElementById('anStatusFilter').value='active';
+  document.querySelectorAll('.anTypePill').forEach(b=>b.classList.remove('active'));
   document.getElementById('anCountryFilter').value='';
   document.getElementById('anDeptFilter').value='';
   applyAnalyticsFilters();
