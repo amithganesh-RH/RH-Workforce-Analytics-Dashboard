@@ -92,10 +92,16 @@ exports.handler = async function(event) {
     };
   } catch (err) {
     console.error('Deel sync error:', err.message);
+    const isAuth = err.message.includes('401') || err.message.includes('Not Authorized');
     return {
-      statusCode: 502,
+      statusCode: isAuth ? 401 : 502,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ error: err.message })
+      body: JSON.stringify({
+        error: err.message,
+        hint: isAuth
+          ? 'The stored DEEL_API_TOKEN is an MCP integration token and cannot be used for direct REST API calls. Generate a REST API key in Deel → Settings → API and update the Netlify env var.'
+          : 'Unexpected error fetching from Deel API.'
+      })
     };
   }
 };

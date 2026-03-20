@@ -2068,9 +2068,13 @@ async function loadDeelData(force=false){
     overlay.classList.add('show');
     if(btn){btn.disabled=true;btn.textContent='↻ Syncing…';}
     const res=await fetch('/.netlify/functions/deel-data');
-    if(!res.ok){const t=await res.text();throw new Error(`${res.status}: ${t.slice(0,120)}`);}
     const data=await res.json();
-    if(data.error)throw new Error(data.error);
+    if(res.status===401){
+      throw new Error('API_KEY_INVALID');
+    }
+    if(!res.ok||data.error){
+      throw new Error(data.error||`HTTP ${res.status}`);
+    }
     sessionStorage.setItem('rh_deel_data',JSON.stringify(data));
     overlay.classList.remove('show');
     // Reload page to re-render all charts and tables with fresh data
@@ -2079,7 +2083,11 @@ async function loadDeelData(force=false){
     overlay.classList.remove('show');
     if(btn){btn.disabled=false;btn.textContent='↻ Refresh';}
     console.error('Deel sync failed:',err.message);
-    showToast('Sync failed — using cached data');
+    if(err.message==='API_KEY_INVALID'){
+      showToast('Sync failed: Deel API key needs updating. Go to Deel → Settings → API to generate a REST key.');
+    } else {
+      showToast('Sync failed — using cached data');
+    }
   }
 }
 
