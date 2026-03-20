@@ -362,7 +362,8 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 /* User chip in header */
 .huser{display:flex;align-items:center;gap:10px}
 .huserEmail{color:rgba(240,233,223,.65);font-size:12px;font-family:var(--font-ui);font-weight:300;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.huserAvatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-family:var(--font-ui);font-weight:700;color:#fff;font-size:11px;flex-shrink:0;border:2px solid rgba(255,255,255,.2)}
+.huserAvatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-family:var(--font-ui);font-weight:700;color:#fff;font-size:11px;flex-shrink:0;border:2px solid rgba(255,255,255,.25)}
+.huserAvatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
 .hlogoutBtn{padding:5px 13px;border-radius:8px;border:1px solid rgba(240,233,223,.25);background:transparent;color:rgba(240,233,223,.65);font-size:11px;font-family:var(--font-ui);font-weight:500;cursor:pointer;transition:all .15s;letter-spacing:.3px}
 .hlogoutBtn:hover{background:rgba(240,233,223,.1);color:#fff;border-color:rgba(240,233,223,.4)}
 
@@ -805,9 +806,12 @@ function showDashboard(){
   document.getElementById('authGate').style.display='none';
   if(AUTH_USER){
     const ini=(AUTH_USER.name||AUTH_USER.email).split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const avatarHTML=AUTH_USER.picture
+      ?`<div class="huserAvatar"><img src="${AUTH_USER.picture}" alt="${ini}" referrerpolicy="no-referrer"/></div>`
+      :`<div class="huserAvatar">${ini}</div>`;
     document.getElementById('huser').innerHTML=`
       <span class="huserEmail">${AUTH_USER.name||AUTH_USER.email}</span>
-      <div class="huserAvatar">${ini}</div>
+      ${avatarHTML}
       <button class="hlogoutBtn" onclick="logout()">Sign Out</button>`;
   }
   // Check if Deel data needs refreshing; auto-refresh every 2h
