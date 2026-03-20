@@ -378,9 +378,10 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 .anToolGroup{display:flex;flex-direction:column;gap:6px}
 .anToolLabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-family:var(--font-ui)}
 .anPillRow{display:flex;gap:6px}
-.anTypePill{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.3px;white-space:nowrap}
-.anTypePill:hover{border-color:var(--uv);color:var(--uv)}
+.anTypePill,.anStatusPill{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.3px;white-space:nowrap}
+.anTypePill:hover,.anStatusPill:hover{border-color:var(--uv);color:var(--uv)}
 .anTypePill.active{background:var(--galaxy);border-color:var(--galaxy);color:#fff}
+.anStatusPill.active{background:var(--uv);border-color:var(--uv);color:#fff}
 .anToolDivider{width:1px;height:48px;background:var(--border);flex-shrink:0;align-self:flex-end;margin-bottom:2px}
 .anResetBtn{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--bone);color:var(--muted);cursor:pointer;transition:all .15s;margin-bottom:2px;align-self:flex-end}
 .anResetBtn:hover{border-color:var(--uv);color:var(--uv);background:var(--uv-faint)}
@@ -570,7 +571,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 
   <!-- ANALYTICS -->
   <div class="panel" id="tab-analytics">
-    <div class="sh"><h2>Workforce Analytics</h2><p>Active workforce · filter by type, country, or department</p></div>
+    <div class="sh"><h2>Workforce Analytics</h2><p>Filter by status, type, country, or department · click any chart to drill in</p></div>
 
     <!-- Filter Toolbar -->
     <div class="anToolbar">
@@ -580,6 +581,14 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
           <button class="anTypePill" data-type="peo" onclick="toggleAnType(this)">PEO</button>
           <button class="anTypePill" data-type="eor" onclick="toggleAnType(this)">EOR</button>
           <button class="anTypePill" data-type="contractor" onclick="toggleAnType(this)">Contractor</button>
+        </div>
+      </div>
+      <div class="anToolDivider"></div>
+      <div class="anToolGroup">
+        <div class="anToolLabel">Status</div>
+        <div class="anPillRow">
+          <button class="anStatusPill active" data-status="active" onclick="toggleAnStatus(this)">Active</button>
+          <button class="anStatusPill" data-status="inactive" onclick="toggleAnStatus(this)">Inactive</button>
         </div>
       </div>
       <div class="anToolDivider"></div>
@@ -1690,11 +1699,18 @@ function toggleAnType(btn){
   applyAnalyticsFilters();
 }
 
+function toggleAnStatus(btn){
+  btn.classList.toggle('active');
+  applyAnalyticsFilters();
+}
+
 function applyAnalyticsFilters(){
   const activeTypes=[...document.querySelectorAll('.anTypePill.active')].map(b=>b.dataset.type);
+  const activeStatuses=[...document.querySelectorAll('.anStatusPill.active')].map(b=>b.dataset.status);
   const country=document.getElementById('anCountryFilter').value;
   const dept=document.getElementById('anDeptFilter').value;
-  let people=PEOPLE.filter(p=>p.hiring_status==='active');
+  let people=PEOPLE;
+  if(activeStatuses.length)people=people.filter(p=>activeStatuses.includes(p.hiring_status));
   if(activeTypes.length)people=people.filter(p=>activeTypes.includes(p.hiring_type));
   if(country)people=people.filter(p=>p.country===country);
   if(dept)people=people.filter(p=>getDept(p.id)===dept);
@@ -1704,6 +1720,8 @@ function applyAnalyticsFilters(){
 
 function resetAnalyticsFilters(){
   document.querySelectorAll('.anTypePill').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.anStatusPill').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.anStatusPill[data-status="active"]').classList.add('active');
   document.getElementById('anCountryFilter').value='';
   document.getElementById('anDeptFilter').value='';
   applyAnalyticsFilters();
