@@ -906,8 +906,8 @@ const PEOPLE=[
   {id:"f51a2627",full_name:"Eugene Wong",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-08-12",country:"SG"},
   {id:"400eb927",full_name:"FieldGuide IT",hiring_status:"active",hiring_type:"hris_direct_employee",start_date:"2025-07-04",country:"US"},
   {id:"70dc4822",full_name:"Folayemi Adeola",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-09-30",country:"NG"},
-  {id:"21a76df5",full_name:"Frederick Owen Lloyd George",hiring_status:"active",hiring_type:"contractor",start_date:"2024-10-11",country:"GB"},
-  {id:"be357a16",full_name:"Harshel Bahl",hiring_status:"active",hiring_type:"peo",start_date:"2025-10-03",country:"US"},
+  {id:"21a76df5",full_name:"Frederick Owen Lloyd George",hiring_status:"offboarding",hiring_type:"contractor",start_date:"2024-10-11",country:"GB"},
+  {id:"be357a16",full_name:"Harshel Bahl",hiring_status:"no_active_contracts",hiring_type:"peo",start_date:"2025-10-03",country:"US"},
   {id:"1502af69",full_name:"Hassan Chafi",hiring_status:"invited",hiring_type:"hris_direct_employee",start_date:"2025-12-12",country:"SA"},
   {id:"e71eb01b",full_name:"Hello H",hiring_status:"inactive",hiring_type:"contractor",start_date:null,country:"AL"},
   {id:"69d2c82d",full_name:"Jaakko Kullervo Soini",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-09-18",country:"FI"},
@@ -937,7 +937,7 @@ const PEOPLE=[
   {id:"72b13c26",full_name:"Niharika Garg",hiring_status:"active",hiring_type:"eor",start_date:"2025-04-14",country:"IN"},
   {id:"4c96ef56",full_name:"Noam Ramillon",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-08-26",country:"FR"},
   {id:"66bd23c0",full_name:"Oluwatoni Ruth Abraham",hiring_status:"inactive",hiring_type:"contractor",start_date:"2024-09-30",country:"NG"},
-  {id:"ca8217ca",full_name:"Oscar Lizarzaburu Azabache",hiring_status:"active",hiring_type:"peo",start_date:"2021-05-10",country:"US"},
+  {id:"ca8217ca",full_name:"Oscar Lizarzaburu Azabache",hiring_status:"inactive",hiring_type:"peo",start_date:"2021-05-10",country:"US"},
   {id:"f3c89ef6",full_name:"Parker Hayden",hiring_status:"inactive",hiring_type:"peo",start_date:"2021-04-12",country:"US"},
   {id:"e865c032",full_name:"Patrick McDonagh",hiring_status:"active",hiring_type:"peo",start_date:"2022-04-18",country:"US"},
   {id:"7b3177d2",full_name:"Pavel Gurevich",hiring_status:"active",hiring_type:"peo",start_date:"2021-09-13",country:"US"},
@@ -947,7 +947,7 @@ const PEOPLE=[
   {id:"96e808b6",full_name:"Preston Tollinger",hiring_status:"active",hiring_type:"peo",start_date:"2025-11-21",country:"US"},
   {id:"b61fe2d7",full_name:"Prithvi Sriram",hiring_status:"active",hiring_type:"peo",start_date:"2025-12-16",country:"US"},
   {id:"a28c911b",full_name:"Rahul Kaushik",hiring_status:"active",hiring_type:"eor",start_date:"2025-10-30",country:"IN"},
-  {id:"736e2e24",full_name:"Rana Md.mozammil",hiring_status:"onboarded",hiring_type:"eor",start_date:"2026-03-18",country:"IN"},
+  {id:"736e2e24",full_name:"Rana Md.mozammil",hiring_status:"active",hiring_type:"eor",start_date:"2026-03-18",country:"IN"},
   {id:"21f142fa",full_name:"Rebecca Wiezik",hiring_status:"active",hiring_type:"peo",start_date:"2021-07-12",country:"US"},
   {id:"c90f855a",full_name:"Rishabh Chaudhary",hiring_status:"active",hiring_type:"eor",start_date:"2025-10-20",country:"IN"},
   {id:"3232e7b5",full_name:"Romain Sion",hiring_status:"active",hiring_type:"contractor",start_date:"2025-10-01",country:"FR"},
@@ -967,6 +967,8 @@ const PEOPLE=[
   {id:"4d829e97",full_name:"V Bhavaraju",hiring_status:"active",hiring_type:"eor",start_date:"2025-03-03",country:"IN"},
   {id:"9b898974",full_name:"Amith Nag Ganeshappa",hiring_status:"active",hiring_type:"eor",start_date:"2025-12-15",country:"IN"},
   {id:"4fa76554",full_name:"Zoe Mariana Loveman",hiring_status:"inactive",hiring_type:"eor",start_date:"2024-09-03",country:"GB"},
+  {id:"d871656a",full_name:"Moazam Masood Khan",hiring_status:"onboarding",hiring_type:"eor",start_date:"2026-05-11",country:"SA"},
+  {id:"f761f483",full_name:"Sara Abdel-Karim",hiring_status:"invited",hiring_type:"eor",start_date:"2026-06-01",country:"SA"},
 ].filter(p=>p.hiring_type!=='hris_direct_employee');
 
 const CONTRACTS=[
@@ -997,7 +999,7 @@ const CONTRACTS=[
   {id:"mg6jxd5",title:"Executive Assistant - Singapore",type:"pay_as_you_go_time_based",status:"completed",worker_name:"Kamarunisha Binte Mohamed Idris",worker_pid:"74ed1c00"},
   {id:"35r2qjk",title:"FieldGuide IT",type:"hris_direct_employee",status:"in_progress",worker_name:"FieldGuide IT",worker_pid:"400eb927"},
   {id:"mdkqzr2",title:"Fred George Fixed Contract",type:"ongoing_time_based",status:"in_progress",worker_name:"Frederick Owen Lloyd George",worker_pid:"21a76df5"},
-  {id:"3py2qjz",title:"Harshel Bahl - Senior Lead, Applied AI",type:"peo",status:"in_progress",worker_name:"Harshel Bahl",worker_pid:"be357a16"},
+  {id:"3py2qjz",title:"Harshel Bahl - Senior Lead, Applied AI",type:"peo",status:"user_cancelled",worker_name:"Harshel Bahl",worker_pid:"be357a16"},
   {id:"3e54pzr",title:"Hassan Chafi",type:"hris_direct_employee",status:"in_progress",worker_name:"Hassan Chafi",worker_pid:"1502af69"},
   {id:"3845pwp",title:"Jack Roland - Capital Development Senior Associate",type:"peo",status:"in_progress",worker_name:"Jack Roland",worker_pid:"83f26955"},
   {id:"35xd44y",title:"Jainam Bipin Chudgar - Senior Associate of Platform Strategy",type:"eor",status:"in_progress",worker_name:"Jainam Bipin Chudgar",worker_pid:"9f920f14"},
@@ -1020,6 +1022,47 @@ const CONTRACTS=[
   {id:"myjn25k",title:"Nathan Marinoff - General Counsel",type:"peo",status:"in_progress",worker_name:"Nathan Marinoff",worker_pid:"3ad307bd"},
   {id:"37rq6eq",title:"Neil Patel - Head of Ventures",type:"peo",status:"in_progress",worker_name:"Neil Patel",worker_pid:"56b8eb3e"},
   {id:"mrwgwwk",title:"Niharika Garg - New Ventures Senior Associate",type:"eor",status:"in_progress",worker_name:"Niharika Garg",worker_pid:"72b13c26"},
+  {id:"m94nwkd",title:"Oscar Lizarzaburu Azabache - Director of Founder Strategy",type:"peo",status:"user_cancelled",worker_name:"Oscar Lizarzaburu Azabache",worker_pid:"ca8217ca"},
+  {id:"mrdjn2n",title:"Parker Hayden - Head of Portfolio Management",type:"peo",status:"user_cancelled",worker_name:"Parker Hayden",worker_pid:"f3c89ef6"},
+  {id:"3zjyvnk",title:"Patrick McDonagh - Managing Director, New Ventures",type:"peo",status:"in_progress",worker_name:"Patrick McDonagh",worker_pid:"e865c032"},
+  {id:"m4y6ex5",title:"Pavel Gurevich - Managing Director, Cedars",type:"peo",status:"in_progress",worker_name:"Pavel Gurevich",worker_pid:"7b3177d2"},
+  {id:"3g4vk4d",title:"Pin Chin Kwok - Global Development, Managing Director",type:"eor",status:"in_progress",worker_name:"Pin Kwok",worker_pid:"a2cb9d4a"},
+  {id:"3kxzg6d",title:"Pin TBD - Business Developer",type:"eor",status:"cancelled",worker_name:"Pin Kwok",worker_pid:"a2cb9d4a"},
+  {id:"mreqq8e",title:"Pooja Achar Talent Senior Associate",type:"ongoing_time_based",status:"cancelled",worker_name:null,worker_pid:null},
+  {id:"37gyg4d",title:"Pooja Achar - Senior HR Associate",type:"eor",status:"user_cancelled",worker_name:"Pooja Achar",worker_pid:"b0e06d7e"},
+  {id:"39gkwqg",title:"Prateek Mohanty - Operations Associate",type:"eor",status:"in_progress",worker_name:"Prateek Mohanty",worker_pid:"09e6b194"},
+  {id:"m92vj4n",title:"Preston Tollinger - VP of AI Ventures",type:"peo",status:"in_progress",worker_name:"Preston Tollinger",worker_pid:"96e808b6"},
+  {id:"3gdddq9",title:"Prithvi Sriram - Director of Engineering",type:"peo",status:"in_progress",worker_name:"Prithvi Sriram",worker_pid:"b61fe2d7"},
+  {id:"3dw6wv7",title:"Program Lead - Canada",type:"ongoing_time_based",status:"in_progress",worker_name:"Luke John Sheen",worker_pid:"e0844e64"},
+  {id:"m4qqyx5",title:"Program Lead - France",type:"pay_as_you_go_time_based",status:"user_cancelled",worker_name:"Noam Ramillon",worker_pid:"4c96ef56"},
+  {id:"3dkwv88",title:"Rahul Kaushik - Fund Accounting Senior Lead",type:"eor",status:"in_progress",worker_name:"Rahul Kaushik",worker_pid:"a28c911b"},
+  {id:"3w87qvr",title:"Rana Md.mozammil - Ventures Associate",type:"eor",status:"in_progress",worker_name:"Rana Md.mozammil",worker_pid:"736e2e24"},
+  {id:"325jv8k",title:"Rebecca Wiezik - Executive Assistant",type:"peo",status:"in_progress",worker_name:"Rebecca Wiezik",worker_pid:"21f142fa"},
+  {id:"m6npdgy",title:"Regional Program Associate - Nigeria",type:"ongoing_time_based",status:"completed",worker_name:"Folayemi Adeola",worker_pid:"70dc4822"},
+  {id:"mgnynew",title:"Regional Program Manager - Canada",type:"ongoing_time_based",status:"completed",worker_name:"Shafiq Vallani",worker_pid:"8ef203cd"},
+  {id:"3xxvkqy",title:"Regional Program Manager - Finland",type:"pay_as_you_go_time_based",status:"user_cancelled",worker_name:"Jaakko Kullervo Soini",worker_pid:"69d2c82d"},
+  {id:"3qgw2ze",title:"Rishabh Chaudhary - Global Development Lead",type:"eor",status:"in_progress",worker_name:"Rishabh Chaudhary",worker_pid:"c90f855a"},
+  {id:"357v9ex",title:"Romain Sion VC & Partnership Agreement (cancelled)",type:"ongoing_time_based",status:"cancelled",worker_name:null,worker_pid:null},
+  {id:"3dkeqne",title:"Romain Sion VC & Partnership Agreement",type:"ongoing_time_based",status:"in_progress",worker_name:"Romain Sion",worker_pid:"3232e7b5"},
+  {id:"mvjwrzn",title:"Ryan Schneiter - Managing Director, New Ventures",type:"peo",status:"in_progress",worker_name:"Ryan Schneiter",worker_pid:"38528474"},
+  {id:"3j6yepv",title:"Samantha Lynch - Head of Strategy and Finance",type:"peo",status:"in_progress",worker_name:"Samantha Lynch",worker_pid:"d21d0304"},
+  {id:"38nqdw8",title:"Sara Abdel-Karim - Director of New Ventures",type:"eor",status:"awaiting_deposit_payment",worker_name:"Sara Abdel-Karim",worker_pid:"f761f483"},
+  {id:"3259z49",title:"Sarah Cranston - Head of Platform",type:"peo",status:"in_progress",worker_name:"Sarah Cranston",worker_pid:"695dca1d"},
+  {id:"3d9n2e5",title:"Saumya Rao - Capital Development Lead",type:"eor",status:"user_cancelled",worker_name:"Saumya Rao",worker_pid:"5a624f97"},
+  {id:"3ek8zqx",title:"Scott Disch - Senior Director of Venture Traction",type:"peo",status:"in_progress",worker_name:"Scott Disch",worker_pid:"07c27c4d"},
+  {id:"39ggq7r",title:"Sherin Paul - Senior Associate",type:"eor",status:"in_progress",worker_name:"Sherin Paul",worker_pid:"722154e0"},
+  {id:"m4y9v76",title:"Sourav Sarkar - Director of Technology, AI Ventures",type:"eor",status:"in_progress",worker_name:"Sourav Sarkar",worker_pid:"d4569ce0"},
+  {id:"3rdzr86",title:"Sourav Sarkar - Temporary UAE Contract",type:"ongoing_time_based",status:"user_cancelled",worker_name:"Sourav Sarkar",worker_pid:"d4569ce0"},
+  {id:"mgpq2nx",title:"Thomas Skiba - VP of Founder Strategy",type:"peo",status:"in_progress",worker_name:"Thomas Skiba",worker_pid:"2fd25454"},
+  {id:"3k87gp2",title:"Travis DeMar - Director of Talent",type:"peo",status:"in_progress",worker_name:"Travis DeMar",worker_pid:"31084bf5"},
+  {id:"mndy4k7",title:"Untitled Contract",type:"ongoing_time_based",status:"cancelled",worker_name:null,worker_pid:null},
+  {id:"m84n5q9",title:"Elias Tsikhlakis - Advisor Contract",type:"ongoing_time_based",status:"in_progress",worker_name:"Elias Tsikhlakis",worker_pid:"0bb5cd4e"},
+  {id:"34758je",title:"Varun Kumar Reddy Dodla - VP of Technology, AI Ventures",type:"peo",status:"in_progress",worker_name:"Varun Kumar Reddy Dodla",worker_pid:"cd774f9b"},
+  {id:"3p6z695",title:"V Bhavaraju - Corporate Accounting Lead",type:"eor",status:"in_progress",worker_name:"V Bhavaraju",worker_pid:"4d829e97"},
+  {id:"mx8p2jz",title:"Venture Chair - Canada",type:"ongoing_time_based",status:"completed",worker_name:"Alysa Langburt",worker_pid:"f4b956f2"},
+  {id:"m28dqq2",title:"Venture Chair - Singapore",type:"ongoing_time_based",status:"user_cancelled",worker_name:"Chew Yu Foon",worker_pid:"ce2f1bb8"},
+  {id:"m98qd4x",title:"Venture Chair - Singapore",type:"ongoing_time_based",status:"user_cancelled",worker_name:"Eugene Wong",worker_pid:"f51a2627"},
+  {id:"3xw6ggr",title:"Moazam Masood Khan - Senior Director of New Ventures",type:"eor",status:"waiting_for_employee_sign",worker_name:"Moazam Masood Khan",worker_pid:"d871656a"},
 ].filter(c=>c.type!=='hris_direct_employee');
 
 const LEGAL_ENTITIES=[
@@ -1061,6 +1104,8 @@ const DEPT_MAP={
   "736e2e24":"Ventures","4fa76554":"Ventures","7c9e731f":"Ventures",
   // Legal
   "1dc5f7a0":"Legal","3ad307bd":"Legal","722154e0":"Legal",
+  // New Ventures (incoming)
+  "d871656a":"Ventures","f761f483":"Ventures",
 };
 function getDept(id){return DEPT_MAP[id]||'Unassigned';}
 
@@ -1080,7 +1125,8 @@ const GENDER_MAP={
   "09e6b194":"M","96e808b6":"M","b61fe2d7":"M","a28c911b":"M","736e2e24":"M",
   "21f142fa":"F","c90f855a":"M","3232e7b5":"M","38528474":"M","d21d0304":"F",
   "695dca1d":"F","5a624f97":"F","07c27c4d":"M","8ef203cd":"M","722154e0":"F",
-  "d4569ce0":"M","2fd25454":"M","31084bf5":"M","cd774f9b":"M","4d829e97":"M","4fa76554":"F"
+  "d4569ce0":"M","2fd25454":"M","31084bf5":"M","cd774f9b":"M","4d829e97":"M","4fa76554":"F",
+  "d871656a":"M","f761f483":"F"
 };
 const DOB_MAP={
   "c53b7dea":"1997-08-12","230c30f4":"1985-03-22","90e1523c":"1988-11-05","7c9e731f":"1995-07-14",
@@ -1102,7 +1148,8 @@ const DOB_MAP={
   "736e2e24":"1996-07-28","21f142fa":"1986-09-14","c90f855a":"1997-11-08","3232e7b5":"1989-06-19",
   "38528474":"1983-08-01","d21d0304":"1981-12-20","695dca1d":"1984-05-07","5a624f97":"1993-03-16",
   "07c27c4d":"1980-10-24","8ef203cd":"1988-07-05","722154e0":"1992-06-23","d4569ce0":"1990-02-14",
-  "2fd25454":"1982-09-18","31084bf5":"1979-04-29","cd774f9b":"1999-01-15","4d829e97":"1986-11-03","4fa76554":"1994-07-12"
+  "2fd25454":"1982-09-18","31084bf5":"1979-04-29","cd774f9b":"1999-01-15","4d829e97":"1986-11-03","4fa76554":"1994-07-12",
+  "d871656a":"1987-04-15","f761f483":"1990-11-20"
 };
 // Approximate end dates for inactive/departed workers (for workforce movement chart)
 const END_DATE_MAP={
@@ -1114,7 +1161,8 @@ const END_DATE_MAP={
   "7dceec55":"2025-12-01","2b19b5f2":"2025-07-01","74ed1c00":"2025-06-01",
   "f2b42f2b":"2024-09-01","e9d1326d":"2026-01-01","1340e547":"2025-11-01",
   "4c96ef56":"2025-03-01","66bd23c0":"2025-04-01","f3c89ef6":"2022-10-01",
-  "b0e06d7e":"2025-11-01","5a624f97":"2025-12-01","4fa76554":"2025-05-01"
+  "b0e06d7e":"2025-11-01","5a624f97":"2025-12-01","4fa76554":"2025-05-01",
+  "ca8217ca":"2026-03-01","be357a16":"2026-03-01"
 };
 
 const CN={US:"United States",IN:"India",SA:"Saudi Arabia",GB:"United Kingdom",SG:"Singapore",CA:"Canada",FR:"France",AE:"UAE",NG:"Nigeria",FI:"Finland",AL:"Albania"};
