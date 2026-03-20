@@ -401,6 +401,18 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 
 @media(max-width:860px){.profileGrid{grid-template-columns:1fr}}
 @media(max-width:640px){main{padding:16px};.kpiGrid{grid-template-columns:1fr 1fr};.chartGrid{grid-template-columns:1fr};.slidePanel{width:100vw}}
+
+/* ── LOADING OVERLAY ── */
+#loadingOverlay{position:fixed;inset:0;z-index:500;background:rgba(63,16,70,.75);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#loadingOverlay.show{display:flex}
+.loadSpinner{width:44px;height:44px;border:3px solid rgba(255,255,255,.22);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loadMsg{color:rgba(255,255,255,.85);font-family:var(--font-ui);font-size:14px;font-weight:300;letter-spacing:.5px}
+/* ── REFRESH BUTTON ── */
+.refreshBtn{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);color:rgba(240,233,223,.75);font-family:var(--font-ui);font-size:11px;font-weight:600;padding:5px 12px;border-radius:6px;cursor:pointer;letter-spacing:.4px;transition:all .15s;white-space:nowrap}
+.refreshBtn:hover{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.4)}
+.refreshBtn:disabled{opacity:.45;cursor:default}
+.syncedAt{font-size:10px;color:rgba(240,233,223,.45);font-family:var(--font-ui);font-weight:300;letter-spacing:.3px}
 </style>
 </head>
 <body>
@@ -432,6 +444,8 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   </div>
   <div style="display:flex;align-items:center;gap:16px">
     <div class="hmeta"><div class="dot"></div>Live · Deel · <span id="ts"></span></div>
+    <span class="syncedAt" id="syncedAt"></span>
+    <button class="refreshBtn" id="refreshBtn" onclick="manualRefresh()">↻ Refresh</button>
     <div class="huser" id="huser"></div>
   </div>
 </header>
@@ -761,6 +775,12 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 
 </main>
 
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay">
+  <div class="loadSpinner"></div>
+  <div class="loadMsg" id="loadMsg">Syncing latest data from Deel…</div>
+</div>
+
 <!-- SLIDE PANEL OVERLAY -->
 <div class="overlay" id="overlay" onclick="closePanel()"></div>
 <div class="slidePanel" id="slidePanel">
@@ -789,6 +809,11 @@ function showDashboard(){
       <span class="huserEmail">${AUTH_USER.name||AUTH_USER.email}</span>
       <div class="huserAvatar">${ini}</div>
       <button class="hlogoutBtn" onclick="logout()">Sign Out</button>`;
+  }
+  // Check if Deel data needs refreshing; auto-refresh every 2h
+  loadDeelData();
+  if(!window._autoRefreshTimer){
+    window._autoRefreshTimer=setInterval(()=>loadDeelData(true),REFRESH_INTERVAL);
   }
 }
 function showLoginScreen(){
@@ -877,10 +902,12 @@ function logout(){
   showLoginScreen();
 }
 
+const REFRESH_INTERVAL=2*60*60*1000; // 2 hours
+
 authInit();
 
 // ═══════════════ DATA ═══════════════
-const PEOPLE=[
+let PEOPLE=[
   {id:"c53b7dea",full_name:"Aayush Agarwal",hiring_status:"inactive",hiring_type:"contractor",start_date:"2025-01-13",country:"IN"},
   {id:"230c30f4",full_name:"Adam Jones",hiring_status:"active",hiring_type:"peo",start_date:"2023-05-08",country:"US"},
   {id:"90e1523c",full_name:"Ahmed Samir Hanaphy Muhamed Zakadan",hiring_status:"active",hiring_type:"eor",start_date:"2025-05-16",country:"SA"},
@@ -971,7 +998,7 @@ const PEOPLE=[
   {id:"f761f483",full_name:"Sara Abdel-Karim",hiring_status:"invited",hiring_type:"eor",start_date:"2026-06-01",country:"SA"},
 ].filter(p=>p.hiring_type!=='hris_direct_employee');
 
-const CONTRACTS=[
+let CONTRACTS=[
   {id:"3prw57d",title:"Aayush Agarwal Ventures Insights",type:"ongoing_time_based",status:"completed",worker_name:"Aayush Agarwal",worker_pid:"c53b7dea"},
   {id:"m25jvxk",title:"Adam Jones - Head of Global Development",type:"peo",status:"in_progress",worker_name:"Adam Jones",worker_pid:"230c30f4"},
   {id:"32qqkzv",title:"Advisor - India",type:"ongoing_time_based",status:"in_progress",worker_name:"Kumar Patodia",worker_pid:"3fa02a62"},
@@ -1064,6 +1091,30 @@ const CONTRACTS=[
   {id:"m98qd4x",title:"Venture Chair - Singapore",type:"ongoing_time_based",status:"user_cancelled",worker_name:"Eugene Wong",worker_pid:"f51a2627"},
   {id:"3xw6ggr",title:"Moazam Masood Khan - Senior Director of New Ventures",type:"eor",status:"waiting_for_employee_sign",worker_name:"Moazam Masood Khan",worker_pid:"d871656a"},
 ].filter(c=>c.type!=='hris_direct_employee');
+
+// ── Override static data with session-cached Deel data (if fresh) ──
+(function(){
+  try{
+    const raw=sessionStorage.getItem('rh_deel_data');
+    if(!raw)return;
+    const d=JSON.parse(raw);
+    if(!d.people||!d.contracts)return;
+    PEOPLE=d.people;
+    CONTRACTS=d.contracts;
+    // Update badge counts
+    const badgeOv=document.getElementById('badge-overview');
+    const badgePpl=document.getElementById('badge-people');
+    if(badgeOv)badgeOv.textContent=PEOPLE.filter(p=>p.hiring_status!=='inactive').length;
+    if(badgePpl)badgePpl.textContent=PEOPLE.length;
+    // Show synced timestamp
+    if(d.synced_at){
+      const mins=Math.round((Date.now()-new Date(d.synced_at).getTime())/60000);
+      const sEl=document.getElementById('syncedAt');
+      if(sEl)sEl.textContent=mins<1?'Just synced':mins<60?`Synced ${mins}m ago`:`Synced ${Math.round(mins/60)}h ago`;
+      document.getElementById('ts').textContent=new Date(d.synced_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    }
+  }catch(e){console.warn('Cache read failed:',e);}
+})();
 
 const LEGAL_ENTITIES=[
   {id:"2be29d42",name:"RHI Services Co. Inc",type:"C-Corporation",country:"US",city:"Wilmington, DE",address:"1209 Orange St",vat:"84-4245540",reg:null,created:"2024-05-06",phone:"+1 212 548 6566"},
@@ -1981,10 +2032,54 @@ function showEntityDetail(id){
 }
 
 // ═══════════════ TIMESTAMP ═══════════════
-document.getElementById('ts').textContent=new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+// Only set page-load time if we don't have a Deel sync timestamp
+if(!document.getElementById('ts').textContent){
+  document.getElementById('ts').textContent=new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
 
 // ESC to close
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+
+// ═══════════════ DEEL REAL-TIME SYNC ═══════════════
+async function loadDeelData(force=false){
+  const overlay=document.getElementById('loadingOverlay');
+  const btn=document.getElementById('refreshBtn');
+  try{
+    // Check cached freshness (unless forced)
+    if(!force){
+      const raw=sessionStorage.getItem('rh_deel_data');
+      if(raw){
+        const d=JSON.parse(raw);
+        const age=Date.now()-new Date(d.synced_at).getTime();
+        if(age<REFRESH_INTERVAL){
+          // Data is fresh — just update the relative label
+          const mins=Math.round(age/60000);
+          const sEl=document.getElementById('syncedAt');
+          if(sEl)sEl.textContent=mins<1?'Just synced':mins<60?`Synced ${mins}m ago`:`Synced ${Math.round(mins/60)}h ago`;
+          return;
+        }
+      }
+    }
+    // Show loading state
+    overlay.classList.add('show');
+    if(btn){btn.disabled=true;btn.textContent='↻ Syncing…';}
+    const res=await fetch('/.netlify/functions/deel-data');
+    if(!res.ok){const t=await res.text();throw new Error(`${res.status}: ${t.slice(0,120)}`);}
+    const data=await res.json();
+    if(data.error)throw new Error(data.error);
+    sessionStorage.setItem('rh_deel_data',JSON.stringify(data));
+    overlay.classList.remove('show');
+    // Reload page to re-render all charts and tables with fresh data
+    window.location.reload();
+  }catch(err){
+    overlay.classList.remove('show');
+    if(btn){btn.disabled=false;btn.textContent='↻ Refresh';}
+    console.error('Deel sync failed:',err.message);
+    showToast('Sync failed — using cached data');
+  }
+}
+
+function manualRefresh(){loadDeelData(true);}
 </script>
 </body>
 </html>
