@@ -556,7 +556,13 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 
     <!-- ── 1b. ON LEAVE TODAY ── -->
     <div class="ovSection leaveTodayWrap">
-      <div class="ovSectionTitle" id="leaveTodayTitle">🏖 On Leave Today</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+        <div class="ovSectionTitle" id="leaveTodayTitle" style="margin-bottom:0">🏖 On Leave Today</div>
+        <select class="fsel" id="leavePeriodSel" onchange="renderLeaveTodayWidget()" style="min-width:150px">
+          <option value="today">Today</option>
+          <option value="week">This Week</option>
+        </select>
+      </div>
       <div class="leaveTodayCards" id="leaveTodayWidget"></div>
     </div>
 
@@ -2272,29 +2278,62 @@ function renderLeaveModule(){
 
 // ── Overview widget ──
 function renderLeaveTodayWidget(){
-  const today=new Date().toISOString().slice(0,10);
-  const out=LEAVE_REQUESTS.filter(lv=>leaveIsOnDate(lv,today)&&lv.status!=='rejected');
+  const today=new Date();
+  const todayStr=today.toISOString().slice(0,10);
+  const period=document.getElementById('leavePeriodSel')?.value||'today';
+
+  // Compute week range (Mon–Sun of current week)
+  const dow=today.getDay(); // 0=Sun
+  const monday=new Date(today);monday.setDate(today.getDate()-(dow===0?6:dow-1));
+  const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
+  const monStr=monday.toISOString().slice(0,10);
+  const sunStr=sunday.toISOString().slice(0,10);
+
+  // Collect unique leave entries for the period
+  let out;
+  if(period==='week'){
+    // Any leave that overlaps any day of this week
+    out=LEAVE_REQUESTS.filter(lv=>lv.status!=='rejected'&&lv.start_date<=sunStr&&lv.end_date>=monStr);
+  } else {
+    out=LEAVE_REQUESTS.filter(lv=>leaveIsOnDate(lv,todayStr)&&lv.status!=='rejected');
+  }
+
   const title=document.getElementById('leaveTodayTitle');
   const widget=document.getElementById('leaveTodayWidget');
   if(!title||!widget)return;
-  const dateLabel=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-  title.innerHTML=`🏖 On Leave Today &nbsp;<span style="font-size:12px;font-weight:400;color:var(--muted)">${dateLabel} · ${out.length} ${out.length===1?'person':'people'}</span>`;
+
   const badge=document.getElementById('badge-leave');
-  if(badge)badge.textContent=LEAVE_REQUESTS.filter(lv=>leaveIsOnDate(lv,today)&&lv.status!=='rejected').length;
-  if(!out.length){
-    widget.innerHTML='<div class="leaveEmpty">✅ No one is on leave today</div>';return;
+  const todayCount=LEAVE_REQUESTS.filter(lv=>leaveIsOnDate(lv,todayStr)&&lv.status!=='rejected').length;
+  if(badge)badge.textContent=todayCount;
+
+  if(period==='week'){
+    const wkLabel=`${monday.toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${sunday.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
+    title.innerHTML=`🏖 On Leave This Week &nbsp;<span style="font-size:12px;font-weight:400;color:var(--muted)">${wkLabel} · ${out.length} ${out.length===1?'person':'people'}</span>`;
+  } else {
+    const dateLabel=today.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    title.innerHTML=`🏖 On Leave Today &nbsp;<span style="font-size:12px;font-weight:400;color:var(--muted)">${dateLabel} · ${out.length} ${out.length===1?'person':'people'}</span>`;
   }
+
+  if(!out.length){
+    widget.innerHTML=`<div class="leaveEmpty">✅ No one is on leave ${period==='week'?'this week':'today'}</div>`;return;
+  }
+
   widget.innerHTML=out.map(lv=>{
-    const p=PEOPLE.find(x=>x.id===lv.worker_pid);
     const col=LEAVE_TYPE_COLOR[lv.type]||'#9425C9';
     const ini=initials(lv.worker_name);
-    const isSameDay=lv.start_date===lv.end_date;
-    const returnStr=isSameDay?'Returns tomorrow':`Returns ${leaveReturnDate(lv)}`;
+    // For week view show date range; for today show return date
+    let meta;
+    if(period==='week'){
+      meta=`${leaveFmt(lv.start_date)} – ${leaveFmt(lv.end_date)} · ${lv.days} day${lv.days>1?'s':''}`;
+    } else {
+      const isSameDay=lv.start_date===lv.end_date;
+      meta=isSameDay?'Returns tomorrow':`Returns ${leaveReturnDate(lv)}`;
+    }
     return`<div class="leaveTodayCard" style="--ltc:${col}" onclick="openLeaveDetail('${lv.id}')">
       <div class="leaveTdAvatar" style="background:linear-gradient(135deg,${col}99,${col})">${ini}</div>
       <div>
         <div class="leaveTdName">${lv.worker_name}</div>
-        <div class="leaveTdMeta"><span class="lb lb-${lv.type}">${lv.type.toUpperCase()}</span> · ${returnStr}</div>
+        <div class="leaveTdMeta"><span class="lb lb-${lv.type}">${lv.type.toUpperCase()}</span> · ${meta}</div>
       </div>
     </div>`;
   }).join('');
