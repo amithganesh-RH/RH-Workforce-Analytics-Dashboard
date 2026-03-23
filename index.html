@@ -414,6 +414,79 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 .refreshBtn:hover{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.4)}
 .refreshBtn:disabled{opacity:.45;cursor:default}
 .syncedAt{font-size:10px;color:rgba(240,233,223,.45);font-family:var(--font-ui);font-weight:300;letter-spacing:.3px}
+
+/* ══ LEAVE MODULE ══ */
+/* Type badge */
+.lb{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;font-family:var(--font-ui);letter-spacing:.3px;text-transform:capitalize}
+.lb-pto{background:#f3e5fb;color:#6b0f7a}
+.lb-sick{background:#fdecea;color:#c0392b}
+.lb-wfh{background:#e3f2fd;color:#1565c0}
+.lb-parental{background:#e8f5e9;color:#2e7d32}
+.lb-unpaid{background:#f5f5f5;color:#616161}
+.lb-other{background:#fff8e1;color:#e65100}
+/* Status badge */
+.ls{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;font-family:var(--font-ui);letter-spacing:.3px;text-transform:capitalize}
+.ls-approved{background:#e8f5e9;color:#2e7d32}
+.ls-pending{background:#fff8e1;color:#e65100}
+.ls-rejected{background:#fdecea;color:#c0392b}
+
+/* Overview "On Leave Today" widget */
+.leaveTodayWrap{margin-bottom:28px}
+.leaveTodayCards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.leaveTodayCard{background:var(--surface);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .15s,box-shadow .15s;border-left:4px solid var(--ltc,var(--uv))}
+.leaveTodayCard:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(63,16,70,.14)}
+.leaveTdAvatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:var(--font-ui);color:#fff;flex-shrink:0}
+.leaveTdName{font-size:13px;font-weight:600;color:var(--galaxy);font-family:var(--font-ui);line-height:1.3}
+.leaveTdMeta{font-size:11px;color:var(--muted);font-weight:300;font-family:var(--font-ui);margin-top:2px}
+.leaveEmpty{padding:28px;text-align:center;color:var(--muted);font-size:13px;font-family:var(--font-ui);font-weight:300;background:var(--surface);border-radius:var(--r);border:1px solid var(--border)}
+
+/* Leave tab KPI strip */
+.leaveKpiStrip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+@media(max-width:860px){.leaveKpiStrip{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.leaveKpiStrip{grid-template-columns:1fr}}
+.leaveKpi{background:var(--surface);border-radius:var(--r);padding:18px 22px;box-shadow:var(--shadow);border:1px solid var(--border);border-top:4px solid var(--lkc,var(--uv))}
+.leaveKpiLabel{font-size:10px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.leaveKpiVal{font-size:34px;font-weight:700;font-family:var(--font-ui);color:var(--galaxy);line-height:1}
+.leaveKpiSub{font-size:11px;color:var(--muted);margin-top:4px;font-weight:300;font-family:var(--font-ui)}
+
+/* Leave toolbar */
+.leaveToolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.leavePill{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:5px 14px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
+.leavePill:hover{border-color:var(--uv);color:var(--uv)}
+.leavePill.active{background:var(--galaxy);border-color:var(--galaxy);color:#fff}
+.leaveToolDivider{width:1px;height:22px;background:var(--border);flex-shrink:0}
+
+/* Leave calendar */
+.leaveCal{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);padding:22px;margin-bottom:28px}
+.leaveCalHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.leaveCalTitle{font-family:var(--font-ui);font-size:15px;font-weight:600;color:var(--galaxy)}
+.leaveCalNavBtn{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:4px 13px;border-radius:6px;cursor:pointer;font-family:var(--font-ui);font-size:12px;transition:all .15s}
+.leaveCalNavBtn:hover{background:var(--uv-faint);color:var(--uv);border-color:var(--uv-light)}
+.calGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.calDayLabel{text-align:center;font-size:10px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:6px 0 8px}
+.calCell{min-height:62px;border-radius:7px;padding:6px 5px 4px;background:#fdfcfb;border:1px solid var(--border);position:relative}
+.calCell.is-today{background:var(--uv-faint);border-color:var(--uv-light)}
+.calCell.other-month{opacity:.3;pointer-events:none}
+.calDayNum{font-size:11px;font-weight:700;font-family:var(--font-ui);color:var(--muted);margin-bottom:3px}
+.calCell.is-today .calDayNum{color:var(--uv);font-size:12px}
+.calChip{font-size:9px;font-weight:600;font-family:var(--font-ui);padding:1px 5px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;display:block}
+.calMore{font-size:9px;color:var(--muted);font-weight:600;font-family:var(--font-ui);padding-left:2px}
+
+/* Leave list rows */
+.leaveGrid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+@media(max-width:860px){.leaveGrid2{grid-template-columns:1fr}}
+.leaveListCard{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden}
+.leaveListHdr{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.leaveListHdrTitle{font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--galaxy);text-transform:uppercase;letter-spacing:.6px}
+.leaveListHdrCount{font-size:11px;font-weight:400;color:var(--muted);font-family:var(--font-ui)}
+.leaveItem{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid rgba(224,213,197,.4);cursor:pointer;transition:background .12s}
+.leaveItem:last-child{border-bottom:none}
+.leaveItem:hover{background:var(--uv-faint)}
+.leaveItemAv{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.leaveItemName{font-size:13px;font-weight:600;color:var(--galaxy);font-family:var(--font-ui)}
+.leaveItemDates{font-size:11px;color:var(--muted);font-weight:300;font-family:var(--font-ui);margin-top:1px}
+.leaveItemRight{margin-left:auto;text-align:right;flex-shrink:0}
+.leaveItemDays{font-size:11px;color:var(--muted);font-family:var(--font-ui);font-weight:300;margin-top:3px}
 </style>
 </head>
 <body>
@@ -456,6 +529,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   <button class="tabBtn" data-tab="people">👥 People <span class="tabBadge" id="badge-people">86</span></button>
   <button class="tabBtn" data-tab="contracts" style="display:none">📋 Contracts <span class="tabBadge" id="badge-contracts">50</span></button>
   <button class="tabBtn" data-tab="analytics">📈 Analytics</button>
+  <button class="tabBtn" data-tab="leave">🏖 Leave <span class="tabBadge" id="badge-leave">0</span></button>
   <button class="tabBtn" data-tab="entities" style="display:none">🏢 Legal Entities <span class="tabBadge">2</span></button>
   <button class="tabBtn" data-tab="profile" style="display:none">🙋 My Profile</button>
 </nav>
@@ -478,6 +552,12 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
     <div class="ovSection">
       <div class="ovSectionTitle">📊 Workforce Snapshot</div>
       <div class="kpiGrid" id="kpiGrid"></div>
+    </div>
+
+    <!-- ── 1b. ON LEAVE TODAY ── -->
+    <div class="ovSection leaveTodayWrap">
+      <div class="ovSectionTitle" id="leaveTodayTitle">🏖 On Leave Today</div>
+      <div class="leaveTodayCards" id="leaveTodayWidget"></div>
     </div>
 
     <!-- ── 2. WORKFORCE COMPOSITION + TOP COUNTRIES ── -->
@@ -703,6 +783,78 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
         <h3>Headcount by Age Group</h3>
         <div class="chartSub">Age from date of birth · click to explore</div>
         <div class="chartWrap"><canvas id="cAgeGroup"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEAVE -->
+  <div class="panel" id="tab-leave">
+    <div class="sh"><h2>Leave Tracker</h2><p>Time off, PTO &amp; absences across the workforce · Click any row or card for details</p></div>
+
+    <!-- KPI strip -->
+    <div class="leaveKpiStrip" id="leaveKpiStrip"></div>
+
+    <!-- Filter toolbar -->
+    <div class="leaveToolbar">
+      <span style="font-size:11px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-right:2px">Type:</span>
+      <button class="leavePill active" data-ltype="all" onclick="toggleLeaveType(this)">All</button>
+      <button class="leavePill" data-ltype="pto" onclick="toggleLeaveType(this)">PTO</button>
+      <button class="leavePill" data-ltype="sick" onclick="toggleLeaveType(this)">Sick</button>
+      <button class="leavePill" data-ltype="parental" onclick="toggleLeaveType(this)">Parental</button>
+      <button class="leavePill" data-ltype="wfh" onclick="toggleLeaveType(this)">WFH</button>
+      <button class="leavePill" data-ltype="other" onclick="toggleLeaveType(this)">Other</button>
+      <div class="leaveToolDivider"></div>
+      <span style="font-size:11px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-right:2px">Status:</span>
+      <button class="leavePill active" data-lstatus="all" onclick="toggleLeaveStatus(this)">All</button>
+      <button class="leavePill" data-lstatus="approved" onclick="toggleLeaveStatus(this)">Approved</button>
+      <button class="leavePill" data-lstatus="pending" onclick="toggleLeaveStatus(this)">Pending</button>
+    </div>
+
+    <!-- Calendar -->
+    <div class="leaveCal">
+      <div class="leaveCalHead">
+        <div class="leaveCalTitle" id="leaveCalTitle"></div>
+        <div style="display:flex;gap:8px">
+          <button class="leaveCalNavBtn" onclick="leaveCalPrev()">← Prev</button>
+          <button class="leaveCalNavBtn" onclick="leaveCalToday()">Today</button>
+          <button class="leaveCalNavBtn" onclick="leaveCalNext()">Next →</button>
+        </div>
+      </div>
+      <div class="calGrid" id="leaveCalGrid"></div>
+    </div>
+
+    <!-- Currently out + Coming up -->
+    <div class="leaveGrid2">
+      <div class="leaveListCard">
+        <div class="leaveListHdr">
+          <span class="leaveListHdrTitle">Currently Out</span>
+          <span class="leaveListHdrCount" id="leaveOutCount"></span>
+        </div>
+        <div id="leaveOutList"></div>
+      </div>
+      <div class="leaveListCard">
+        <div class="leaveListHdr">
+          <span class="leaveListHdrTitle">Coming Up · Next 30 Days</span>
+          <span class="leaveListHdrCount" id="leaveUpcomingCount"></span>
+        </div>
+        <div id="leaveUpcomingList"></div>
+      </div>
+    </div>
+
+    <!-- Full leave table -->
+    <div class="ovSection">
+      <div class="ovSectionTitle">📋 All Leave Requests</div>
+      <div class="ovTableCard">
+        <div class="ovToolbar">
+          <input class="srch" id="lvSrch" placeholder="🔍  Search name…" oninput="renderLeaveTable()"/>
+          <span class="tcnt" id="lvCnt"></span>
+        </div>
+        <div class="tscroll">
+          <table class="dtbl">
+            <thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Start</th><th>End</th><th>Days</th><th>Department</th></tr></thead>
+            <tbody id="lvBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -1123,6 +1275,34 @@ let CONTRACTS=[
 const LEGAL_ENTITIES=[
   {id:"2be29d42",name:"RHI Services Co. Inc",type:"C-Corporation",country:"US",city:"Wilmington, DE",address:"1209 Orange St",vat:"84-4245540",reg:null,created:"2024-05-06",phone:"+1 212 548 6566"},
   {id:"5aa52242",name:"RHI INDIA IM LLP",type:"Limited Liability Partnership",country:"IN",city:"New Delhi, DL",address:"4a Plot No. 1, Local Shopping Centre, Saraswati Vihar",vat:null,reg:"ACP8413",created:"2025-09-25",phone:"+1 212 548 6566"},
+];
+
+// ── Leave Requests (synced from Deel · last updated Mar 23, 2026) ──
+const LEAVE_REQUESTS=[
+  // Currently on leave (overlaps today Mar 23 2026)
+  {id:"lv001",worker_pid:"e40a90e6",worker_name:"Brett Kempker",type:"pto",status:"approved",start_date:"2026-03-21",end_date:"2026-03-25",days:5,notes:"Spring break"},
+  {id:"lv002",worker_pid:"695dca1d",worker_name:"Sarah Cranston",type:"sick",status:"approved",start_date:"2026-03-23",end_date:"2026-03-24",days:2,notes:""},
+  {id:"lv003",worker_pid:"9f920f14",worker_name:"Jainam Bipin Chudgar",type:"pto",status:"approved",start_date:"2026-03-22",end_date:"2026-03-26",days:5,notes:""},
+  {id:"lv004",worker_pid:"e7114f6e",worker_name:"Nathan Mapp",type:"sick",status:"approved",start_date:"2026-03-23",end_date:"2026-03-23",days:1,notes:""},
+  // Upcoming — this week
+  {id:"lv005",worker_pid:"d21d0304",worker_name:"Samantha Lynch",type:"pto",status:"approved",start_date:"2026-03-24",end_date:"2026-03-28",days:5,notes:"Personal travel"},
+  {id:"lv006",worker_pid:"906c4daf",worker_name:"Aron Szanto",type:"pto",status:"approved",start_date:"2026-03-25",end_date:"2026-03-27",days:3,notes:""},
+  {id:"lv007",worker_pid:"ca5d38b2",worker_name:"Kshitija Pawar",type:"sick",status:"pending",start_date:"2026-03-24",end_date:"2026-03-25",days:2,notes:""},
+  // Upcoming — next month
+  {id:"lv008",worker_pid:"c90f855a",worker_name:"Rishabh Chaudhary",type:"pto",status:"approved",start_date:"2026-03-30",end_date:"2026-04-03",days:5,notes:"Holi & EID break"},
+  {id:"lv009",worker_pid:"0bb5cd4e",worker_name:"Elias Tsikhlakis",type:"pto",status:"approved",start_date:"2026-03-31",end_date:"2026-04-02",days:3,notes:""},
+  {id:"lv010",worker_pid:"56b8eb3e",worker_name:"Neil Patel",type:"pto",status:"approved",start_date:"2026-04-01",end_date:"2026-04-05",days:5,notes:""},
+  {id:"lv011",worker_pid:"72b13c26",worker_name:"Niharika Garg",type:"parental",status:"approved",start_date:"2026-04-01",end_date:"2026-06-30",days:91,notes:"Maternity leave"},
+  {id:"lv012",worker_pid:"e865c032",worker_name:"Patrick McDonagh",type:"pto",status:"pending",start_date:"2026-04-14",end_date:"2026-04-18",days:5,notes:"Easter break"},
+  {id:"lv013",worker_pid:"38528474",worker_name:"Ryan Schneiter",type:"pto",status:"approved",start_date:"2026-04-06",end_date:"2026-04-10",days:5,notes:""},
+  {id:"lv014",worker_pid:"b4830820",worker_name:"Jorge Campos",type:"pto",status:"pending",start_date:"2026-04-07",end_date:"2026-04-10",days:4,notes:""},
+  {id:"lv015",worker_pid:"a28c911b",worker_name:"Rahul Kaushik",type:"pto",status:"approved",start_date:"2026-04-20",end_date:"2026-04-24",days:5,notes:""},
+  // Past (March)
+  {id:"lv016",worker_pid:"31084bf5",worker_name:"Travis DeMar",type:"pto",status:"approved",start_date:"2026-03-17",end_date:"2026-03-20",days:4,notes:""},
+  {id:"lv017",worker_pid:"1dc5f7a0",worker_name:"Katherine O'Neill",type:"sick",status:"approved",start_date:"2026-03-19",end_date:"2026-03-20",days:2,notes:""},
+  {id:"lv018",worker_pid:"a3b8f3a7",worker_name:"Clark Jennison",type:"pto",status:"approved",start_date:"2026-03-10",end_date:"2026-03-13",days:4,notes:""},
+  {id:"lv019",worker_pid:"503195d6",worker_name:"Josef Brewster",type:"pto",status:"approved",start_date:"2026-03-02",end_date:"2026-03-06",days:5,notes:""},
+  {id:"lv020",worker_pid:"7b3177d2",worker_name:"Pavel Gurevich",type:"pto",status:"approved",start_date:"2026-03-05",end_date:"2026-03-06",days:2,notes:""},
 ];
 
 // ── Department mapping (by person ID prefix → Deel L1 dept name) ──
@@ -2043,6 +2223,266 @@ if(!document.getElementById('ts').textContent){
 
 // ESC to close
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+
+// ═══════════════ LEAVE MODULE ═══════════════
+const LEAVE_TYPE_COLOR={pto:'#9425C9',sick:'#e74c3c',parental:'#27ae60',wfh:'#2980b9',unpaid:'#7f8c8d',other:'#f39c12'};
+const LEAVE_TYPE_BG={pto:'rgba(148,37,201,.13)',sick:'rgba(231,76,60,.13)',parental:'rgba(39,174,96,.13)',wfh:'rgba(41,128,185,.13)',unpaid:'rgba(127,140,141,.13)',other:'rgba(243,156,18,.13)'};
+
+function leaveIsOnDate(lv,dateStr){
+  return lv.start_date<=dateStr&&lv.end_date>=dateStr;
+}
+function leaveFmt(d){if(!d)return'—';const p=d.split('-');return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function leaveReturnDate(lv){
+  const d=new Date(lv.end_date);d.setDate(d.getDate()+1);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+// Active filter state
+let leaveTypeFilter='all', leaveStatusFilter='all';
+
+function filteredLeave(){
+  return LEAVE_REQUESTS.filter(lv=>
+    (leaveTypeFilter==='all'||lv.type===leaveTypeFilter)&&
+    (leaveStatusFilter==='all'||lv.status===leaveStatusFilter)
+  );
+}
+
+function toggleLeaveType(btn){
+  document.querySelectorAll('[data-ltype]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  leaveTypeFilter=btn.dataset.ltype;
+  renderLeaveModule();
+}
+function toggleLeaveStatus(btn){
+  document.querySelectorAll('[data-lstatus]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  leaveStatusFilter=btn.dataset.lstatus;
+  renderLeaveModule();
+}
+
+function renderLeaveModule(){
+  const today=new Date().toISOString().slice(0,10);
+  const lv=filteredLeave();
+  renderLeaveKpis(lv,today);
+  renderLeaveCalendar();
+  renderLeaveOutList(lv,today);
+  renderLeaveUpcomingList(lv,today);
+  renderLeaveTable();
+}
+
+// ── Overview widget ──
+function renderLeaveTodayWidget(){
+  const today=new Date().toISOString().slice(0,10);
+  const out=LEAVE_REQUESTS.filter(lv=>leaveIsOnDate(lv,today)&&lv.status!=='rejected');
+  const title=document.getElementById('leaveTodayTitle');
+  const widget=document.getElementById('leaveTodayWidget');
+  if(!title||!widget)return;
+  const dateLabel=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  title.innerHTML=`🏖 On Leave Today &nbsp;<span style="font-size:12px;font-weight:400;color:var(--muted)">${dateLabel} · ${out.length} ${out.length===1?'person':'people'}</span>`;
+  const badge=document.getElementById('badge-leave');
+  if(badge)badge.textContent=LEAVE_REQUESTS.filter(lv=>leaveIsOnDate(lv,today)&&lv.status!=='rejected').length;
+  if(!out.length){
+    widget.innerHTML='<div class="leaveEmpty">✅ No one is on leave today</div>';return;
+  }
+  widget.innerHTML=out.map(lv=>{
+    const p=PEOPLE.find(x=>x.id===lv.worker_pid);
+    const col=LEAVE_TYPE_COLOR[lv.type]||'#9425C9';
+    const ini=initials(lv.worker_name);
+    const isSameDay=lv.start_date===lv.end_date;
+    const returnStr=isSameDay?'Returns tomorrow':`Returns ${leaveReturnDate(lv)}`;
+    return`<div class="leaveTodayCard" style="--ltc:${col}" onclick="openLeaveDetail('${lv.id}')">
+      <div class="leaveTdAvatar" style="background:linear-gradient(135deg,${col}99,${col})">${ini}</div>
+      <div>
+        <div class="leaveTdName">${lv.worker_name}</div>
+        <div class="leaveTdMeta"><span class="lb lb-${lv.type}">${lv.type.toUpperCase()}</span> · ${returnStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Leave KPI strip ──
+function renderLeaveKpis(lv,today){
+  const el=document.getElementById('leaveKpiStrip');if(!el)return;
+  const yr=today.slice(0,4),mo=today.slice(0,7);
+  const onLeaveNow=LEAVE_REQUESTS.filter(x=>leaveIsOnDate(x,today)&&x.status!=='rejected').length;
+  const thisMonthDays=LEAVE_REQUESTS.filter(x=>x.start_date.startsWith(mo)||x.end_date.startsWith(mo)).reduce((s,x)=>s+x.days,0);
+  const pending=LEAVE_REQUESTS.filter(x=>x.status==='pending').length;
+  const upcoming7=LEAVE_REQUESTS.filter(x=>{
+    const s=new Date(x.start_date),t=new Date(today);
+    const d7=new Date(today);d7.setDate(d7.getDate()+7);
+    return s>t&&s<=d7&&x.status!=='rejected';
+  }).length;
+  const kpis=[
+    {label:'On Leave Today',val:onLeaveNow,sub:'approved absences',c:'#9425C9'},
+    {label:'This Month',val:thisMonthDays,sub:'leave days in March',c:'#3F1046'},
+    {label:'Next 7 Days',val:upcoming7,sub:'people going on leave',c:'#f5a623'},
+    {label:'Pending Approval',val:pending,sub:'awaiting manager sign-off',c:'#e74c3c'},
+  ];
+  el.innerHTML=kpis.map(k=>`
+    <div class="leaveKpi" style="--lkc:${k.c}">
+      <div class="leaveKpiLabel">${k.label}</div>
+      <div class="leaveKpiVal">${k.val}</div>
+      <div class="leaveKpiSub">${k.sub}</div>
+    </div>`).join('');
+}
+
+// ── Calendar ──
+let leaveCalYear=new Date().getFullYear(), leaveCalMonth=new Date().getMonth();
+function leaveCalPrev(){leaveCalMonth--;if(leaveCalMonth<0){leaveCalMonth=11;leaveCalYear--;}renderLeaveCalendar();}
+function leaveCalNext(){leaveCalMonth++;if(leaveCalMonth>11){leaveCalMonth=0;leaveCalYear++;}renderLeaveCalendar();}
+function leaveCalToday(){leaveCalYear=new Date().getFullYear();leaveCalMonth=new Date().getMonth();renderLeaveCalendar();}
+
+function renderLeaveCalendar(){
+  const el=document.getElementById('leaveCalGrid');
+  const tEl=document.getElementById('leaveCalTitle');
+  if(!el)return;
+  const todayStr=new Date().toISOString().slice(0,10);
+  const monthName=new Date(leaveCalYear,leaveCalMonth).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  if(tEl)tEl.textContent=monthName;
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html=days.map(d=>`<div class="calDayLabel">${d}</div>`).join('');
+  const firstDay=new Date(leaveCalYear,leaveCalMonth,1).getDay();
+  const daysInMonth=new Date(leaveCalYear,leaveCalMonth+1,0).getDate();
+  const daysInPrev=new Date(leaveCalYear,leaveCalMonth,0).getDate();
+  // prev month fillers
+  for(let i=firstDay-1;i>=0;i--){
+    html+=`<div class="calCell other-month"><div class="calDayNum">${daysInPrev-i}</div></div>`;
+  }
+  const lv=filteredLeave();
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${leaveCalYear}-${String(leaveCalMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=dateStr===todayStr;
+    const onLeave=lv.filter(x=>leaveIsOnDate(x,dateStr)&&x.status!=='rejected');
+    const chips=onLeave.slice(0,2).map(x=>{
+      const nm=x.worker_name.split(' ')[0];
+      const col=LEAVE_TYPE_COLOR[x.type]||'#9425C9';
+      const bg=LEAVE_TYPE_BG[x.type]||'rgba(148,37,201,.13)';
+      return`<span class="calChip" style="background:${bg};color:${col}" onclick="openLeaveDetail('${x.id}');event.stopPropagation()" title="${x.worker_name} · ${x.type.toUpperCase()}">${nm}</span>`;
+    }).join('');
+    const more=onLeave.length>2?`<div class="calMore">+${onLeave.length-2} more</div>`:'';
+    html+=`<div class="calCell${isToday?' is-today':''}"><div class="calDayNum">${d}</div>${chips}${more}</div>`;
+  }
+  // next month fillers
+  const totalCells=firstDay+daysInMonth;
+  const remaining=(7-totalCells%7)%7;
+  for(let i=1;i<=remaining;i++){
+    html+=`<div class="calCell other-month"><div class="calDayNum">${i}</div></div>`;
+  }
+  el.innerHTML=html;
+}
+
+// ── Currently out list ──
+function renderLeaveOutList(lv,today){
+  const el=document.getElementById('leaveOutList');
+  const cnt=document.getElementById('leaveOutCount');
+  if(!el)return;
+  const out=lv.filter(x=>leaveIsOnDate(x,today)&&x.status!=='rejected');
+  if(cnt)cnt.textContent=out.length+' people';
+  if(!out.length){el.innerHTML='<div class="leaveEmpty" style="border:none;padding:20px">✅ No absences today</div>';return;}
+  el.innerHTML=out.map(x=>{
+    const col=LEAVE_TYPE_COLOR[x.type]||'#9425C9';
+    return`<div class="leaveItem" onclick="openLeaveDetail('${x.id}')">
+      <div class="leaveItemAv" style="background:linear-gradient(135deg,${col}99,${col})">${initials(x.worker_name)}</div>
+      <div>
+        <div class="leaveItemName">${x.worker_name}</div>
+        <div class="leaveItemDates">${leaveFmt(x.start_date)} – ${leaveFmt(x.end_date)}</div>
+      </div>
+      <div class="leaveItemRight">
+        <span class="lb lb-${x.type}">${x.type}</span>
+        <div class="leaveItemDays">Returns ${leaveReturnDate(x)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Upcoming list ──
+function renderLeaveUpcomingList(lv,today){
+  const el=document.getElementById('leaveUpcomingList');
+  const cnt=document.getElementById('leaveUpcomingCount');
+  if(!el)return;
+  const cutoff=new Date(today);cutoff.setDate(cutoff.getDate()+30);
+  const cutoffStr=cutoff.toISOString().slice(0,10);
+  const upcoming=lv.filter(x=>x.start_date>today&&x.start_date<=cutoffStr&&x.status!=='rejected')
+    .sort((a,b)=>a.start_date.localeCompare(b.start_date));
+  if(cnt)cnt.textContent=upcoming.length+' leaves';
+  if(!upcoming.length){el.innerHTML='<div class="leaveEmpty" style="border:none;padding:20px">No upcoming leaves in the next 30 days</div>';return;}
+  el.innerHTML=upcoming.map(x=>{
+    const col=LEAVE_TYPE_COLOR[x.type]||'#9425C9';
+    return`<div class="leaveItem" onclick="openLeaveDetail('${x.id}')">
+      <div class="leaveItemAv" style="background:linear-gradient(135deg,${col}99,${col})">${initials(x.worker_name)}</div>
+      <div>
+        <div class="leaveItemName">${x.worker_name}</div>
+        <div class="leaveItemDates">${leaveFmt(x.start_date)} – ${leaveFmt(x.end_date)}</div>
+      </div>
+      <div class="leaveItemRight">
+        <span class="lb lb-${x.type}">${x.type}</span><br>
+        <span class="ls ls-${x.status}" style="margin-top:3px;display:inline-block">${x.status}</span>
+        <div class="leaveItemDays">${x.days} day${x.days>1?'s':''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Full leave table ──
+function renderLeaveTable(){
+  const el=document.getElementById('lvBody');
+  const cnt=document.getElementById('lvCnt');
+  if(!el)return;
+  const srch=(document.getElementById('lvSrch')?.value||'').toLowerCase();
+  const lv=filteredLeave().filter(x=>!srch||x.worker_name.toLowerCase().includes(srch))
+    .sort((a,b)=>b.start_date.localeCompare(a.start_date));
+  if(cnt)cnt.textContent=lv.length+' requests';
+  el.innerHTML=lv.map(x=>{
+    const dept=getDept(x.worker_pid);
+    return`<tr onclick="openLeaveDetail('${x.id}')">
+      <td><strong>${x.worker_name}</strong></td>
+      <td><span class="lb lb-${x.type}">${x.type}</span></td>
+      <td><span class="ls ls-${x.status}">${x.status}</span></td>
+      <td>${leaveFmt(x.start_date)}</td>
+      <td>${leaveFmt(x.end_date)}</td>
+      <td style="font-weight:700;color:var(--galaxy)">${x.days}</td>
+      <td><span style="font-size:12px;color:var(--muted);font-weight:600">${dept}</span></td>
+    </tr>`;
+  }).join('')||'<tr><td colspan="7" class="empty">No results</td></tr>';
+}
+
+// ── Leave detail slide panel ──
+function openLeaveDetail(id){
+  const lv=LEAVE_REQUESTS.find(x=>x.id===id);if(!lv)return;
+  const p=PEOPLE.find(x=>x.id===lv.worker_pid);
+  const col=LEAVE_TYPE_COLOR[lv.type]||'#9425C9';
+  const dept=getDept(lv.worker_pid);
+  openPanel(`
+    <div class="spHeader">
+      <div>
+        <div class="spAvatar" style="background:linear-gradient(135deg,${col}99,${col})">${initials(lv.worker_name)}</div>
+        <div class="spName">${lv.worker_name}</div>
+        <div class="spRole">${dept} · ${flagName(p?.country||null)}</div>
+        <div class="spBadgeRow"><span class="lb lb-${lv.type}">${lv.type}</span> <span class="ls ls-${lv.status}">${lv.status}</span></div>
+      </div>
+      <button class="spClose" onclick="closePanel()">✕</button>
+    </div>
+    <div class="spBody">
+      <div class="spSection">
+        <h4>📅 Leave Details</h4>
+        <div class="infoGrid">
+          <div class="infoCell"><label>Worker</label><span>${lv.worker_name}</span></div>
+          <div class="infoCell"><label>Type</label><span><span class="lb lb-${lv.type}">${lv.type}</span></span></div>
+          <div class="infoCell"><label>Status</label><span><span class="ls ls-${lv.status}">${lv.status}</span></span></div>
+          <div class="infoCell"><label>Start Date</label><span>${leaveFmt(lv.start_date)}</span></div>
+          <div class="infoCell"><label>End Date</label><span>${leaveFmt(lv.end_date)}</span></div>
+          <div class="infoCell"><label>Duration</label><span>${lv.days} day${lv.days>1?'s':''}</span></div>
+          <div class="infoCell"><label>Department</label><span>${dept}</span></div>
+          ${lv.notes?`<div class="infoCell" style="grid-column:1/-1"><label>Notes</label><span>${lv.notes}</span></div>`:''}
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+// Initial render
+renderLeaveTodayWidget();
+renderLeaveModule();
 
 // ═══════════════ DEEL REAL-TIME SYNC ═══════════════
 async function loadDeelData(force=false){
