@@ -440,6 +440,43 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 .leaveTdMeta{font-size:11px;color:var(--muted);font-weight:300;font-family:var(--font-ui);margin-top:2px}
 .leaveEmpty{padding:28px;text-align:center;color:var(--muted);font-size:13px;font-family:var(--font-ui);font-weight:300;background:var(--surface);border-radius:var(--r);border:1px solid var(--border)}
 
+/* ── IAM Module ── */
+.roleBadge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;font-family:var(--font-ui);padding:3px 10px;border-radius:20px;border:1.5px solid;letter-spacing:.3px;white-space:nowrap}
+.iamHero{background:linear-gradient(135deg,var(--galaxy),var(--galaxy2));border-radius:var(--r);padding:28px 32px;margin-bottom:28px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.iamHeroTitle{font-family:var(--font-head);font-size:24px;font-weight:400;margin-bottom:4px}
+.iamHeroSub{font-size:13px;opacity:.7;font-family:var(--font-ui);font-weight:300}
+.iamMatrix{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:28px}
+.iamMatrixHdr{padding:16px 24px 12px;border-bottom:1px solid var(--border);font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--galaxy);text-transform:uppercase;letter-spacing:.6px}
+.iamMatrixTable{width:100%;border-collapse:collapse;font-family:var(--font-ui);font-size:13px}
+.iamMatrixTable th{padding:10px 16px;background:var(--bone);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);text-align:left;border-bottom:1px solid var(--border)}
+.iamMatrixTable td{padding:11px 16px;border-bottom:1px solid rgba(224,213,197,.4);color:var(--galaxy);vertical-align:middle}
+.iamMatrixTable tr:last-child td{border-bottom:none}
+.iamMatrixTable tr:hover td{background:var(--uv-faint)}
+.iamCheck{font-size:15px}
+.iamUserCard{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:28px}
+.iamCardHdr{padding:16px 24px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.iamCardTitle{font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--galaxy);text-transform:uppercase;letter-spacing:.6px}
+.iamAddForm{display:flex;gap:10px;flex-wrap:wrap;padding:16px 24px;border-bottom:1px solid var(--border);background:var(--bone);align-items:flex-end}
+.iamAddForm input{flex:1;min-width:220px;font-family:var(--font-ui);font-size:13px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);color:var(--galaxy);outline:none}
+.iamAddForm input:focus{border-color:var(--uv)}
+.iamAddForm select{font-family:var(--font-ui);font-size:13px;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);color:var(--galaxy);outline:none;min-width:160px}
+.iamAddBtn{font-family:var(--font-ui);font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;background:var(--galaxy);color:#fff;border:none;cursor:pointer;white-space:nowrap}
+.iamAddBtn:hover{background:var(--uv)}
+.iamUserTable{width:100%;border-collapse:collapse;font-family:var(--font-ui);font-size:13px}
+.iamUserTable th{padding:10px 20px;background:var(--bone);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);text-align:left;border-bottom:1px solid var(--border)}
+.iamUserTable td{padding:13px 20px;border-bottom:1px solid rgba(224,213,197,.4);vertical-align:middle}
+.iamUserTable tr:last-child td{border-bottom:none}
+.iamUserTable tr:hover td{background:var(--uv-faint)}
+.iamRoleTag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;font-family:var(--font-ui);padding:3px 10px;border-radius:12px;border:1.5px solid}
+.iamRoleSel{font-family:var(--font-ui);font-size:12px;padding:4px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);color:var(--galaxy);cursor:pointer;outline:none}
+.iamDelBtn{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:4px;font-family:var(--font-ui)}
+.iamDelBtn:hover{color:var(--red);background:rgba(192,57,43,.08)}
+.iamEmpty{padding:32px;text-align:center;color:var(--muted);font-size:13px;font-family:var(--font-ui);font-weight:300}
+.accessBanner{display:flex;align-items:center;gap:10px;background:rgba(148,37,201,.08);border:1.5px solid rgba(148,37,201,.2);border-radius:10px;padding:14px 20px;margin-bottom:20px;font-family:var(--font-ui);font-size:13px;color:var(--galaxy)}
+.accessBannerIcon{font-size:18px;flex-shrink:0}
+.accessBannerMsg{font-weight:400}
+.accessBannerMsg strong{font-weight:700}
+
 /* Leave tab KPI strip */
 .leaveKpiStrip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
 @media(max-width:860px){.leaveKpiStrip{grid-template-columns:1fr 1fr}}
@@ -532,6 +569,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   <button class="tabBtn" data-tab="leave">🏖 Leave <span class="tabBadge" id="badge-leave">0</span></button>
   <button class="tabBtn" data-tab="entities" style="display:none">🏢 Legal Entities <span class="tabBadge">2</span></button>
   <button class="tabBtn" data-tab="profile" style="display:none">🙋 My Profile</button>
+  <button class="tabBtn" data-tab="iam" id="iamTabBtn" style="display:none">🔐 Access Control</button>
 </nav>
 
 <main>
@@ -596,13 +634,13 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
     </div>
 
     <!-- ── 4. PAYROLL CYCLES ── -->
-    <div class="ovSection" style="display:none">
+    <div class="ovSection" id="ovPayrollSection" style="display:none">
       <div class="ovSectionTitle">💳 Payroll Cycles</div>
       <div class="payrollGrid" id="payrollGrid"></div>
     </div>
 
     <!-- ── 5. ALL WORKERS LIST ── -->
-    <div class="ovSection">
+    <div class="ovSection" id="ovWorkerListSection">
       <div class="ovSectionTitle">👥 All Workers</div>
       <div class="ovTableCard">
         <div class="ovToolbar">
@@ -932,6 +970,86 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
     </div>
   </div>
 
+
+  <!-- IAM / ACCESS CONTROL -->
+  <div class="panel" id="tab-iam">
+    <div class="iamHero">
+      <div>
+        <div class="iamHeroTitle">Identity &amp; Access Control</div>
+        <div class="iamHeroSub">Manage who can see what across the Redesign Health workforce dashboard</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap" id="iamRoleSummary"></div>
+    </div>
+
+    <!-- Access Matrix -->
+    <div class="iamMatrix">
+      <div class="iamMatrixHdr">📋 Access Matrix — What Each Role Can See</div>
+      <table class="iamMatrixTable">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>⚡ Admin</th>
+            <th>👥 People Leader</th>
+            <th>👤 Normal User</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Overview — KPI Cards</td><td class="iamCheck">✅ Full</td><td class="iamCheck">✅ Full</td><td class="iamCheck">✅ Headcount only</td></tr>
+          <tr><td>Overview — Leave Widget</td><td class="iamCheck">✅</td><td class="iamCheck">✅</td><td class="iamCheck">✅</td></tr>
+          <tr><td>Overview — Workforce Charts</td><td class="iamCheck">✅</td><td class="iamCheck">✅</td><td class="iamCheck">✅</td></tr>
+          <tr><td>Overview — All Workers List</td><td class="iamCheck">✅</td><td class="iamCheck">✅</td><td class="iamCheck">🔒 Hidden</td></tr>
+          <tr><td>People Directory tab</td><td class="iamCheck">✅</td><td class="iamCheck">✅</td><td class="iamCheck">🔒 Hidden</td></tr>
+          <tr><td>Individual Person Details</td><td class="iamCheck">✅ Full</td><td class="iamCheck">✅ Full</td><td class="iamCheck">🔒 Restricted</td></tr>
+          <tr><td>Analytics tab</td><td class="iamCheck">✅</td><td class="iamCheck">✅</td><td class="iamCheck">🔒 Hidden</td></tr>
+          <tr><td>Contracts tab</td><td class="iamCheck">✅</td><td class="iamCheck">🔒 Hidden</td><td class="iamCheck">🔒 Hidden</td></tr>
+          <tr><td>Leave tab — Full View</td><td class="iamCheck">✅</td><td class="iamCheck">✅</td><td class="iamCheck">✅ Summary only</td></tr>
+          <tr><td>Leave Detail Panel</td><td class="iamCheck">✅</td><td class="iamCheck">✅</td><td class="iamCheck">🔒 Restricted</td></tr>
+          <tr><td>Access Control (IAM) tab</td><td class="iamCheck">✅</td><td class="iamCheck">🔒 Hidden</td><td class="iamCheck">🔒 Hidden</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- User Role Management -->
+    <div class="iamUserCard">
+      <div class="iamCardHdr">
+        <div class="iamCardTitle">👤 User Role Assignments</div>
+        <span style="font-size:12px;color:var(--muted);font-family:var(--font-ui);font-weight:300">Roles are stored locally · Changes apply on next login</span>
+      </div>
+
+      <!-- Add user form -->
+      <div class="iamAddForm">
+        <div style="flex:1;min-width:220px">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);font-family:var(--font-ui);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Email Address</div>
+          <input type="email" id="iamEmailInput" placeholder="name@redesignhealth.com"/>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--muted);font-family:var(--font-ui);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Role</div>
+          <select id="iamRoleInput">
+            <option value="admin">⚡ Admin</option>
+            <option value="people_leader" selected>👥 People Leader</option>
+            <option value="normal_user">👤 Normal User</option>
+          </select>
+        </div>
+        <button class="iamAddBtn" onclick="iamAddUser()">+ Assign Role</button>
+      </div>
+
+      <!-- Users table -->
+      <div style="overflow-x:auto">
+        <table class="iamUserTable" id="iamUserTable">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Change Role</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="iamUserBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <!-- LOADING OVERLAY -->
@@ -950,6 +1068,135 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 <div class="toast" id="toast"></div>
 
 <script>
+// ═══════════════ IAM / ROLES ═══════════════
+const ROLE_LABELS={admin:'Admin',people_leader:'People Leader',normal_user:'Normal User'};
+const ROLE_ICONS={admin:'⚡',people_leader:'👥',normal_user:'👤'};
+const ROLE_COLORS={admin:'#9425C9',people_leader:'#2980b9',normal_user:'#27ae60'};
+
+const PERMISSIONS={
+  admin:        {tabs:['overview','people','contracts','analytics','leave','entities','iam'],workerList:true,personDetail:true,leaveDetail:true,kpiFilter:true},
+  people_leader:{tabs:['overview','people','analytics','leave'],workerList:true,personDetail:true,leaveDetail:true,kpiFilter:true},
+  normal_user:  {tabs:['overview','leave'],workerList:false,personDetail:false,leaveDetail:false,kpiFilter:false}
+};
+
+let CURRENT_ROLE='normal_user';
+
+function getRoleAssignments(){try{return JSON.parse(localStorage.getItem('rh_iam_roles')||'{}')}catch(e){return{}}}
+function saveRoleAssignments(obj){localStorage.setItem('rh_iam_roles',JSON.stringify(obj))}
+function getUserRole(email){
+  const a=getRoleAssignments();
+  if(!Object.keys(a).length){const o={};o[email]='admin';saveRoleAssignments(o);return'admin';}
+  return a[email]||'normal_user';
+}
+
+function applyAccessControl(){
+  const perm=PERMISSIONS[CURRENT_ROLE];
+  // Tabs
+  document.querySelectorAll('.tabBtn[data-tab]').forEach(btn=>{
+    const t=btn.dataset.tab;
+    btn.style.display=perm.tabs.includes(t)?'':'none';
+  });
+  // Overview sections
+  const wl=document.getElementById('ovWorkerListSection');
+  if(wl)wl.style.display=perm.workerList?'':'none';
+  // KPI cards — blur financial ones for normal_user
+  if(!perm.kpiFilter){
+    document.querySelectorAll('.kpi').forEach((el,i)=>{
+      if(i>=1&&i<=4){el.style.filter='blur(4px)';el.style.pointerEvents='none';el.title='Restricted';}
+    });
+  }
+  // Leave toolbar filters — hide for normal_user
+  const lvToolbar=document.querySelector('.leaveToolbar');
+  if(lvToolbar)lvToolbar.style.display=perm.leaveDetail?'':'none';
+  const lvGrid2=document.querySelector('.leaveGrid2');
+  if(lvGrid2)lvGrid2.style.display=perm.leaveDetail?'':'none';
+  // Show access banner on leave tab for normal users
+  const lvTab=document.getElementById('tab-leave');
+  if(lvTab&&!perm.leaveDetail){
+    const existing=lvTab.querySelector('.accessBanner');
+    if(!existing){
+      const banner=document.createElement('div');
+      banner.className='accessBanner';
+      banner.innerHTML='<span class="accessBannerIcon">🔒</span><span class="accessBannerMsg"><strong>Limited Access:</strong> You can see who is on leave but individual details are restricted. Contact an Admin to request elevated access.</span>';
+      lvTab.insertBefore(banner,lvTab.firstChild);
+    }
+  }
+  // Show access banner on overview for normal users
+  const ovTab=document.getElementById('tab-overview');
+  if(ovTab&&!perm.workerList){
+    const existing=ovTab.querySelector('.accessBanner');
+    if(!existing){
+      const banner=document.createElement('div');
+      banner.className='accessBanner';
+      banner.innerHTML='<span class="accessBannerIcon">🔒</span><span class="accessBannerMsg"><strong>Normal User View:</strong> Some sections are restricted. Contact your People Leader or Admin for full access.</span>';
+      ovTab.insertBefore(banner,ovTab.querySelector('.ovFilterBar')||ovTab.firstChild);
+    }
+  }
+  // IAM tab — only admin
+  if(perm.tabs.includes('iam'))renderIamPanel();
+}
+
+// ── IAM panel rendering ──
+function renderIamPanel(){
+  const assignments=getRoleAssignments();
+  const emails=Object.keys(assignments);
+  // Role summary badges
+  const counts={admin:0,people_leader:0,normal_user:0};
+  emails.forEach(e=>{const r=assignments[e];if(counts[r]!==undefined)counts[r]++;});
+  const sumEl=document.getElementById('iamRoleSummary');
+  if(sumEl)sumEl.innerHTML=Object.entries(counts).map(([r,n])=>`<div style="background:rgba(255,255,255,.15);border-radius:8px;padding:8px 16px;text-align:center"><div style="font-size:22px;font-weight:700;font-family:var(--font-ui)">${n}</div><div style="font-size:11px;opacity:.8;font-family:var(--font-ui);margin-top:2px">${ROLE_LABELS[r]}</div></div>`).join('');
+  // Users table
+  const tbody=document.getElementById('iamUserBody');
+  if(!tbody)return;
+  if(!emails.length){tbody.innerHTML=`<tr><td colspan="4" class="iamEmpty">No role assignments yet. Add a user above.</td></tr>`;return;}
+  tbody.innerHTML=emails.map(email=>{
+    const role=assignments[email];
+    const col=ROLE_COLORS[role]||'#999';
+    const isSelf=AUTH_USER&&AUTH_USER.email===email;
+    return`<tr>
+      <td style="font-family:var(--font-ui);font-size:13px;color:var(--galaxy)">${email}${isSelf?` <span style="font-size:10px;background:var(--uv-faint);color:var(--uv);font-weight:700;padding:1px 7px;border-radius:10px;border:1px solid var(--uv-light)">You</span>`:''}</td>
+      <td><span class="iamRoleTag" style="color:${col};border-color:${col}40;background:${col}15">${ROLE_ICONS[role]} ${ROLE_LABELS[role]}</span></td>
+      <td>
+        <select class="iamRoleSel" onchange="iamChangeRole('${email}',this.value)">
+          <option value="admin"${role==='admin'?' selected':''}>⚡ Admin</option>
+          <option value="people_leader"${role==='people_leader'?' selected':''}>👥 People Leader</option>
+          <option value="normal_user"${role==='normal_user'?' selected':''}>👤 Normal User</option>
+        </select>
+      </td>
+      <td><button class="iamDelBtn" onclick="iamRemoveUser('${email}')" title="Remove assignment">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function iamAddUser(){
+  const email=document.getElementById('iamEmailInput').value.trim().toLowerCase();
+  const role=document.getElementById('iamRoleInput').value;
+  if(!email||!email.includes('@')){showToast('Enter a valid email address');return;}
+  const a=getRoleAssignments();
+  a[email]=role;
+  saveRoleAssignments(a);
+  document.getElementById('iamEmailInput').value='';
+  renderIamPanel();
+  showToast(`${email} assigned as ${ROLE_LABELS[role]}`);
+}
+
+function iamChangeRole(email,role){
+  const a=getRoleAssignments();
+  a[email]=role;
+  saveRoleAssignments(a);
+  renderIamPanel();
+  showToast(`Role updated: ${email} → ${ROLE_LABELS[role]}`);
+}
+
+function iamRemoveUser(email){
+  if(AUTH_USER&&AUTH_USER.email===email){showToast('Cannot remove your own admin assignment');return;}
+  const a=getRoleAssignments();
+  delete a[email];
+  saveRoleAssignments(a);
+  renderIamPanel();
+  showToast(`Removed: ${email}`);
+}
+
 // ═══════════════ AUTH MODULE ═══════════════
 // Uses Google Identity Services (GIS) — no backend required
 const ALLOWED_DOMAIN='redesignhealth.com';
@@ -963,14 +1210,18 @@ function authClearMessages(){document.getElementById('authError').classList.remo
 function showDashboard(){
   document.getElementById('authGate').style.display='none';
   if(AUTH_USER){
+    CURRENT_ROLE=getUserRole(AUTH_USER.email);
     const ini=(AUTH_USER.name||AUTH_USER.email).split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     const avatarHTML=AUTH_USER.picture
       ?`<div class="huserAvatar"><img src="${AUTH_USER.picture}" alt="${ini}" referrerpolicy="no-referrer"/></div>`
       :`<div class="huserAvatar">${ini}</div>`;
+    const col=ROLE_COLORS[CURRENT_ROLE];
     document.getElementById('huser').innerHTML=`
       <span class="huserEmail">${AUTH_USER.name||AUTH_USER.email}</span>
+      <span class="roleBadge" style="background:${col}18;color:${col};border-color:${col}40">${ROLE_ICONS[CURRENT_ROLE]} ${ROLE_LABELS[CURRENT_ROLE]}</span>
       ${avatarHTML}
       <button class="hlogoutBtn" onclick="logout()">Sign Out</button>`;
+    applyAccessControl();
   }
   // Check if Deel data needs refreshing; auto-refresh every 2h
   loadDeelData();
@@ -1444,6 +1695,7 @@ function showToast(msg){
 
 // ═══════════════ PERSON PANEL ═══════════════
 function openPerson(pid){
+  if(!PERMISSIONS[CURRENT_ROLE].personDetail){showToast('🔒 Access restricted — contact your Admin for full access');return;}
   const p=PEOPLE.find(x=>x.id===pid); if(!p)return;
   const contracts=CONTRACTS.filter(c=>c.worker_pid===pid);
   const contractsHTML=contracts.length?contracts.map(c=>`
@@ -2487,6 +2739,7 @@ function renderLeaveTable(){
 
 // ── Leave detail slide panel ──
 function openLeaveDetail(id){
+  if(!PERMISSIONS[CURRENT_ROLE].leaveDetail){showToast('🔒 Access restricted — contact your Admin for full access');return;}
   const lv=LEAVE_REQUESTS.find(x=>x.id===id);if(!lv)return;
   const p=PEOPLE.find(x=>x.id===lv.worker_pid);
   const col=LEAVE_TYPE_COLOR[lv.type]||'#9425C9';
