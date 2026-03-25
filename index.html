@@ -1687,6 +1687,86 @@ const PREFERRED_NAMES={
   "4d829e97":"Sai Sandeep Bhavaraju"
 };
 
+// ── Job Titles (fetched via Deel MCP — job_title field) ──
+const JOB_TITLES={
+  "230c30f4":"Head of Global Development",
+  "90e1523c":"Director of Platform",
+  "7c9e731f":"New Ventures Senior Associate",
+  "571ff348":"New Ventures Senior Principal",
+  "f4b956f2":"Global Development Venture Chair",
+  "9b898974":"People Operations Senior Lead",
+  "8bd66394":"Senior Director of Capital Development",
+  "906c4daf":"Head of Technology",
+  "66c5a6a4":"Director of New Ventures",
+  "ba7d9125":"Managing Director, Global Development",
+  "e40a90e6":"Chief of Staff & Sr. Director",
+  "97b8661c":"Chief Executive Officer",
+  "0a477c7a":"Global Development Venture Chair",
+  "ce2f1bb8":"Global Development Venture Chair",
+  "a3b8f3a7":"Senior Director of Strategy & Operations",
+  "c029345a":"VP of Technology, Applied AI",
+  "f429e047":"Senior Director of Engineering",
+  "7bc3876a":"New Ventures Associate",
+  "0bb5cd4e":"Venture Chair",
+  "f51a2627":"Global Development Venture Chair",
+  "70dc4822":"Regional Program Associate",
+  "21a76df5":"Global Development Venture Chair",
+  "be357a16":"Senior Lead, Applied AI",
+  "69d2c82d":"Regional Program Manager",
+  "83f26955":"Capital Development Senior Associate",
+  "9f920f14":"Senior Associate, Platform Strategy & Operations",
+  "b4830820":"New Ventures Associate",
+  "503195d6":"Head of Venture Traction",
+  "0ee0519f":"Managing Director, Global Development",
+  "2b19b5f2":"Senior Director of Venture Traction",
+  "74ed1c00":"Associate",
+  "f2b42f2b":"People Operations Senior Lead",
+  "e9d1326d":"Senior AI Engineer",
+  "1dc5f7a0":"Deputy General Counsel",
+  "e99e302d":"Senior Director of Venture Traction",
+  "c7ff3689":"New Ventures Senior Principal",
+  "ca5d38b2":"Brand & Communications Senior Associate",
+  "3fa02a62":"Global Development Advisor",
+  "e0844e64":"Regional Program Lead",
+  "c7bc29e4":"Vice President, Enterprise Partnerships",
+  "c523fe93":"Managing Director, Capital Development",
+  "d871656a":"Senior Director of New Ventures",
+  "e7114f6e":"Controller",
+  "3ad307bd":"General Counsel",
+  "56b8eb3e":"Head of Ventures",
+  "72b13c26":"New Ventures Senior Associate",
+  "4c96ef56":"Regional Program Lead",
+  "66bd23c0":"Executive Assistant",
+  "ca8217ca":"Director of Founder Strategy",
+  "f3c89ef6":"Head of Portfolio Management",
+  "e865c032":"Managing Director, New Ventures",
+  "7b3177d2":"Managing Director, Cedars",
+  "a2cb9d4a":"Managing Director, Global Development",
+  "b0e06d7e":"Senior HR Associate",
+  "09e6b194":"Operations Associate",
+  "96e808b6":"VP of AI Ventures",
+  "b61fe2d7":"Director of Engineering",
+  "a28c911b":"Fund Accounting Senior Lead",
+  "736e2e24":"Ventures Associate",
+  "21f142fa":"Executive Assistant",
+  "c90f855a":"Global Development Lead",
+  "3232e7b5":"Global Development Venture Chair",
+  "38528474":"Managing Director, New Ventures",
+  "d21d0304":"Head of Strategy and Finance",
+  "f761f483":"Director of New Ventures",
+  "695dca1d":"Head of Platform",
+  "5a624f97":"Capital Development Lead",
+  "07c27c4d":"Senior Director of Venture Traction",
+  "8ef203cd":"Regional Program Manager",
+  "722154e0":"Senior Associate",
+  "d4569ce0":"Director of Technology, AI Ventures",
+  "2fd25454":"Vice President of Founder Strategy",
+  "31084bf5":"Director of Talent",
+  "cd774f9b":"VP of Technology, AI Ventures",
+  "4d829e97":"Corporate Accounting Lead",
+  "4fa76554":"Managing Director, New Ventures"
+};
+
 // ── Department mapping (by person ID prefix → Deel L1 dept name) ──
 const DEPT_MAP={
   // Office of the CEO
@@ -1850,6 +1930,7 @@ function openPerson(pid){
           <div class="infoCell"><label>Full Name</label><span>${p.full_name}</span></div>
           <div class="infoCell"><label>Worker ID</label><span>${p.id.slice(0,8)}</span></div>
           ${PREFERRED_NAMES[p.id]?`<div class="infoCell" style="grid-column:1/-1"><label>Preferred Name</label><span style="color:var(--uv)">${PREFERRED_NAMES[p.id]}</span></div>`:''}
+          ${JOB_TITLES[p.id]?`<div class="infoCell" style="grid-column:1/-1"><label>Job Title</label><span>${JOB_TITLES[p.id]}</span></div>`:''}
           <div class="infoCell"><label>Country</label><span>${flagName(p.country)}</span></div>
           <div class="infoCell"><label>Start Date</label><span>${fmt(p.start_date)}</span></div>
           <div class="infoCell"><label>Status</label><span>${badge(p.hiring_status)}</span></div>
