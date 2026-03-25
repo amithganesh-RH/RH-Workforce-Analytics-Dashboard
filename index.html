@@ -559,6 +559,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
     <div class="hmeta"><div class="dot"></div>Live · Deel · <span id="ts"></span></div>
     <span class="syncedAt" id="syncedAt"></span>
     <button class="refreshBtn" id="refreshBtn" onclick="manualRefresh()">↻ Refresh</button>
+    <button class="settingsBtn" id="iamSettingsBtn" onclick="openIamPanel()" title="Access Control Settings" style="display:none">⚙</button>
     <div class="huser" id="huser"></div>
   </div>
 </header>
@@ -1093,6 +1094,9 @@ function getUserRole(email){
 
 function applyAccessControl(){
   const perm=PERMISSIONS[CURRENT_ROLE];
+  // Settings icon — admin only
+  const iamBtn=document.getElementById('iamSettingsBtn');
+  if(iamBtn)iamBtn.style.display=CURRENT_ROLE==='admin'?'inline-flex':'none';
   // Tabs
   document.querySelectorAll('.tabBtn[data-tab]').forEach(btn=>{
     const t=btn.dataset.tab;
@@ -1223,11 +1227,9 @@ function showDashboard(){
       ?`<div class="huserAvatar"><img src="${AUTH_USER.picture}" alt="${ini}" referrerpolicy="no-referrer"/></div>`
       :`<div class="huserAvatar">${ini}</div>`;
     const col=ROLE_COLORS[CURRENT_ROLE];
-    const settingsIcon=CURRENT_ROLE==='admin'?`<button class="settingsBtn" onclick="openIamPanel()" title="Access Control Settings">⚙</button>`:'';
     document.getElementById('huser').innerHTML=`
       <span class="huserEmail">${AUTH_USER.name||AUTH_USER.email}</span>
       <span class="roleBadge" style="background:${col}18;color:${col};border-color:${col}40">${ROLE_ICONS[CURRENT_ROLE]} ${ROLE_LABELS[CURRENT_ROLE]}</span>
-      ${settingsIcon}
       ${avatarHTML}
       <button class="hlogoutBtn" onclick="logout()">Sign Out</button>`;
     applyAccessControl();
