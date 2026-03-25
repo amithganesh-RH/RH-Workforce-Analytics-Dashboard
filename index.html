@@ -1521,6 +1521,58 @@ const LEAVE_REQUESTS=[
   {id:"lv020",worker_pid:"e0844e64",worker_name:"Luke John Sheen",type:"pto",status:"approved",start_date:"2026-03-05",end_date:"2026-03-06",days:2,notes:""},
 ];
 
+// ── RH Job Levels (fetched via Deel MCP — custom_fields "RH Job Level") ──
+const JOB_LEVELS={
+  "230c30f4":"Level 10 (Head)",
+  "90e1523c":"Level 7 (Director)",
+  "7c9e731f":"Level 3 (Associate)",
+  "9b898974":"Level 6 (Sr. Lead)",
+  "906c4daf":"Level 11 (Department Leader)",
+  "66c5a6a4":"Level 7 (Director)",
+  "e40a90e6":"Level 7 (Director)",
+  "97b8661c":"Level 11 (Department Leader)",
+  "a3b8f3a7":"Level 8 (Sr. Director)",
+  "c029345a":"Level 9 (VP)",
+  "f429e047":"Level 8 (Sr. Director)",
+  "83f26955":"Level 4 (Sr. Associate)",
+  "9f920f14":"Level 4 (Sr. Associate)",
+  "b4830820":"Level 3 (Associate)",
+  "503195d6":"Level 9 (VP)",
+  "0ee0519f":"Level 9 (VP)",
+  "1dc5f7a0":"Level 9 (VP)",
+  "e99e302d":"Level 8 (Sr. Director)",
+  "c7ff3689":"Level 6 (Sr. Lead)",
+  "ca5d38b2":"Level 4 (Sr. Associate)",
+  "3fa02a62":"Contractor",
+  "c7bc29e4":"Level 9 (VP)",
+  "c523fe93":"Level 9 (VP)",
+  "d871656a":"Level 8 (Sr. Director)",
+  "e7114f6e":"Level 7 (Director)",
+  "3ad307bd":"Level 11 (Department Leader)",
+  "56b8eb3e":"Level 11 (Department Leader)",
+  "72b13c26":"Level 3 (Associate)",
+  "e865c032":"Level 9 (VP)",
+  "7b3177d2":"Level 9 (VP)",
+  "a2cb9d4a":"Level 9 (VP)",
+  "09e6b194":"Level 3 (Associate)",
+  "96e808b6":"Level 9 (VP)",
+  "b61fe2d7":"Level 7 (Director)",
+  "a28c911b":"Level 6 (Sr. Lead)",
+  "736e2e24":"Level 3 (Associate)",
+  "21f142fa":"Level 6 (Sr. Lead)",
+  "c90f855a":"Level 5 (Lead)",
+  "38528474":"Level 9 (VP)",
+  "d21d0304":"Level 11 (Department Leader)",
+  "695dca1d":"Level 11 (Department Leader)",
+  "f761f483":"Level 7 (Director)",
+  "07c27c4d":"Level 8 (Sr. Director)",
+  "722154e0":"Level 4 (Sr. Associate)",
+  "d4569ce0":"Level 7 (Director)",
+  "2fd25454":"Level 9 (VP)",
+  "31084bf5":"Level 7 (Director)",
+  "4d829e97":"Level 5 (Lead)"
+};
+
 // ── Department mapping (by person ID prefix → Deel L1 dept name) ──
 const DEPT_MAP={
   // Office of the CEO
@@ -1687,7 +1739,8 @@ function openPerson(pid){
           <div class="infoCell"><label>Start Date</label><span>${fmt(p.start_date)}</span></div>
           <div class="infoCell"><label>Status</label><span>${badge(p.hiring_status)}</span></div>
           <div class="infoCell"><label>Type</label><span>${badge(p.hiring_type)}</span></div>
-          <div class="infoCell"><label>Work Email</label><span>${p.work_email||'<span style="color:var(--muted)">—</span>'}</span></div>
+          <div class="infoCell"><label>RH Job Level</label><span>${JOB_LEVELS[p.id]||'<span style="color:var(--muted)">—</span>'}</span></div>
+          <div class="infoCell"><label>Work Email</label><span>${p.work_email?`<a href="mailto:${p.work_email}" style="color:var(--uv);text-decoration:none">${p.work_email}</a>`:'<span style="color:var(--muted)">—</span>'}</span></div>
           <div class="infoCell"><label>Phone</label><span style="color:var(--muted);font-size:12px">Not stored in Deel</span></div>
         </div>
       </div>
