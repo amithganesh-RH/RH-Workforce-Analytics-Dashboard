@@ -851,15 +851,17 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
     <!-- Section 4: Geography -->
     <div class="anSec">Geographic Distribution</div>
     <div class="anGrid">
-      <div class="chartCard">
-        <h3>Workers by Country</h3>
-        <div class="chartSub">Click a bar to see workers in that country</div>
-        <div class="chartWrap"><canvas id="cGeoBar" style="max-height:240px"></canvas></div>
-      </div>
-      <div class="chartCard">
-        <h3>Country Mix</h3>
-        <div class="chartSub">Share by geography · click a slice to explore</div>
-        <div class="chartWrap"><canvas id="cGeoPie" style="max-height:240px"></canvas></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;grid-column:1/-1">
+        <div class="chartCard">
+          <h3>Workers by Country</h3>
+          <div class="chartSub">Click a bar to see workers in that country</div>
+          <div class="chartWrap"><canvas id="cGeoBar" style="max-height:240px"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h3>Country Mix</h3>
+          <div class="chartSub">Share by geography · click a slice to explore</div>
+          <div class="chartWrap"><canvas id="cGeoPie" style="max-height:240px"></canvas></div>
+        </div>
       </div>
     </div>
 
@@ -871,15 +873,17 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
         <div class="chartSub">Additions vs attritions over last 24 months · click a bar to explore</div>
         <div class="chartWrap"><canvas id="cNetChange" style="max-height:240px"></canvas></div>
       </div>
-      <div class="chartCard">
-        <h3>Gender Distribution</h3>
-        <div class="chartSub">Click a slice to see the group</div>
-        <div class="chartWrap"><canvas id="cGender"></canvas></div>
-      </div>
-      <div class="chartCard">
-        <h3>Headcount by Age Group</h3>
-        <div class="chartSub">Age from date of birth · click to explore</div>
-        <div class="chartWrap"><canvas id="cAgeGroup"></canvas></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;grid-column:1/-1">
+        <div class="chartCard">
+          <h3>Gender Distribution</h3>
+          <div class="chartSub">Click a slice to see the group</div>
+          <div class="chartWrap"><canvas id="cGender"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h3>Headcount by Age Group</h3>
+          <div class="chartSub">Age from date of birth · click to explore</div>
+          <div class="chartWrap"><canvas id="cAgeGroup"></canvas></div>
+        </div>
       </div>
     </div>
   </div>
