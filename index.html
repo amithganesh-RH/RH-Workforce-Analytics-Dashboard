@@ -442,6 +442,8 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 
 /* ── IAM Module ── */
 .roleBadge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;font-family:var(--font-ui);padding:3px 10px;border-radius:20px;border:1.5px solid;letter-spacing:.3px;white-space:nowrap}
+.settingsBtn{background:none;border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .15s;flex-shrink:0}
+.settingsBtn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.5);color:#fff;transform:rotate(30deg)}
 .iamHero{background:linear-gradient(135deg,var(--galaxy),var(--galaxy2));border-radius:var(--r);padding:28px 32px;margin-bottom:28px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .iamHeroTitle{font-family:var(--font-head);font-size:24px;font-weight:400;margin-bottom:4px}
 .iamHeroSub{font-size:13px;opacity:.7;font-family:var(--font-ui);font-weight:300}
@@ -569,7 +571,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   <button class="tabBtn" data-tab="leave">🏖 Leave <span class="tabBadge" id="badge-leave">0</span></button>
   <button class="tabBtn" data-tab="entities" style="display:none">🏢 Legal Entities <span class="tabBadge">2</span></button>
   <button class="tabBtn" data-tab="profile" style="display:none">🙋 My Profile</button>
-  <button class="tabBtn" data-tab="iam" id="iamTabBtn" style="display:none">🔐 Access Control</button>
+  <button class="tabBtn" data-tab="iam" id="iamTabBtn" style="display:none"></button>
 </nav>
 
 <main>
@@ -1074,7 +1076,7 @@ const ROLE_ICONS={admin:'⚡',people_leader:'👥',normal_user:'👤'};
 const ROLE_COLORS={admin:'#9425C9',people_leader:'#2980b9',normal_user:'#27ae60'};
 
 const PERMISSIONS={
-  admin:        {tabs:['overview','people','analytics','leave','iam'],workerList:true,personDetail:true,leaveDetail:true,kpiFilter:true},
+  admin:        {tabs:['overview','people','analytics','leave'],workerList:true,personDetail:true,leaveDetail:true,kpiFilter:true},
   people_leader:{tabs:['overview','people','analytics','leave'],workerList:true,personDetail:true,leaveDetail:true,kpiFilter:true},
   normal_user:  {tabs:['overview','leave'],workerList:false,personDetail:false,leaveDetail:false,kpiFilter:false}
 };
@@ -1132,8 +1134,6 @@ function applyAccessControl(){
       ovTab.insertBefore(banner,ovTab.querySelector('.ovFilterBar')||ovTab.firstChild);
     }
   }
-  // IAM tab — only admin
-  if(perm.tabs.includes('iam'))renderIamPanel();
 }
 
 // ── IAM panel rendering ──
@@ -1188,6 +1188,13 @@ function iamChangeRole(email,role){
   showToast(`Role updated: ${email} → ${ROLE_LABELS[role]}`);
 }
 
+function openIamPanel(){
+  document.querySelectorAll('.tabBtn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.getElementById('tab-iam').classList.add('active');
+  renderIamPanel();
+}
+
 function iamRemoveUser(email){
   if(AUTH_USER&&AUTH_USER.email===email){showToast('Cannot remove your own admin assignment');return;}
   const a=getRoleAssignments();
@@ -1216,9 +1223,11 @@ function showDashboard(){
       ?`<div class="huserAvatar"><img src="${AUTH_USER.picture}" alt="${ini}" referrerpolicy="no-referrer"/></div>`
       :`<div class="huserAvatar">${ini}</div>`;
     const col=ROLE_COLORS[CURRENT_ROLE];
+    const settingsIcon=CURRENT_ROLE==='admin'?`<button class="settingsBtn" onclick="openIamPanel()" title="Access Control Settings">⚙</button>`:'';
     document.getElementById('huser').innerHTML=`
       <span class="huserEmail">${AUTH_USER.name||AUTH_USER.email}</span>
       <span class="roleBadge" style="background:${col}18;color:${col};border-color:${col}40">${ROLE_ICONS[CURRENT_ROLE]} ${ROLE_LABELS[CURRENT_ROLE]}</span>
+      ${settingsIcon}
       ${avatarHTML}
       <button class="hlogoutBtn" onclick="logout()">Sign Out</button>`;
     applyAccessControl();
