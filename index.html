@@ -140,11 +140,11 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 .chartGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px;margin-bottom:28px}
 .analyticsSec{grid-column:1/-1;font-family:var(--font-ui);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:20px 0 4px;border-top:1px solid var(--border);margin-top:4px}
 .chartWide{grid-column:1/-1}
-.chartCard{background:var(--surface);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);border:1px solid var(--border)}
-.chartCard h3{font-family:var(--font-ui);font-size:16px;font-weight:400;color:var(--galaxy);margin-bottom:4px;letter-spacing:.2px}
-.chartCard .chartSub{font-size:11px;color:var(--muted);margin-bottom:16px;font-weight:300;font-family:var(--font-ui)}
+.chartCard{background:var(--surface);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.chartCard h3{font-family:var(--font-ui);font-size:14px;font-weight:400;color:var(--galaxy);margin-bottom:3px;letter-spacing:.2px}
+.chartCard .chartSub{font-size:11px;color:var(--muted);margin-bottom:10px;font-weight:300;font-family:var(--font-ui)}
 .chartWrap{position:relative}
-.chartWrap canvas{max-height:280px;cursor:pointer}
+.chartWrap canvas{max-height:180px;cursor:pointer}
 .chartNote{font-size:11px;color:var(--uv);margin-top:10px;text-align:center;font-weight:600;font-family:var(--font-ui)}
 
 /* ── OVERVIEW FILTER BAR ── */
@@ -396,7 +396,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 /* Section headers & grids */
 .anSec{font-family:var(--font-ui);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--galaxy);padding:20px 0 12px;display:flex;align-items:center;gap:12px}
 .anSec::after{content:'';flex:1;height:1px;background:var(--bone-dark)}
-.anGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:0}
+.anGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:0}
 .anWide{grid-column:1/-1}
 @media(max-width:640px){.anKpiStrip{grid-template-columns:repeat(2,1fr)}.anGrid{grid-template-columns:1fr}}
 
@@ -802,7 +802,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
       <div class="chartCard anWide">
         <h3>Headcount by Country &amp; Employment Type</h3>
         <div class="chartSub">Stacked by PEO · EOR · Contractor · click a segment to drill in</div>
-        <div class="chartWrap"><canvas id="cStacked" style="max-height:280px"></canvas></div>
+        <div class="chartWrap"><canvas id="cStacked"></canvas></div>
       </div>
       <div class="chartCard">
         <h3>Active Workers by Type</h3>
@@ -817,22 +817,22 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
       <div class="chartCard anWide">
         <h3>Headcount by Seniority Level</h3>
         <div class="chartSub">Based on RH Job Levels · click a bar to see workers at that level</div>
-        <div class="chartWrap"><canvas id="cSeniority" style="max-height:260px"></canvas></div>
+        <div class="chartWrap"><canvas id="cSeniority"></canvas></div>
       </div>
     </div>
 
     <!-- Section 2: Hiring & Growth -->
     <div class="anSec">Hiring &amp; Growth</div>
     <div class="anGrid">
-      <div class="chartCard anWide">
+      <div class="chartCard">
         <h3>Hire Timeline by Quarter</h3>
         <div class="chartSub">New hires per quarter · click a bar to see who joined</div>
-        <div class="chartWrap"><canvas id="cTimeline" style="max-height:240px"></canvas></div>
+        <div class="chartWrap"><canvas id="cTimeline"></canvas></div>
       </div>
-      <div class="chartCard anWide">
+      <div class="chartCard">
         <h3>Cumulative Headcount Growth</h3>
         <div class="chartSub">Month-over-month total growth · click a point to see joiners</div>
-        <div class="chartWrap"><canvas id="cAddTrend" style="max-height:240px"></canvas></div>
+        <div class="chartWrap"><canvas id="cAddTrend"></canvas></div>
       </div>
     </div>
 
@@ -842,7 +842,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
       <div class="chartCard anWide">
         <h3>Headcount by Department — PEO &amp; EOR Split</h3>
         <div class="chartSub">Click a bar to drill into that department and employment type</div>
-        <div class="chartWrap"><canvas id="cDeptSplit" style="max-height:280px"></canvas></div>
+        <div class="chartWrap"><canvas id="cDeptSplit"></canvas></div>
       </div>
     </div>
 
@@ -864,10 +864,10 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
     <!-- Section 5: Movement & Demographics -->
     <div class="anSec">Movement &amp; Demographics</div>
     <div class="anGrid">
-      <div class="chartCard anWide">
+      <div class="chartCard">
         <h3>Net Workforce Change by Month</h3>
         <div class="chartSub">Additions vs attritions over last 24 months · click a bar to explore</div>
-        <div class="chartWrap"><canvas id="cNetChange" style="max-height:240px"></canvas></div>
+        <div class="chartWrap"><canvas id="cNetChange"></canvas></div>
       </div>
       <div class="chartCard">
         <h3>Gender Distribution</h3>
