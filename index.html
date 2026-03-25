@@ -1672,6 +1672,21 @@ const JOB_LEVELS={
   "e0844e64":"Level 5 (Lead)"
 };
 
+// ── Preferred Names (fetched via Deel MCP — preferred_first_name / preferred_last_name) ──
+const PREFERRED_NAMES={
+  "9b898974":"Amith Ganesh",
+  "ce2f1bb8":"Veronica Chew",
+  "70dc4822":"Fola Adeola",
+  "21a76df5":"Fred",
+  "503195d6":"Leland",
+  "74ed1c00":"Nisha Idris",
+  "c7bc29e4":"Matt Ripkey",
+  "72b13c26":"Neharika Garg",
+  "66bd23c0":"Toni Abraham",
+  "cd774f9b":"Varun Dodla",
+  "4d829e97":"Sai Sandeep Bhavaraju"
+};
+
 // ── Department mapping (by person ID prefix → Deel L1 dept name) ──
 const DEPT_MAP={
   // Office of the CEO
@@ -1834,6 +1849,7 @@ function openPerson(pid){
         <div class="infoGrid">
           <div class="infoCell"><label>Full Name</label><span>${p.full_name}</span></div>
           <div class="infoCell"><label>Worker ID</label><span>${p.id.slice(0,8)}</span></div>
+          ${PREFERRED_NAMES[p.id]?`<div class="infoCell" style="grid-column:1/-1"><label>Preferred Name</label><span style="color:var(--uv)">${PREFERRED_NAMES[p.id]}</span></div>`:''}
           <div class="infoCell"><label>Country</label><span>${flagName(p.country)}</span></div>
           <div class="infoCell"><label>Start Date</label><span>${fmt(p.start_date)}</span></div>
           <div class="infoCell"><label>Status</label><span>${badge(p.hiring_status)}</span></div>
