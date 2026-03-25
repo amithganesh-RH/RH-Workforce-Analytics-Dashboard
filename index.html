@@ -804,15 +804,17 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
         <div class="chartSub">Stacked by PEO · EOR · Contractor · click a segment to drill in</div>
         <div class="chartWrap"><canvas id="cStacked" style="max-height:280px"></canvas></div>
       </div>
-      <div class="chartCard">
-        <h3>Active Workers by Type</h3>
-        <div class="chartSub">Active vs inactive split across employment types</div>
-        <div class="chartWrap"><canvas id="cActiveType"></canvas></div>
-      </div>
-      <div class="chartCard">
-        <h3>Contract Type Distribution</h3>
-        <div class="chartSub">Click a slice to explore that contract category</div>
-        <div class="chartWrap"><canvas id="cCtypePie"></canvas></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;grid-column:1/-1">
+        <div class="chartCard">
+          <h3>Active Workers by Type</h3>
+          <div class="chartSub">Active vs inactive split across employment types</div>
+          <div class="chartWrap"><canvas id="cActiveType"></canvas></div>
+        </div>
+        <div class="chartCard">
+          <h3>Contract Type Distribution</h3>
+          <div class="chartSub">Click a slice to explore that contract category</div>
+          <div class="chartWrap"><canvas id="cCtypePie"></canvas></div>
+        </div>
       </div>
       <div class="chartCard anWide">
         <h3>Headcount by Seniority Level</h3>
