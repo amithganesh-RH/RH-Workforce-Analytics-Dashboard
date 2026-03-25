@@ -814,6 +814,11 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
         <div class="chartSub">Click a slice to explore that contract category</div>
         <div class="chartWrap"><canvas id="cCtypePie"></canvas></div>
       </div>
+      <div class="chartCard anWide">
+        <h3>Headcount by Seniority Level</h3>
+        <div class="chartSub">Based on RH Job Levels · click a bar to see workers at that level</div>
+        <div class="chartWrap"><canvas id="cSeniority" style="max-height:260px"></canvas></div>
+      </div>
     </div>
 
     <!-- Section 2: Hiring & Growth -->
@@ -2332,6 +2337,32 @@ function buildAnalyticsCharts(people){
         if(!els.length)return;
         openDrill(ageLabels[els[0].index]+' — Workers',groups[ageLabels[els[0].index]],true);
       }}
+    });
+  }
+
+  // 11. Headcount by Seniority (RH Job Level)
+  {
+    const levelOrder=['Level 3 (Associate)','Level 4 (Sr. Associate)','Level 5 (Lead)',
+      'Level 6 (Sr. Lead)','Level 7 (Director)','Level 8 (Sr. Director)',
+      'Level 9 (VP)','Level 10 (Head)','Level 11 (Department Leader)'];
+    const counts={};
+    people.forEach(p=>{
+      const l=JOB_LEVELS[p.id];
+      if(l)counts[l]=(counts[l]||[]),counts[l].push(p);
+    });
+    const labels=levelOrder.filter(l=>counts[l]&&counts[l].length>0);
+    const senPal=['#c27de0','#b050d8','#9425C9','#7a2080','#5a1860','#3F1046','#2a0c30','#1a0820','#0d0410'];
+    anCharts.seniority=new Chart(document.getElementById('cSeniority'),{
+      type:'bar',
+      data:{labels,datasets:[{label:'Workers',data:labels.map(l=>counts[l].length),
+        backgroundColor:labels.map((_,i)=>senPal[i%senPal.length]),borderRadius:6}]},
+      options:{plugins:{legend:{display:false}},
+        scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}},
+        onClick:(e,els)=>{
+          if(!els.length)return;
+          const l=labels[els[0].index];
+          openDrill(l+' — Workers',counts[l],true);
+        }}
     });
   }
 }
