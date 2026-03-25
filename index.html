@@ -479,6 +479,49 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 .accessBannerMsg{font-weight:400}
 .accessBannerMsg strong{font-weight:700}
 
+/* ── AI Chat Bot ── */
+.chatBtn{position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,var(--galaxy),var(--uv));color:#fff;border:none;border-radius:28px;padding:11px 18px 11px 14px;font-family:var(--font-ui);font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 24px rgba(148,37,201,.45);display:none;align-items:center;gap:8px;z-index:1000;transition:transform .15s,box-shadow .15s;letter-spacing:.2px}
+.chatBtn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(148,37,201,.6)}
+.chatBtnBadge{background:#e74c3c;color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.chatPanel{position:fixed;bottom:88px;right:28px;width:390px;height:560px;background:var(--surface);border-radius:18px;box-shadow:0 12px 48px rgba(63,16,70,.22);display:flex;flex-direction:column;z-index:1001;border:1px solid var(--border);transform:scale(.94) translateY(12px);opacity:0;pointer-events:none;transition:transform .22s cubic-bezier(.34,1.56,.64,1),opacity .18s;overflow:hidden}
+.chatPanel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.chatPanelHdr{background:linear-gradient(135deg,var(--galaxy),var(--galaxy2));padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.chatPanelHdrL{display:flex;align-items:center;gap:10px}
+.chatPanelAvatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.chatPanelTitle{font-family:var(--font-ui);font-size:14px;font-weight:700;color:#fff;line-height:1.2}
+.chatPanelSub{font-family:var(--font-ui);font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+.chatHdrBtn{background:rgba(255,255,255,.12);border:none;color:rgba(255,255,255,.8);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;transition:background .12s}
+.chatHdrBtn:hover{background:rgba(255,255,255,.25);color:#fff}
+.chatMsgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.chatMsgs::-webkit-scrollbar{width:4px}
+.chatMsgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.chatWelcome{text-align:center;padding:12px 4px 4px}
+.chatWelcomeIcon{font-size:40px;margin-bottom:8px}
+.chatWelcomeTitle{font-family:var(--font-ui);font-size:15px;font-weight:700;color:var(--galaxy);margin-bottom:6px}
+.chatWelcomeSub{font-family:var(--font-ui);font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:18px}
+.chatChips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.chatChip{font-family:var(--font-ui);font-size:11px;font-weight:600;padding:5px 13px;border-radius:16px;border:1.5px solid var(--uv-light);background:var(--uv-faint);color:var(--uv);cursor:pointer;transition:all .12s}
+.chatChip:hover{background:var(--uv);color:#fff;border-color:var(--uv)}
+.chatMsgRow{display:flex;align-items:flex-end;gap:8px}
+.chatMsgRow.user{flex-direction:row-reverse}
+.chatBubble{max-width:84%;padding:10px 14px;border-radius:14px;font-family:var(--font-ui);font-size:13px;line-height:1.6;word-break:break-word}
+.chatMsgRow.bot .chatBubble{background:var(--bone);color:var(--galaxy);border-bottom-left-radius:4px;border:1px solid var(--border)}
+.chatMsgRow.user .chatBubble{background:linear-gradient(135deg,var(--galaxy),var(--uv));color:#fff;border-bottom-right-radius:4px}
+.chatMsgRow.error .chatBubble{background:rgba(192,57,43,.09);color:var(--red);border:1px solid rgba(192,57,43,.2)}
+.chatTypingDots{display:flex;align-items:center;gap:4px;padding:4px 2px}
+.chatTypingDots span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:chatDot .9s infinite}
+.chatTypingDots span:nth-child(2){animation-delay:.2s}
+.chatTypingDots span:nth-child(3){animation-delay:.4s}
+@keyframes chatDot{0%,60%,100%{opacity:.3;transform:scale(1)}30%{opacity:1;transform:scale(1.35)}}
+.chatInputArea{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0}
+.chatInputField{flex:1;font-family:var(--font-ui);font-size:13px;padding:9px 14px;border:1.5px solid var(--border);border-radius:22px;background:var(--bone);color:var(--galaxy);outline:none;transition:border-color .15s}
+.chatInputField:focus{border-color:var(--uv)}
+.chatInputField::placeholder{color:var(--muted);font-weight:300}
+.chatSendBtn{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--galaxy),var(--uv));color:#fff;border:none;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s,transform .1s}
+.chatSendBtn:hover:not(:disabled){transform:scale(1.08)}
+.chatSendBtn:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:500px){.chatPanel{width:calc(100vw - 20px);right:10px;bottom:80px;height:500px}.chatBtn{right:14px;bottom:18px}}
+
 /* Leave tab KPI strip */
 .leaveKpiStrip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
 @media(max-width:860px){.leaveKpiStrip{grid-template-columns:1fr 1fr}}
@@ -1067,6 +1110,50 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   <div id="spContent"></div>
 </div>
 
+<!-- AI CHAT BOT -->
+<button class="chatBtn" id="chatBtn" onclick="toggleChat()">
+  <span style="font-size:16px">✨</span>
+  <span>Ask RH Assist</span>
+  <span class="chatBtnBadge" id="chatBtnBadge" style="display:none">1</span>
+</button>
+
+<div class="chatPanel" id="chatPanel">
+  <div class="chatPanelHdr">
+    <div class="chatPanelHdrL">
+      <div class="chatPanelAvatar">✨</div>
+      <div>
+        <div class="chatPanelTitle">RH Assist</div>
+        <div class="chatPanelSub" id="chatPanelSub">Workforce AI · Ask me anything</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="chatHdrBtn" onclick="clearChat()" title="Clear conversation">🗑</button>
+      <button class="chatHdrBtn" onclick="toggleChat()" title="Close">✕</button>
+    </div>
+  </div>
+  <div class="chatMsgs" id="chatMsgs">
+    <div class="chatWelcome" id="chatWelcome">
+      <div class="chatWelcomeIcon">✨</div>
+      <div class="chatWelcomeTitle">Hi, I'm RH Assist</div>
+      <div class="chatWelcomeSub">I can answer questions about your workforce — headcount, leave, departments, job levels, and more. Try a prompt below or type your own.</div>
+      <div class="chatChips" id="chatChips">
+        <button class="chatChip" onclick="sendChip(this)">Who's on leave today?</button>
+        <button class="chatChip" onclick="sendChip(this)">How many active workers?</button>
+        <button class="chatChip" onclick="sendChip(this)">Top countries by headcount</button>
+        <button class="chatChip" onclick="sendChip(this)">Show EOR breakdown</button>
+        <button class="chatChip" onclick="sendChip(this)">Upcoming leave this month</button>
+        <button class="chatChip" onclick="sendChip(this)">Who are the VPs?</button>
+        <button class="chatChip" onclick="sendChip(this)">Headcount by department</button>
+        <button class="chatChip" onclick="sendChip(this)">New hires in 2026</button>
+      </div>
+    </div>
+  </div>
+  <div class="chatInputArea">
+    <input class="chatInputField" id="chatInput" placeholder="Ask about headcount, leave, departments…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"/>
+    <button class="chatSendBtn" id="chatSendBtn" onclick="sendChat()" title="Send">↑</button>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -1234,6 +1321,7 @@ function showDashboard(){
       <button class="hlogoutBtn" onclick="logout()">Sign Out</button>`;
     applyAccessControl();
   }
+  document.getElementById('chatBtn').style.display='flex';
   // Check if Deel data needs refreshing; auto-refresh every 2h
   loadDeelData();
   if(!window._autoRefreshTimer){
@@ -2838,6 +2926,148 @@ async function loadDeelData(force=false){
 }
 
 function manualRefresh(){loadDeelData(true);}
+
+// ═══════════════ AI CHAT BOT ═══════════════
+let chatHistory=[];
+let chatIsOpen=false;
+
+function toggleChat(){
+  chatIsOpen=!chatIsOpen;
+  document.getElementById('chatPanel').classList.toggle('open',chatIsOpen);
+  document.getElementById('chatBtnBadge').style.display='none';
+  if(chatIsOpen)setTimeout(()=>document.getElementById('chatInput').focus(),220);
+}
+
+function clearChat(){
+  chatHistory=[];
+  const msgs=document.getElementById('chatMsgs');
+  msgs.innerHTML=`<div class="chatWelcome" id="chatWelcome">
+    <div class="chatWelcomeIcon">✨</div>
+    <div class="chatWelcomeTitle">Conversation cleared</div>
+    <div class="chatWelcomeSub">Ask me anything about the workforce data.</div>
+    <div class="chatChips">
+      <button class="chatChip" onclick="sendChip(this)">Who's on leave today?</button>
+      <button class="chatChip" onclick="sendChip(this)">How many active workers?</button>
+      <button class="chatChip" onclick="sendChip(this)">Headcount by department</button>
+      <button class="chatChip" onclick="sendChip(this)">Who are the VPs?</button>
+    </div>
+  </div>`;
+  document.getElementById('chatPanelSub').textContent='Workforce AI · Ask me anything';
+}
+
+function buildChatContext(){
+  const today=new Date().toISOString().slice(0,10);
+  const active=PEOPLE.filter(p=>p.hiring_status==='active');
+  const inactive=PEOPLE.filter(p=>p.hiring_status==='inactive');
+  const pending=PEOPLE.filter(p=>['invited','pending_invite','onboarded','onboarding'].includes(p.hiring_status));
+  const peo=active.filter(p=>p.hiring_type==='peo');
+  const eor=active.filter(p=>p.hiring_type==='eor');
+  const contractors=active.filter(p=>p.hiring_type==='contractor');
+  const byCo={};
+  active.forEach(p=>{if(p.country)byCo[p.country]=(byCo[p.country]||0)+1;});
+  const byDept={};
+  active.forEach(p=>{const d=getDept(p.id);byDept[d]=(byDept[d]||0)+1;});
+  const activeContracts=CONTRACTS.filter(c=>c.status==='in_progress');
+  const onLeaveToday=LEAVE_REQUESTS.filter(lv=>lv.status==='approved'&&leaveIsOnDate(lv,today));
+  const soon=new Date(Date.now()+30*86400000).toISOString().slice(0,10);
+  const upcomingLeave=LEAVE_REQUESTS.filter(lv=>lv.status==='approved'&&lv.start_date>today&&lv.start_date<=soon);
+  const perm=PERMISSIONS[CURRENT_ROLE];
+
+  const summary=`## Headcount Summary
+Total: ${PEOPLE.length} | Active: ${active.length} | Inactive: ${inactive.length} | Pending/Onboarding: ${pending.length}
+PEO (US payroll): ${peo.length} | EOR (global): ${eor.length} | Contractors: ${contractors.length}
+Active countries: ${Object.keys(byCo).length} | Active contracts: ${activeContracts.length}
+
+## Active Workers by Country
+${Object.entries(byCo).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`${c}: ${n}`).join(' | ')}
+
+## Active Workers by Department
+${Object.entries(byDept).sort((a,b)=>b[1]-a[1]).map(([d,n])=>`${d}: ${n}`).join('\n')}
+
+## Leave Today (${today})
+${onLeaveToday.length?onLeaveToday.map(lv=>`${lv.worker_name} — ${lv.type} (back ${leaveReturnDate(lv)})`).join('\n'):'No one on leave today'}
+
+## Upcoming Approved Leave (next 30 days)
+${upcomingLeave.length?upcomingLeave.map(lv=>`${lv.worker_name} — ${lv.type} — ${lv.start_date} to ${lv.end_date} (${lv.days}d)`).join('\n'):'None scheduled'}`;
+
+  if(!perm.personDetail){
+    return summary+'\n\n(Individual employee details restricted for this role)';
+  }
+
+  const peopleList=PEOPLE.map(p=>{
+    const dept=getDept(p.id);
+    const lvl=JOB_LEVELS[p.id]?` [${JOB_LEVELS[p.id]}]`:'';
+    return`${p.full_name} | ${p.hiring_type} | ${p.hiring_status} | ${p.country||'?'} | ${dept}${lvl}`;
+  }).join('\n');
+
+  return summary+`\n\n## All People (Name | Type | Status | Country | Department | Job Level)\n${peopleList}`;
+}
+
+function appendChatMsg(role,text,isError=false){
+  const msgs=document.getElementById('chatMsgs');
+  // Hide welcome on first message
+  const welcome=document.getElementById('chatWelcome');
+  if(welcome)welcome.style.display='none';
+  const row=document.createElement('div');
+  row.className=`chatMsgRow ${role}${isError?' error':''}`;
+  const html=text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/^[-•] (.+)/gm,'• $1')
+    .replace(/\n/g,'<br>');
+  row.innerHTML=`<div class="chatBubble">${html}</div>`;
+  msgs.appendChild(row);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showChatTyping(){
+  const msgs=document.getElementById('chatMsgs');
+  const id='typ_'+Date.now();
+  const row=document.createElement('div');
+  row.className='chatMsgRow bot';row.id=id;
+  row.innerHTML=`<div class="chatBubble"><div class="chatTypingDots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(row);msgs.scrollTop=msgs.scrollHeight;
+  return id;
+}
+
+async function sendChat(){
+  const input=document.getElementById('chatInput');
+  const question=(input.value||'').trim();
+  if(!question)return;
+  input.value='';
+  const sendBtn=document.getElementById('chatSendBtn');
+  sendBtn.disabled=true;
+  document.getElementById('chatPanelSub').textContent='Thinking…';
+  appendChatMsg('user',question);
+  chatHistory.push({role:'user',content:question});
+  const typId=showChatTyping();
+  try{
+    const res=await fetch('/.netlify/functions/ai-chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:chatHistory.slice(-8),context:buildChatContext()})
+    });
+    document.getElementById(typId)?.remove();
+    const data=await res.json();
+    if(!res.ok||data.error)throw new Error(data.error||'Request failed');
+    appendChatMsg('bot',data.answer);
+    chatHistory.push({role:'assistant',content:data.answer});
+    document.getElementById('chatPanelSub').textContent='Workforce AI · Ask me anything';
+  }catch(err){
+    document.getElementById(typId)?.remove();
+    appendChatMsg('bot','Sorry, I couldn\'t get a response. '+(err.message||''),true);
+    document.getElementById('chatPanelSub').textContent='Workforce AI · Ask me anything';
+  }finally{
+    sendBtn.disabled=false;
+    input.focus();
+  }
+}
+
+function sendChip(btn){
+  document.getElementById('chatInput').value=btn.textContent;
+  sendChat();
+}
 </script>
 </body>
 </html>
