@@ -466,6 +466,32 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 .leaveTdMeta{font-size:11px;color:var(--muted);font-weight:300;font-family:var(--font-ui);margin-top:2px}
 .leaveEmpty{padding:28px;text-align:center;color:var(--muted);font-size:13px;font-family:var(--font-ui);font-weight:300;background:var(--surface);border-radius:var(--r);border:1px solid var(--border)}
 
+/* ── Celebrations Module ── */
+.celebHeader{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.celebPills{display:flex;gap:8px;flex-wrap:wrap}
+.celebPill{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:6px 18px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.3px}
+.celebPill:hover{border-color:var(--uv);color:var(--uv)}
+.celebPill.active{background:var(--galaxy);border-color:var(--galaxy);color:#fff}
+.celebGrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:768px){.celebGrid{grid-template-columns:1fr}}
+.celebCard{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.celebCardTitle{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--galaxy)}
+.celebBadge{background:var(--uv-faint);color:var(--uv);border:1.5px solid rgba(148,37,201,.2);font-size:11px;font-weight:700;padding:2px 10px;border-radius:12px;font-family:var(--font-ui)}
+.celebList{max-height:320px;overflow-y:auto}
+.celebList::-webkit-scrollbar{width:4px}
+.celebList::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.celebPerson{display:flex;align-items:center;gap:12px;padding:10px 18px;transition:background .12s;cursor:pointer}
+.celebPerson:hover{background:var(--uv-faint)}
+.celebAvatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--uv-light),var(--uv));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:var(--font-ui);color:#fff;flex-shrink:0}
+.celebPersonName{font-size:13px;font-weight:600;color:var(--galaxy);font-family:var(--font-ui);line-height:1.3}
+.celebPersonMeta{font-size:11px;color:var(--muted);font-family:var(--font-ui);font-weight:300;margin-top:2px}
+.celebMilestone{font-size:11px;font-weight:700;font-family:var(--font-ui);padding:2px 9px;border-radius:8px;white-space:nowrap;flex-shrink:0}
+.celebMilestoneBig{background:linear-gradient(135deg,#f5a623,#f7c75a);color:#7a3e00}
+.celebMilestoneNorm{background:var(--uv-faint);color:var(--uv);border:1px solid rgba(148,37,201,.2)}
+.celebEmpty{padding:32px 20px;text-align:center;color:var(--muted);font-size:13px;font-family:var(--font-ui);font-weight:300}
+.celebEmptyIcon{font-size:28px;margin-bottom:8px}
+.celebMonthLabel{padding:7px 18px 5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--uv);font-family:var(--font-ui);background:var(--uv-faint);border-top:1px solid rgba(148,37,201,.1);border-bottom:1px solid rgba(148,37,201,.1);position:sticky;top:0;z-index:1}
+
 /* ── IAM Module ── */
 .roleBadge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;font-family:var(--font-ui);padding:3px 10px;border-radius:20px;border:1.5px solid;letter-spacing:.3px;white-space:nowrap}
 .settingsBtn{background:none;border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .15s;flex-shrink:0}
@@ -674,6 +700,34 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
         </select>
       </div>
       <div class="leaveTodayCards" id="leaveTodayWidget"></div>
+    </div>
+
+    <!-- ── CELEBRATIONS ── -->
+    <div class="ovSection">
+      <div class="celebHeader">
+        <div class="ovSectionTitle" style="margin-bottom:0">🎉 Upcoming Celebrations</div>
+        <div class="celebPills">
+          <button class="celebPill active" data-period="week" onclick="setCelebPeriod(this)">This Week</button>
+          <button class="celebPill" data-period="month" onclick="setCelebPeriod(this)">This Month</button>
+          <button class="celebPill" data-period="year" onclick="setCelebPeriod(this)">This Year</button>
+        </div>
+      </div>
+      <div class="celebGrid">
+        <div class="celebCard">
+          <div class="celebCardTitle">
+            <span>🎂 Birthdays</span>
+            <span class="celebBadge" id="birthdayBadge">0</span>
+          </div>
+          <div class="celebList" id="birthdayList"></div>
+        </div>
+        <div class="celebCard">
+          <div class="celebCardTitle">
+            <span>🏅 Work Anniversaries</span>
+            <span class="celebBadge" id="anniversaryBadge">0</span>
+          </div>
+          <div class="celebList" id="anniversaryList"></div>
+        </div>
+      </div>
     </div>
 
     <!-- ── 2. WORKFORCE COMPOSITION + TOP COUNTRIES ── -->
@@ -3055,8 +3109,139 @@ function openLeaveDetail(id){
   `);
 }
 
+// ── Celebrations Module ──
+let CELEB_PERIOD='week';
+
+function setCelebPeriod(btn){
+  CELEB_PERIOD=btn.dataset.period;
+  document.querySelectorAll('.celebPill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderCelebrations();
+}
+
+function celebInPeriod(mo,dd,period){
+  const today=new Date();
+  if(period==='year')return true;
+  if(period==='month')return mo===today.getMonth();
+  // week: Mon–Sun
+  const dow=today.getDay();
+  const monday=new Date(today);monday.setDate(today.getDate()-(dow===0?6:dow-1));
+  const sunday=new Date(monday);sunday.setDate(monday.getDate()+6);
+  const yr=today.getFullYear();
+  let d=new Date(yr,mo,dd);
+  if(d.getMonth()!==mo)d=new Date(yr,mo+1,0); // clamp to last day of month
+  return d>=monday&&d<=sunday;
+}
+
+function renderCelebrations(){
+  const today=new Date();
+  const period=CELEB_PERIOD;
+  const MS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const ML=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  // Only current active workers
+  const eligible=PEOPLE.filter(p=>p.hiring_status==='active');
+
+  // ── Birthdays ──
+  const birthdays=[];
+  eligible.forEach(p=>{
+    const dob=DOB_MAP[p.id];if(!dob)return;
+    const d=new Date(dob);
+    const mo=d.getMonth(),dd=d.getDate();
+    if(!celebInPeriod(mo,dd,period))return;
+    birthdays.push({person:p,mo,dd});
+  });
+  birthdays.sort((a,b)=>{
+    if(period==='year')return a.mo!==b.mo?a.mo-b.mo:a.dd-b.dd;
+    const yr=today.getFullYear();
+    return new Date(yr,a.mo,a.dd)-new Date(yr,b.mo,b.dd);
+  });
+
+  // ── Work Anniversaries ──
+  const anniversaries=[];
+  eligible.forEach(p=>{
+    if(!p.start_date)return;
+    const d=new Date(p.start_date);
+    const mo=d.getMonth(),dd=d.getDate();
+    if(!celebInPeriod(mo,dd,period))return;
+    const years=today.getFullYear()-d.getFullYear();
+    if(years<=0)return;
+    anniversaries.push({person:p,mo,dd,years,startDate:d});
+  });
+  anniversaries.sort((a,b)=>{
+    if(period==='year')return a.mo!==b.mo?a.mo-b.mo:a.dd-b.dd;
+    const yr=today.getFullYear();
+    return new Date(yr,a.mo,a.dd)-new Date(yr,b.mo,b.dd);
+  });
+
+  const bBadge=document.getElementById('birthdayBadge');
+  const aBadge=document.getElementById('anniversaryBadge');
+  if(bBadge)bBadge.textContent=birthdays.length;
+  if(aBadge)aBadge.textContent=anniversaries.length;
+
+  const periodLabel=period==='week'?'this week':period==='month'?'this month':'this year';
+
+  // ── Render Birthdays ──
+  const bList=document.getElementById('birthdayList');
+  if(bList){
+    if(!birthdays.length){
+      bList.innerHTML=`<div class="celebEmpty"><div class="celebEmptyIcon">🎂</div>No birthdays ${periodLabel}</div>`;
+    }else if(period==='year'){
+      const grp={};birthdays.forEach(it=>{if(!grp[it.mo])grp[it.mo]=[];grp[it.mo].push(it);});
+      bList.innerHTML=Object.keys(grp).sort((a,b)=>Number(a)-Number(b)).map(mo=>{
+        return`<div class="celebMonthLabel">${ML[mo]}</div>`+grp[mo].map(it=>celebBdayCard(it,MS)).join('');
+      }).join('');
+    }else{
+      bList.innerHTML=birthdays.map(it=>celebBdayCard(it,MS)).join('');
+    }
+  }
+
+  // ── Render Anniversaries ──
+  const aList=document.getElementById('anniversaryList');
+  if(aList){
+    if(!anniversaries.length){
+      aList.innerHTML=`<div class="celebEmpty"><div class="celebEmptyIcon">🏅</div>No anniversaries ${periodLabel}</div>`;
+    }else if(period==='year'){
+      const grp={};anniversaries.forEach(it=>{if(!grp[it.mo])grp[it.mo]=[];grp[it.mo].push(it);});
+      aList.innerHTML=Object.keys(grp).sort((a,b)=>Number(a)-Number(b)).map(mo=>{
+        return`<div class="celebMonthLabel">${ML[mo]}</div>`+grp[mo].map(it=>celebAnnivCard(it,MS)).join('');
+      }).join('');
+    }else{
+      aList.innerHTML=anniversaries.map(it=>celebAnnivCard(it,MS)).join('');
+    }
+  }
+}
+
+function celebBdayCard(it,MS){
+  const ini=initials(it.person.full_name);
+  return`<div class="celebPerson" onclick="openPerson('${it.person.id}')">
+    <div class="celebAvatar">${ini}</div>
+    <div style="flex:1;min-width:0">
+      <div class="celebPersonName">${it.person.full_name}</div>
+      <div class="celebPersonMeta">🎂 ${MS[it.mo]} ${it.dd}</div>
+    </div>
+  </div>`;
+}
+
+function celebAnnivCard(it,MS){
+  const ini=initials(it.person.full_name);
+  const isBig=[5,10,15,20].includes(it.years);
+  const isMilestone=[1,2,3,5,10,15,20].includes(it.years);
+  const badge=isMilestone?`<span class="celebMilestone ${isBig?'celebMilestoneBig':'celebMilestoneNorm'}">${it.years}yr ${isBig?'🎊':'✨'}</span>`:'';
+  const smo=it.startDate.getMonth(),syr=it.startDate.getFullYear();
+  return`<div class="celebPerson" onclick="openPerson('${it.person.id}')">
+    <div class="celebAvatar" style="background:linear-gradient(135deg,#c27de0,#3F1046)">${ini}</div>
+    <div style="flex:1;min-width:0">
+      <div class="celebPersonName">${it.person.full_name}</div>
+      <div class="celebPersonMeta">🏅 ${it.years} year${it.years!==1?'s':''} · Since ${MS[smo]} ${syr}</div>
+    </div>
+    ${badge}
+  </div>`;
+}
+
 // Initial render
 renderLeaveTodayWidget();
+renderCelebrations();
 renderLeaveModule();
 
 // ═══════════════ DEEL REAL-TIME SYNC ═══════════════
