@@ -3319,26 +3319,71 @@ function clearChat(){
 
 function buildChatContext(){
   const today=new Date().toISOString().slice(0,10);
+  const todayDate=new Date();
   const active=PEOPLE.filter(p=>p.hiring_status==='active');
   const inactive=PEOPLE.filter(p=>p.hiring_status==='inactive');
   const pending=PEOPLE.filter(p=>['invited','pending_invite','onboarded','onboarding'].includes(p.hiring_status));
   const peo=active.filter(p=>p.hiring_type==='peo');
   const eor=active.filter(p=>p.hiring_type==='eor');
   const contractors=active.filter(p=>p.hiring_type==='contractor');
+
   const byCo={};
   active.forEach(p=>{if(p.country)byCo[p.country]=(byCo[p.country]||0)+1;});
   const byDept={};
   active.forEach(p=>{const d=getDept(p.id);byDept[d]=(byDept[d]||0)+1;});
+
   const activeContracts=CONTRACTS.filter(c=>c.status==='in_progress');
-  const onLeaveToday=LEAVE_REQUESTS.filter(lv=>lv.status==='approved'&&leaveIsOnDate(lv,today));
+  const onLeaveToday=LEAVE_REQUESTS.filter(lv=>lv.status!=='rejected'&&leaveIsOnDate(lv,today));
   const soon=new Date(Date.now()+30*86400000).toISOString().slice(0,10);
-  const upcomingLeave=LEAVE_REQUESTS.filter(lv=>lv.status==='approved'&&lv.start_date>today&&lv.start_date<=soon);
+  const upcomingLeave=LEAVE_REQUESTS.filter(lv=>lv.status!=='rejected'&&lv.start_date>today&&lv.start_date<=soon);
+  const pendingLeave=LEAVE_REQUESTS.filter(lv=>lv.status==='pending');
   const perm=PERMISSIONS[CURRENT_ROLE];
 
-  const summary=`## Headcount Summary
-Total: ${PEOPLE.length} | Active: ${active.length} | Inactive: ${inactive.length} | Pending/Onboarding: ${pending.length}
-PEO (US payroll): ${peo.length} | EOR (global): ${eor.length} | Contractors: ${contractors.length}
-Active countries: ${Object.keys(byCo).length} | Active contracts: ${activeContracts.length}
+  // Tenure helper
+  function tenure(startDate){
+    if(!startDate)return'unknown';
+    const ms=todayDate-new Date(startDate);
+    const yrs=Math.floor(ms/31557600000);
+    const mos=Math.floor((ms%31557600000)/2629800000);
+    return yrs>0?(mos>0?`${yrs}y ${mos}m`:`${yrs}y`):`${mos}m`;
+  }
+
+  // Per-person contract title
+  const contractByWorker={};
+  CONTRACTS.forEach(c=>{if(c.worker_pid&&c.status==='in_progress')contractByWorker[c.worker_pid]=c.title;});
+
+  // Per-person leave days taken this year
+  const yr=todayDate.getFullYear().toString();
+  const leaveTaken={};
+  LEAVE_REQUESTS.filter(lv=>lv.status==='approved'&&lv.start_date.startsWith(yr)).forEach(lv=>{
+    leaveTaken[lv.worker_name]=(leaveTaken[lv.worker_name]||0)+lv.days;
+  });
+
+  // Upcoming birthdays (next 30 days)
+  const MS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const upcomingBdays=[];
+  const upcomingAnnivs=[];
+  active.forEach(p=>{
+    const dob=DOB_MAP[p.id];
+    if(dob){
+      const d=new Date(dob);
+      const thisYr=new Date(todayDate.getFullYear(),d.getMonth(),d.getDate());
+      const diff=(thisYr-todayDate)/86400000;
+      if(diff>=0&&diff<=30)upcomingBdays.push(`${p.full_name} (${MS[d.getMonth()]} ${d.getDate()})`);
+    }
+    if(p.start_date){
+      const d=new Date(p.start_date);
+      const thisYr=new Date(todayDate.getFullYear(),d.getMonth(),d.getDate());
+      const diff=(thisYr-todayDate)/86400000;
+      const yrs=todayDate.getFullYear()-d.getFullYear();
+      if(diff>=0&&diff<=30&&yrs>0)upcomingAnnivs.push(`${p.full_name} — ${yrs}yr (${MS[d.getMonth()]} ${d.getDate()})`);
+    }
+  });
+
+  const summary=`## Headcount Summary (as of ${today})
+Total workers: ${PEOPLE.length} | Active: ${active.length} | Inactive: ${inactive.length} | Pending/Onboarding: ${pending.length}
+PEO (US payroll): ${peo.length} | EOR (global employer of record): ${eor.length} | Contractors: ${contractors.length}
+Countries with active workers: ${Object.keys(byCo).length} | Active contracts: ${activeContracts.length}
 
 ## Active Workers by Country
 ${Object.entries(byCo).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`${c}: ${n}`).join(' | ')}
@@ -3347,10 +3392,19 @@ ${Object.entries(byCo).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`${c}: ${n}`).join(' 
 ${Object.entries(byDept).sort((a,b)=>b[1]-a[1]).map(([d,n])=>`${d}: ${n}`).join('\n')}
 
 ## Leave Today (${today})
-${onLeaveToday.length?onLeaveToday.map(lv=>`${lv.worker_name} — ${lv.type} (back ${leaveReturnDate(lv)})`).join('\n'):'No one on leave today'}
+${onLeaveToday.length?onLeaveToday.map(lv=>`${lv.worker_name} — ${lv.type} (${lv.start_date} to ${lv.end_date})`).join('\n'):'No one on leave today'}
 
 ## Upcoming Approved Leave (next 30 days)
-${upcomingLeave.length?upcomingLeave.map(lv=>`${lv.worker_name} — ${lv.type} — ${lv.start_date} to ${lv.end_date} (${lv.days}d)`).join('\n'):'None scheduled'}`;
+${upcomingLeave.length?upcomingLeave.map(lv=>`${lv.worker_name} — ${lv.type} — ${lv.start_date} to ${lv.end_date} (${lv.days} days)`).join('\n'):'None scheduled'}
+
+## Pending Leave Requests (awaiting approval)
+${pendingLeave.length?pendingLeave.map(lv=>`${lv.worker_name} — ${lv.type} — ${lv.start_date} to ${lv.end_date} (${lv.days} days)`).join('\n'):'None pending'}
+
+## Upcoming Birthdays (next 30 days)
+${upcomingBdays.length?upcomingBdays.join(', '):'None'}
+
+## Upcoming Work Anniversaries (next 30 days)
+${upcomingAnnivs.length?upcomingAnnivs.join('\n'):'None'}`;
 
   if(!perm.personDetail){
     return summary+'\n\n(Individual employee details restricted for this role)';
@@ -3358,11 +3412,14 @@ ${upcomingLeave.length?upcomingLeave.map(lv=>`${lv.worker_name} — ${lv.type} �
 
   const peopleList=PEOPLE.map(p=>{
     const dept=getDept(p.id);
-    const lvl=JOB_LEVELS[p.id]?` [${JOB_LEVELS[p.id]}]`:'';
-    return`${p.full_name} | ${p.hiring_type} | ${p.hiring_status} | ${p.country||'?'} | ${dept}${lvl}`;
+    const lvl=JOB_LEVELS[p.id]||'—';
+    const ten=tenure(p.start_date);
+    const role=contractByWorker[p.id]||'—';
+    const leaveDays=leaveTaken[p.full_name]||0;
+    return`${p.full_name} | ${p.hiring_type} | ${p.hiring_status} | ${p.country||'?'} | ${dept} | ${lvl} | start:${p.start_date||'?'} | tenure:${ten} | leave taken ${yr}:${leaveDays}d | role:${role}`;
   }).join('\n');
 
-  return summary+`\n\n## All People (Name | Type | Status | Country | Department | Job Level)\n${peopleList}`;
+  return summary+`\n\n## All People\n(Name | Type | Status | Country | Department | Job Level | Start Date | Tenure | Leave Taken ${yr} | Contract Role)\n${peopleList}`;
 }
 
 function appendChatMsg(role,text,isError=false){

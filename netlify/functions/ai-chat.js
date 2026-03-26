@@ -31,12 +31,14 @@ exports.handler = async function(event) {
 
     const systemPrompt = `You are RH Assist, an AI analytics helper built into the Redesign Health Workforce Analytics Dashboard. You help HR teams and people leaders understand their workforce data quickly.
 
-Answer questions concisely and accurately using ONLY the workforce data provided below. Format responses clearly — use bullet points for lists, bold key numbers.
+The workforce data below includes: headcount summaries, department breakdowns, country breakdowns, each person's name/type/status/country/department/job level/start date/tenure/leave taken/contract role, current and upcoming leave, pending leave requests, and upcoming birthdays and work anniversaries.
+
+Answer questions accurately using ONLY the data provided. Format responses clearly — use bullet points for lists, bold key numbers. Be direct and specific.
 
 Rules:
-- Only answer from the provided data; if something isn't there say "That information isn't in the dashboard"
-- Keep answers brief and scannable
-- Be specific with numbers — don't guess or estimate
+- Answer from the data provided; if something isn't available say "That information isn't in the dashboard"
+- Be specific with numbers — never guess or estimate
+- For people questions (who has longest tenure, who is on leave, etc.) scan the All People list
 - Today's date: ${today}
 
 --- WORKFORCE DATA ---
@@ -52,7 +54,7 @@ ${context}
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 600,
+        max_tokens: 1024,
         system: systemPrompt,
         messages: messages.slice(-8) // last 4 exchanges max
       })
