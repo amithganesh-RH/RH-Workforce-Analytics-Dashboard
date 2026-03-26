@@ -468,10 +468,6 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 
 /* ── Celebrations Module ── */
 .celebHeader{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px}
-.celebPills{display:flex;gap:8px;flex-wrap:wrap}
-.celebPill{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:6px 18px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;letter-spacing:.3px}
-.celebPill:hover{border-color:var(--uv);color:var(--uv)}
-.celebPill.active{background:var(--galaxy);border-color:var(--galaxy);color:#fff}
 .celebGrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:768px){.celebGrid{grid-template-columns:1fr}}
 .celebCard{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
@@ -706,11 +702,11 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
     <div class="ovSection">
       <div class="celebHeader">
         <div class="ovSectionTitle" style="margin-bottom:0">🎉 Upcoming Celebrations</div>
-        <div class="celebPills">
-          <button class="celebPill active" data-period="week" onclick="setCelebPeriod(this)">This Week</button>
-          <button class="celebPill" data-period="month" onclick="setCelebPeriod(this)">This Month</button>
-          <button class="celebPill" data-period="year" onclick="setCelebPeriod(this)">This Year</button>
-        </div>
+        <select class="fsel" id="celebPeriodSel" onchange="setCelebPeriod()" style="min-width:150px">
+          <option value="week">This Week</option>
+          <option value="month">This Month</option>
+          <option value="year">This Year</option>
+        </select>
       </div>
       <div class="celebGrid">
         <div class="celebCard">
@@ -3112,10 +3108,8 @@ function openLeaveDetail(id){
 // ── Celebrations Module ──
 let CELEB_PERIOD='week';
 
-function setCelebPeriod(btn){
-  CELEB_PERIOD=btn.dataset.period;
-  document.querySelectorAll('.celebPill').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
+function setCelebPeriod(){
+  CELEB_PERIOD=document.getElementById('celebPeriodSel')?.value||'week';
   renderCelebrations();
 }
 
