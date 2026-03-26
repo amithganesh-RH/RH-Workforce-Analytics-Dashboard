@@ -705,6 +705,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
         <select class="fsel" id="celebPeriodSel" onchange="setCelebPeriod()" style="min-width:150px">
           <option value="week">This Week</option>
           <option value="month">This Month</option>
+          <option value="next_month">Next Month</option>
           <option value="year">This Year</option>
         </select>
       </div>
@@ -3117,6 +3118,7 @@ function celebInPeriod(mo,dd,period){
   const today=new Date();
   if(period==='year')return true;
   if(period==='month')return mo===today.getMonth();
+  if(period==='next_month'){const nm=(today.getMonth()+1)%12;return mo===nm;}
   // week: Mon–Sun
   const dow=today.getDay();
   const monday=new Date(today);monday.setDate(today.getDate()-(dow===0?6:dow-1));
@@ -3173,7 +3175,7 @@ function renderCelebrations(){
   if(bBadge)bBadge.textContent=birthdays.length;
   if(aBadge)aBadge.textContent=anniversaries.length;
 
-  const periodLabel=period==='week'?'this week':period==='month'?'this month':'this year';
+  const periodLabel=period==='week'?'this week':period==='month'?'this month':period==='next_month'?'next month':'this year';
 
   // ── Render Birthdays ──
   const bList=document.getElementById('birthdayList');
