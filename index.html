@@ -897,7 +897,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
       <div class="chartCard anWide">
         <h3>Net Workforce Change by Month</h3>
         <div class="chartSub">Additions vs attritions over last 24 months · click a bar to explore</div>
-        <div class="chartWrap"><canvas id="cNetChange" style="max-height:240px"></canvas></div>
+        <div class="chartWrap" style="grid-column:span 2"><canvas id="cNetChange" style="max-height:340px"></canvas></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;grid-column:1/-1">
         <div class="chartCard">
@@ -2414,16 +2414,16 @@ function buildAnalyticsCharts(people){
     });
   }
 
-  // 8. Net Workforce Change by Month
+  // 8. Net Workforce Change by Month — always uses full PEOPLE (not status-filtered)
   {
     const addB={},attB={};
-    people.filter(p=>p.start_date).forEach(p=>{
+    PEOPLE.filter(p=>p.start_date).forEach(p=>{
       const d=new Date(p.start_date);
       const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
       addB[k]=(addB[k]||[]);addB[k].push(p);
     });
     Object.entries(END_DATE_MAP).forEach(([pid,end])=>{
-      const person=people.find(p=>p.id===pid);if(!person)return;
+      const person=PEOPLE.find(p=>p.id===pid);if(!person)return;
       const d=new Date(end);
       const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
       attB[k]=(attB[k]||[]);attB[k].push(person);
@@ -2434,10 +2434,13 @@ function buildAnalyticsCharts(people){
     anCharts.netChange=new Chart(document.getElementById('cNetChange'),{
       type:'bar',
       data:{labels:rLabels,datasets:[
-        {label:'Additions',data:recent.map(k=>(addB[k]||[]).length),backgroundColor:'#3F1046',borderRadius:4,stack:'s'},
-        {label:'Attritions',data:recent.map(k=>-(attB[k]||[]).length),backgroundColor:'#9425C9',borderRadius:4,stack:'s'}
+        {label:'Additions',data:recent.map(k=>(addB[k]||[]).length),backgroundColor:'#3F1046',borderRadius:4},
+        {label:'Attritions',data:recent.map(k=>-(attB[k]||[]).length),backgroundColor:'#9425C9',borderRadius:4}
       ]},
-      options:{...CHART_DEFAULTS,scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:false,grid:{color:'rgba(63,16,70,0.08)'}}},onClick:(e,els)=>{
+      options:{...CHART_DEFAULTS,scales:{
+        x:{grid:{display:false}},
+        y:{beginAtZero:false,grid:{color:'rgba(63,16,70,0.08)'},ticks:{stepSize:1}}
+      },onClick:(e,els)=>{
         if(!els.length)return;
         const k=recent[els[0].index],di=els[0].datasetIndex;
         if(di===0)openDrill('Joined '+rLabels[els[0].index],addB[k]||[],true);
