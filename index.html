@@ -527,6 +527,78 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 .accessBannerMsg{font-weight:400}
 .accessBannerMsg strong{font-weight:700}
 
+/* ── Documents Module ── */
+.docsHero{background:linear-gradient(135deg,var(--galaxy),var(--galaxy2));border-radius:var(--r);padding:28px 32px;margin-bottom:28px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.docsHeroLeft h2{font-family:var(--font-head);font-size:26px;font-weight:400;margin-bottom:4px}
+.docsHeroLeft p{font-size:13px;opacity:.7;font-family:var(--font-ui);font-weight:300}
+.docsHeroStats{display:flex;gap:28px;flex-wrap:wrap}
+.docsHeroStat{text-align:center}
+.docsHeroStat .val{font-family:var(--font-ui);font-size:24px;font-weight:700;line-height:1}
+.docsHeroStat .lbl{font-family:var(--font-ui);font-size:11px;opacity:.65;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+.docsToolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:24px}
+.docsSearch{flex:1;min-width:200px;font-family:var(--font-ui);font-size:13px;padding:9px 14px 9px 36px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a5875' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 11px center;color:var(--galaxy);outline:none;transition:border-color .15s}
+.docsSearch:focus{border-color:var(--uv)}
+.docsCatFilter{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.docsCatFilter:hover{border-color:var(--uv);color:var(--uv)}
+.docsCatFilter.active{background:var(--galaxy);border-color:var(--galaxy);color:#fff}
+.docsAddBtn{font-family:var(--font-ui);font-size:13px;font-weight:600;padding:9px 18px;border-radius:10px;background:linear-gradient(135deg,var(--galaxy),var(--uv));color:#fff;border:none;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:7px;transition:opacity .15s}
+.docsAddBtn:hover{opacity:.88}
+.docsGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.docCard{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;transition:transform .15s,box-shadow .15s;position:relative}
+.docCard:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(63,16,70,.14)}
+.docCardTop{padding:20px 20px 14px;flex:1}
+.docCardIconRow{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.docCardIcon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.docCardAdminBtns{display:flex;gap:6px;opacity:0;transition:opacity .15s}
+.docCard:hover .docCardAdminBtns{opacity:1}
+.docCardAdminBtn{background:var(--bone);border:1px solid var(--border);color:var(--muted);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .12s;font-family:var(--font-ui)}
+.docCardAdminBtn:hover{background:var(--uv-faint);color:var(--uv);border-color:var(--uv-light)}
+.docCardAdminBtn.del:hover{background:rgba(192,57,43,.09);color:var(--red);border-color:rgba(192,57,43,.3)}
+.docCatBadge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;font-family:var(--font-ui);padding:2px 9px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.docCardTitle{font-size:14px;font-weight:700;color:var(--galaxy);font-family:var(--font-ui);line-height:1.35;margin-bottom:6px}
+.docCardDesc{font-size:12px;color:var(--muted);font-family:var(--font-ui);font-weight:300;line-height:1.55}
+.docCardFoot{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bone)}
+.docCardDate{font-size:11px;color:var(--muted);font-family:var(--font-ui);font-weight:300}
+.docOpenBtn{font-family:var(--font-ui);font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;transition:all .15s;white-space:nowrap}
+.docOpenBtn.available{background:var(--galaxy);color:#fff}
+.docOpenBtn.available:hover{background:var(--uv)}
+.docOpenBtn.pending{background:var(--bone-dark);color:var(--muted);cursor:default}
+.docLockedOverlay{position:absolute;inset:0;background:rgba(240,233,223,.88);backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:var(--r)}
+.docLockedOverlay .lockIcon{font-size:28px}
+.docLockedOverlay .lockMsg{font-size:12px;color:var(--muted);font-family:var(--font-ui);font-weight:600;text-align:center;padding:0 16px}
+.docsEmpty{padding:60px 20px;text-align:center;color:var(--muted);font-size:14px;font-family:var(--font-ui);font-weight:300;grid-column:1/-1}
+.docsEmpty .emptyIcon{font-size:40px;margin-bottom:12px}
+/* Doc modal */
+.docModal{position:fixed;inset:0;background:rgba(63,16,70,.5);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.docModal.open{opacity:1;pointer-events:all}
+.docModalBox{background:var(--surface);border-radius:16px;width:100%;max-width:520px;box-shadow:0 16px 64px rgba(63,16,70,.28);transform:translateY(16px);transition:transform .22s;max-height:90vh;overflow-y:auto}
+.docModal.open .docModalBox{transform:translateY(0)}
+.docModalHdr{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.docModalTitle{font-family:var(--font-ui);font-size:16px;font-weight:700;color:var(--galaxy)}
+.docModalClose{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1;padding:2px 6px;border-radius:6px;transition:background .12s}
+.docModalClose:hover{background:var(--bone)}
+.docModalBody{padding:20px 24px 24px;display:flex;flex-direction:column;gap:16px}
+.docField{display:flex;flex-direction:column;gap:5px}
+.docField label{font-size:12px;font-weight:700;color:var(--galaxy);font-family:var(--font-ui);text-transform:uppercase;letter-spacing:.5px}
+.docField input,.docField select,.docField textarea{font-family:var(--font-ui);font-size:13px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--galaxy);outline:none;transition:border-color .15s;width:100%}
+.docField input:focus,.docField select:focus,.docField textarea:focus{border-color:var(--uv)}
+.docField textarea{resize:vertical;min-height:72px;font-weight:300}
+.docUploadZone{border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all .15s;background:var(--bone)}
+.docUploadZone:hover,.docUploadZone.drag{border-color:var(--uv);background:var(--uv-faint)}
+.docUploadZone .uploadIcon{font-size:28px;margin-bottom:8px}
+.docUploadZone .uploadLabel{font-size:13px;color:var(--galaxy);font-family:var(--font-ui);font-weight:600}
+.docUploadZone .uploadSub{font-size:11px;color:var(--muted);font-family:var(--font-ui);margin-top:4px}
+.docUploadPreview{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--uv-faint);border:1.5px solid rgba(148,37,201,.2);border-radius:9px;font-family:var(--font-ui);font-size:13px;color:var(--galaxy)}
+.docUploadPreview .removeFile{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;padding:2px 5px;border-radius:4px}
+.docUploadPreview .removeFile:hover{color:var(--red)}
+.docOrDivider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;font-family:var(--font-ui);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.docOrDivider::before,.docOrDivider::after{content:'';flex:1;height:1px;background:var(--border)}
+.docModalFoot{padding:0 24px 20px;display:flex;justify-content:flex-end;gap:10px}
+.docModalCancelBtn{font-family:var(--font-ui);font-size:13px;font-weight:600;padding:9px 18px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+.docModalCancelBtn:hover{border-color:var(--galaxy);color:var(--galaxy)}
+.docModalSaveBtn{font-family:var(--font-ui);font-size:13px;font-weight:700;padding:9px 22px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--galaxy),var(--uv));color:#fff;cursor:pointer;transition:opacity .15s}
+.docModalSaveBtn:hover{opacity:.88}
+
 /* ── AI Chat Bot ── */
 .chatBtn{position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,var(--galaxy),var(--uv));color:#fff;border:none;border-radius:28px;padding:11px 18px 11px 14px;font-family:var(--font-ui);font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 24px rgba(148,37,201,.45);display:none;align-items:center;gap:8px;z-index:1000;transition:transform .15s,box-shadow .15s;letter-spacing:.2px}
 .chatBtn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(148,37,201,.6)}
@@ -661,6 +733,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   <button class="tabBtn" data-tab="contracts" style="display:none">📋 Contracts <span class="tabBadge" id="badge-contracts">50</span></button>
   <button class="tabBtn" data-tab="analytics">📈 Analytics</button>
   <button class="tabBtn" data-tab="leave">🏖 Leave <span class="tabBadge" id="badge-leave">0</span></button>
+  <button class="tabBtn" data-tab="docs">📁 Documents <span class="tabBadge" id="badge-docs">0</span></button>
   <button class="tabBtn" data-tab="entities" style="display:none">🏢 Legal Entities <span class="tabBadge">2</span></button>
   <button class="tabBtn" data-tab="profile" style="display:none">🙋 My Profile</button>
   <button class="tabBtn" data-tab="iam" id="iamTabBtn" style="display:none"></button>
@@ -1105,6 +1178,89 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   </div>
 
 
+  <!-- DOCUMENTS -->
+  <div class="panel" id="tab-docs">
+    <div class="docsHero">
+      <div class="docsHeroLeft">
+        <h2>📁 Document Library</h2>
+        <p>Benefits, policies, onboarding guides and more · Click any card to open</p>
+      </div>
+      <div class="docsHeroStats">
+        <div class="docsHeroStat"><div class="val" id="docStatTotal">0</div><div class="lbl">Documents</div></div>
+        <div class="docsHeroStat"><div class="val" id="docStatAvail">0</div><div class="lbl">Available</div></div>
+        <div class="docsHeroStat"><div class="val" id="docStatCats">0</div><div class="lbl">Categories</div></div>
+      </div>
+    </div>
+    <div class="docsToolbar">
+      <input class="docsSearch" id="docsSearch" placeholder="Search documents…" oninput="renderDocs()"/>
+      <div id="docsCatFilters" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <button class="docsAddBtn" id="docsAddBtn" onclick="openDocModal()" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Document
+      </button>
+    </div>
+    <div class="docsGrid" id="docsGrid"></div>
+  </div>
+
+  <!-- Doc upload/edit modal -->
+  <div class="docModal" id="docModal">
+    <div class="docModalBox">
+      <div class="docModalHdr">
+        <div class="docModalTitle" id="docModalTitle">Add Document</div>
+        <button class="docModalClose" onclick="closeDocModal()">✕</button>
+      </div>
+      <div class="docModalBody">
+        <input type="hidden" id="docModalId"/>
+        <div class="docField">
+          <label>Title *</label>
+          <input id="docModalTitleInput" placeholder="e.g. Employee Benefits Guide 2025"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="docField">
+            <label>Category *</label>
+            <select id="docModalCat">
+              <option value="Benefits">🏥 Benefits</option>
+              <option value="HR Policies">📋 HR Policies</option>
+              <option value="Onboarding">🚀 Onboarding</option>
+              <option value="Compliance">⚖️ Compliance</option>
+              <option value="Payroll">💳 Payroll</option>
+              <option value="Handbook">📖 Handbook</option>
+              <option value="Other">📄 Other</option>
+            </select>
+          </div>
+          <div class="docField">
+            <label>Access</label>
+            <select id="docModalAccess">
+              <option value="all">Everyone</option>
+              <option value="people_leader">People Leaders +</option>
+              <option value="admin">Admins only</option>
+            </select>
+          </div>
+        </div>
+        <div class="docField">
+          <label>Description</label>
+          <textarea id="docModalDesc" placeholder="Brief description of what this document covers…"></textarea>
+        </div>
+        <div class="docUploadZone" id="docUploadZone" onclick="document.getElementById('docFileInput').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDocDrop(event)">
+          <div class="uploadIcon">📎</div>
+          <div class="uploadLabel">Click or drag a file to upload</div>
+          <div class="uploadSub">PDF, DOCX, PPTX, XLSX · Max 5 MB stored locally</div>
+        </div>
+        <div id="docUploadPreview" style="display:none"></div>
+        <input type="file" id="docFileInput" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" style="display:none" onchange="handleDocFileSelect(this)"/>
+        <div class="docOrDivider">or paste a link</div>
+        <div class="docField">
+          <label>External URL</label>
+          <input id="docModalUrl" placeholder="https://drive.google.com/… or SharePoint link"/>
+        </div>
+      </div>
+      <div class="docModalFoot">
+        <button class="docModalCancelBtn" onclick="closeDocModal()">Cancel</button>
+        <button class="docModalSaveBtn" onclick="saveDoc()">Save Document</button>
+      </div>
+    </div>
+  </div>
+
   <!-- IAM / ACCESS CONTROL -->
   <div class="panel" id="tab-iam">
     <div class="iamHero">
@@ -1252,9 +1408,9 @@ const ROLE_ICONS={admin:'⚡',people_leader:'👥',normal_user:'👤'};
 const ROLE_COLORS={admin:'#9425C9',people_leader:'#2980b9',normal_user:'#27ae60'};
 
 const PERMISSIONS={
-  admin:        {tabs:['overview','people','analytics','leave'],workerList:true,personDetail:true,leaveDetail:true,kpiFilter:true},
-  people_leader:{tabs:['overview','people','analytics','leave'],workerList:true,personDetail:true,leaveDetail:true,kpiFilter:true},
-  normal_user:  {tabs:['overview','leave'],workerList:false,personDetail:false,leaveDetail:false,kpiFilter:false}
+  admin:        {tabs:['overview','people','analytics','leave','docs'],workerList:true,personDetail:true,leaveDetail:true,kpiFilter:true},
+  people_leader:{tabs:['overview','people','analytics','leave','docs'],workerList:true,personDetail:true,leaveDetail:true,kpiFilter:true},
+  normal_user:  {tabs:['overview','leave','docs'],workerList:false,personDetail:false,leaveDetail:false,kpiFilter:false}
 };
 
 let CURRENT_ROLE='normal_user';
@@ -1973,6 +2129,7 @@ document.querySelectorAll('.tabBtn').forEach(b=>{
     document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+    if(b.dataset.tab==='docs')renderDocs();
   });
 });
 
@@ -3235,10 +3392,252 @@ function celebAnnivCard(it,MS){
   </div>`;
 }
 
+// ══════════════════ DOCUMENTS MODULE ══════════════════
+
+const CAT_META={
+  'Benefits':    {icon:'🏥',color:'#2d8f58',bg:'#e8f7f0'},
+  'HR Policies': {icon:'📋',color:'#2980b9',bg:'#e8f2fb'},
+  'Onboarding':  {icon:'🚀',color:'#c97825',bg:'#fef5e7'},
+  'Compliance':  {icon:'⚖️',color:'#c0392b',bg:'#fdf0ef'},
+  'Payroll':     {icon:'💳',color:'#9425C9',bg:'#f3e5fb'},
+  'Handbook':    {icon:'📖',color:'#3F1046',bg:'#f0e9df'},
+  'Other':       {icon:'📄',color:'#7a5875',bg:'#f5f0f5'}
+};
+
+// Built-in seed documents (url empty = not uploaded yet)
+const BUILTIN_DOCS=[
+  {id:'bd01',title:'Employee Benefits Guide 2025',desc:'Health, dental, vision, life insurance, 401(k), wellness stipend — complete overview for all employees.',category:'Benefits',access:'all',url:'',updated:'2025-01-01'},
+  {id:'bd02',title:'Health Insurance Plan Details',desc:'In-network coverage, deductibles, copays, and HSA contribution limits for all plan tiers.',category:'Benefits',access:'all',url:'',updated:'2025-01-15'},
+  {id:'bd03',title:'401(k) & Retirement Plan',desc:'Employer match schedule, vesting timeline, fund options, and how to enroll through Fidelity.',category:'Benefits',access:'all',url:'',updated:'2025-01-15'},
+  {id:'bd04',title:'Dental & Vision Coverage',desc:'Coverage details, in-network providers, claim submission, and annual maximums.',category:'Benefits',access:'all',url:'',updated:'2025-01-15'},
+  {id:'bd05',title:'Employee Wellness Program',desc:'Gym reimbursement, mental health benefits, EAP resources, and how to submit wellness claims.',category:'Benefits',access:'all',url:'',updated:'2025-02-01'},
+  {id:'hp01',title:'Time Off & Leave Policy',desc:'PTO accrual, sick leave, parental leave, bereavement, and how to request time off in Deel.',category:'HR Policies',access:'all',url:'',updated:'2025-01-01'},
+  {id:'hp02',title:'Remote Work Policy',desc:'Eligibility, home office stipend, equipment guidelines, and expectations for distributed teams.',category:'HR Policies',access:'all',url:'',updated:'2025-03-01'},
+  {id:'hp03',title:'Code of Conduct',desc:'Professional standards, workplace behaviour expectations, conflicts of interest, and reporting channels.',category:'HR Policies',access:'all',url:'',updated:'2024-09-01'},
+  {id:'hp04',title:'Performance Review Process',desc:'Review cycle cadence, self-assessment template, calibration process, and how ratings are determined.',category:'HR Policies',access:'people_leader',url:'',updated:'2025-01-01'},
+  {id:'hp05',title:'Expense Reimbursement Policy',desc:'Eligible expenses, submission deadlines, approval workflow, and reimbursement timelines.',category:'HR Policies',access:'all',url:'',updated:'2024-11-01'},
+  {id:'ob01',title:'New Hire Checklist',desc:'Day-one setup steps: IT access, Slack, payroll enrolment, benefits election, and first week schedule.',category:'Onboarding',access:'all',url:'',updated:'2025-02-01'},
+  {id:'ob02',title:'IT Setup Guide',desc:'Laptop setup, VPN, Okta SSO, approved software list, and IT support contact details.',category:'Onboarding',access:'all',url:'',updated:'2025-01-01'},
+  {id:'ob03',title:'First 90 Days Roadmap',desc:'Structured milestones and expectations for new employees in their first 30, 60, and 90 days.',category:'Onboarding',access:'all',url:'',updated:'2025-01-01'},
+  {id:'co01',title:'Data Privacy & Security Policy',desc:'Data classification, handling requirements, incident reporting, and employee obligations under GDPR/CCPA.',category:'Compliance',access:'all',url:'',updated:'2024-10-01'},
+  {id:'co02',title:'Anti-Harassment Policy',desc:'Prohibited conduct, reporting procedures, investigation process, and non-retaliation protections.',category:'Compliance',access:'all',url:'',updated:'2024-09-01'},
+  {id:'pa01',title:'Payroll Schedule & Deadlines',desc:'Pay dates, cut-off deadlines, pay stub access, and contacts for payroll inquiries by worker type.',category:'Payroll',access:'all',url:'',updated:'2025-01-01'},
+  {id:'pa02',title:'Contractor Invoice Guide',desc:'How to submit invoices in Deel, invoice requirements, payment terms, and currency settings.',category:'Payroll',access:'all',url:'',updated:'2024-11-01'},
+  {id:'pa03',title:'Compensation Bands',desc:'Job level salary ranges used in offer approvals and internal equity reviews.',category:'Payroll',access:'admin',url:'',updated:'2025-01-01'},
+  {id:'hb01',title:'Company Handbook',desc:'Mission, values, culture principles, communication norms, and a full index of all HR policies.',category:'Handbook',access:'all',url:'',updated:'2025-01-01'},
+];
+
+function getCustomDocs(){try{return JSON.parse(localStorage.getItem('rh_custom_docs')||'[]')}catch(e){return[]}}
+function saveCustomDocs(arr){localStorage.setItem('rh_custom_docs',arr)}
+function getDocUrls(){try{return JSON.parse(localStorage.getItem('rh_doc_urls')||'{}')}catch(e){return{}}}
+function saveDocUrls(obj){localStorage.setItem('rh_doc_urls',JSON.stringify(obj))}
+
+function allDocs(){
+  const urlOverrides=getDocUrls();
+  const builtin=BUILTIN_DOCS.map(d=>({...d,url:urlOverrides[d.id]??d.url,isBuiltin:true}));
+  const custom=getCustomDocs().map(d=>({...d,isBuiltin:false}));
+  return[...builtin,...custom];
+}
+
+let DOCS_CAT_FILTER='All';
+
+function renderDocs(){
+  const isAdmin=CURRENT_ROLE==='admin';
+  const isPL=CURRENT_ROLE==='people_leader';
+  const q=(document.getElementById('docsSearch')?.value||'').toLowerCase();
+  const docs=allDocs();
+
+  // Category filter pills
+  const cats=['All',...Object.keys(CAT_META)];
+  const filtersEl=document.getElementById('docsCatFilters');
+  if(filtersEl&&filtersEl.childElementCount!==cats.length){
+    filtersEl.innerHTML=cats.map(c=>`<button class="docsCatFilter${c===DOCS_CAT_FILTER?' active':''}" onclick="setDocsCat('${c}')">${c==='All'?'All':CAT_META[c]?.icon+' '+c}</button>`).join('');
+  }
+
+  // Admin button
+  const addBtn=document.getElementById('docsAddBtn');
+  if(addBtn)addBtn.style.display=isAdmin?'flex':'none';
+
+  // Filter docs
+  const visible=docs.filter(d=>{
+    if(DOCS_CAT_FILTER!=='All'&&d.category!==DOCS_CAT_FILTER)return false;
+    if(q&&!d.title.toLowerCase().includes(q)&&!d.desc.toLowerCase().includes(q)&&!d.category.toLowerCase().includes(q))return false;
+    return true;
+  });
+
+  // Update hero stats
+  const avail=docs.filter(d=>d.url).length;
+  const el=id=>document.getElementById(id);
+  if(el('docStatTotal'))el('docStatTotal').textContent=docs.length;
+  if(el('docStatAvail'))el('docStatAvail').textContent=avail;
+  if(el('docStatCats'))el('docStatCats').textContent=Object.keys(CAT_META).length;
+  if(el('badge-docs'))el('badge-docs').textContent=avail;
+
+  const grid=document.getElementById('docsGrid');
+  if(!grid)return;
+
+  if(!visible.length){
+    grid.innerHTML=`<div class="docsEmpty"><div class="emptyIcon">📂</div>No documents found</div>`;
+    return;
+  }
+
+  grid.innerHTML=visible.map(d=>{
+    const cm=CAT_META[d.category]||CAT_META['Other'];
+    const canAccess=d.access==='all'||(d.access==='people_leader'&&(isPL||isAdmin))||d.access==='admin'&&isAdmin;
+    const hasUrl=!!d.url;
+    const updFmt=d.updated?new Date(d.updated).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
+    const adminBtns=isAdmin?`<div class="docCardAdminBtns">
+      <button class="docCardAdminBtn" onclick="event.stopPropagation();openDocModal('${d.id}')" title="Edit">✏️</button>
+      ${!d.isBuiltin?`<button class="docCardAdminBtn del" onclick="event.stopPropagation();deleteDoc('${d.id}')" title="Delete">🗑</button>`:''}
+    </div>`:'';
+    const locked=!canAccess?`<div class="docLockedOverlay"><div class="lockIcon">🔒</div><div class="lockMsg">Restricted — contact your Admin for access</div></div>`:'';
+    return`<div class="docCard">
+      <div class="docCardTop">
+        <div class="docCardIconRow">
+          <div class="docCardIcon" style="background:${cm.bg}">${cm.icon}</div>
+          ${adminBtns}
+        </div>
+        <span class="docCatBadge" style="background:${cm.bg};color:${cm.color}">${d.category}</span>
+        <div class="docCardTitle">${d.title}</div>
+        <div class="docCardDesc">${d.desc}</div>
+      </div>
+      <div class="docCardFoot">
+        <div class="docCardDate">Updated ${updFmt}</div>
+        ${canAccess
+          ?`<button class="docOpenBtn ${hasUrl?'available':'pending'}" onclick="${hasUrl?`openDoc('${d.id}')`:'void(0)'}">${hasUrl?'Open Document':'Coming Soon'}</button>`
+          :'<button class="docOpenBtn pending">Restricted</button>'
+        }
+      </div>
+      ${locked}
+    </div>`;
+  }).join('');
+}
+
+function setDocsCat(cat){
+  DOCS_CAT_FILTER=cat;
+  document.querySelectorAll('.docsCatFilter').forEach(b=>{
+    b.classList.toggle('active',b.textContent.includes(cat)||(cat==='All'&&b.textContent==='All'));
+  });
+  renderDocs();
+}
+
+function openDoc(id){
+  const d=allDocs().find(x=>x.id===id);
+  if(!d||!d.url)return;
+  if(d.url.startsWith('data:')||d.url.startsWith('blob:')){
+    // downloaded file stored as data URL
+    const a=document.createElement('a');a.href=d.url;a.download=d.fileName||d.title;a.click();
+  }else{
+    window.open(d.url,'_blank','noopener');
+  }
+}
+
+// ── Modal ──
+let _docEditId=null;
+let _pendingFile=null;
+
+function openDocModal(id){
+  _docEditId=id||null;
+  _pendingFile=null;
+  const modal=document.getElementById('docModal');
+  const doc=id?allDocs().find(d=>d.id===id):null;
+  document.getElementById('docModalTitle').textContent=id?'Edit Document':'Add Document';
+  document.getElementById('docModalId').value=id||'';
+  document.getElementById('docModalTitleInput').value=doc?.title||'';
+  document.getElementById('docModalDesc').value=doc?.desc||'';
+  document.getElementById('docModalCat').value=doc?.category||'Benefits';
+  document.getElementById('docModalAccess').value=doc?.access||'all';
+  document.getElementById('docModalUrl').value=(doc?.url&&!doc.url.startsWith('data:'))?doc.url:'';
+  document.getElementById('docUploadZone').style.display='block';
+  document.getElementById('docUploadPreview').style.display='none';
+  document.getElementById('docUploadPreview').innerHTML='';
+  modal.classList.add('open');
+}
+
+function closeDocModal(){
+  document.getElementById('docModal').classList.remove('open');
+  _pendingFile=null;
+}
+
+function handleDocFileSelect(input){
+  const file=input.files[0];if(!file)return;
+  processDocFile(file);
+}
+
+function handleDocDrop(e){
+  e.preventDefault();
+  document.getElementById('docUploadZone').classList.remove('drag');
+  const file=e.dataTransfer.files[0];if(!file)return;
+  processDocFile(file);
+}
+
+function processDocFile(file){
+  const MAX=5*1024*1024;
+  if(file.size>MAX){showToast('⚠️ File too large — max 5 MB. Please use an external link for larger files.');return;}
+  _pendingFile=file;
+  document.getElementById('docUploadZone').style.display='none';
+  const prev=document.getElementById('docUploadPreview');
+  prev.style.display='flex';
+  const sizeFmt=file.size>1024*1024?(file.size/1048576).toFixed(1)+'MB':(file.size/1024).toFixed(0)+'KB';
+  prev.innerHTML=`<span>📎 ${file.name}</span><span style="color:var(--muted);font-size:11px;margin-left:6px">${sizeFmt}</span><button class="removeFile" onclick="clearDocFile()">✕</button>`;
+}
+
+function clearDocFile(){
+  _pendingFile=null;
+  document.getElementById('docFileInput').value='';
+  document.getElementById('docUploadZone').style.display='block';
+  document.getElementById('docUploadPreview').style.display='none';
+}
+
+function saveDoc(){
+  const title=document.getElementById('docModalTitleInput').value.trim();
+  if(!title){showToast('Please enter a document title');return;}
+  const cat=document.getElementById('docModalCat').value;
+  const access=document.getElementById('docModalAccess').value;
+  const desc=document.getElementById('docModalDesc').value.trim();
+  const extUrl=document.getElementById('docModalUrl').value.trim();
+  const id=_docEditId||('cd_'+Date.now());
+
+  function persist(url,fileName){
+    const isBuiltin=BUILTIN_DOCS.some(d=>d.id===id);
+    if(isBuiltin){
+      // just store the URL override
+      const urls=getDocUrls();urls[id]=url;saveDocUrls(urls);
+    }else{
+      const customs=getCustomDocs().filter(d=>d.id!==id);
+      customs.push({id,title,desc,category:cat,access,url,fileName:fileName||null,updated:new Date().toISOString().slice(0,10)});
+      localStorage.setItem('rh_custom_docs',JSON.stringify(customs));
+    }
+    closeDocModal();
+    renderDocs();
+    showToast('✅ Document saved');
+  }
+
+  if(_pendingFile){
+    const reader=new FileReader();
+    reader.onload=e=>persist(e.target.result,_pendingFile.name);
+    reader.readAsDataURL(_pendingFile);
+  }else{
+    persist(extUrl||'');
+  }
+}
+
+function deleteDoc(id){
+  if(!confirm('Delete this document?'))return;
+  const customs=getCustomDocs().filter(d=>d.id!==id);
+  localStorage.setItem('rh_custom_docs',JSON.stringify(customs));
+  renderDocs();
+  showToast('Document removed');
+}
+
+// close modal on backdrop click
+document.getElementById('docModal').addEventListener('click',function(e){if(e.target===this)closeDocModal();});
+
 // Initial render
 renderLeaveTodayWidget();
 renderCelebrations();
 renderLeaveModule();
+renderDocs();
 
 // ═══════════════ DEEL REAL-TIME SYNC ═══════════════
 async function loadDeelData(force=false){
