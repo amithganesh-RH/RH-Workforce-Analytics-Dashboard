@@ -4,3 +4,7 @@
 # Environment variables — never commit API keys
 .env
 .env.local
+
+# Daily Deel sync output — live data, not for git
+deel-cache.json
+sync.log
