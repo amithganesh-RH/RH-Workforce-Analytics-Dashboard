@@ -549,26 +549,26 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 .iamCreateRoleBtn:hover{background:var(--uv);color:#fff;border-color:var(--uv)}
 
 /* ── IAM v2 — Role Editor Modal ── */
-.iamModal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px);padding:20px}
+.iamModal{position:fixed;inset:0;background:rgba(63,16,70,.45);z-index:600;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:20px}
 .iamModal.open{display:flex}
-.iamModalBox{background:#0d0f1c;border:1px solid var(--border);border-radius:16px;width:620px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,.7)}
+.iamModalBox{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:640px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(63,16,70,.22)}
 .iamModalBox::-webkit-scrollbar{width:4px}
-.iamModalBox::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.iamModalHead{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#0d0f1c;z-index:1}
-.iamModalTitle{font-size:17px;font-weight:700;font-family:var(--font-ui);color:var(--text)}
-.iamModalBody{padding:24px}
-.iamModuleSection{margin-bottom:18px;background:rgba(124,111,255,.04);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
-.iamModuleLabel{font-size:11px;font-weight:700;font-family:var(--font-ui);color:var(--uv-light);text-transform:uppercase;letter-spacing:.8px;padding:10px 14px;background:rgba(124,111,255,.08);border-bottom:1px solid var(--border)}
-.iamPermRow{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;gap:16px;border-bottom:1px solid var(--border)}
+.iamModalBox::-webkit-scrollbar-thumb{background:var(--bone-dark);border-radius:2px}
+.iamModalHead{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:1}
+.iamModalTitle{font-size:17px;font-weight:700;font-family:var(--font-ui);color:var(--galaxy)}
+.iamModalBody{padding:24px;background:var(--bone)}
+.iamModuleSection{margin-bottom:14px;background:var(--surface);border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:0 1px 4px rgba(63,16,70,.06)}
+.iamModuleLabel{font-size:11px;font-weight:700;font-family:var(--font-ui);color:var(--uv);text-transform:uppercase;letter-spacing:.8px;padding:10px 14px;background:var(--uv-faint);border-bottom:1px solid var(--border)}
+.iamPermRow{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;gap:16px;border-bottom:1px solid var(--border);background:var(--surface)}
 .iamPermRow:last-child{border-bottom:none}
-.iamPermRow:hover{background:rgba(124,111,255,.05)}
-.iamPermRowLabel{font-size:13px;font-weight:500;font-family:var(--font-body);color:var(--text)}
+.iamPermRow:hover{background:var(--uv-faint)}
+.iamPermRowLabel{font-size:13px;font-weight:500;font-family:var(--font-body);color:var(--galaxy)}
 .iamPermRowSub{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--font-body)}
 .iamToggle{position:relative;width:40px;height:22px;flex-shrink:0}
 .iamToggle input{opacity:0;width:0;height:0;position:absolute}
-.iamToggleSlider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:22px;cursor:pointer;transition:.2s;border:1px solid rgba(255,255,255,.08)}
-.iamToggleSlider::before{content:'';position:absolute;height:16px;width:16px;left:2px;bottom:2px;background:rgba(255,255,255,.5);border-radius:50%;transition:.2s}
-.iamToggle input:checked+.iamToggleSlider{background:#10d4a0;border-color:#10d4a0}
+.iamToggleSlider{position:absolute;inset:0;background:var(--bone-dark);border-radius:22px;cursor:pointer;transition:.2s;border:1px solid #c8b8b0}
+.iamToggleSlider::before{content:'';position:absolute;height:16px;width:16px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.iamToggle input:checked+.iamToggleSlider{background:var(--uv);border-color:var(--uv)}
 .iamToggle input:checked+.iamToggleSlider::before{transform:translateX(18px);background:#fff}
 
 /* ── Documents Module ── */
@@ -918,7 +918,7 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
 
   <!-- PEOPLE -->
   <div class="panel" id="tab-people">
-    <div class="sh"><h2>People Directory</h2><p>All 83 workers · Click any row for full profile &amp; contract details</p></div>
+    <div class="sh"><h2>People Directory</h2><p>All 84 workers · Click any row for full profile &amp; contract details</p></div>
     <div class="tableCard">
       <div class="toolbar">
         <input class="srch" id="pSrch" placeholder="🔍  Search name…"/>
@@ -1339,17 +1339,17 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
   <div class="iamModalBox">
     <div class="iamModalHead">
       <div class="iamModalTitle" id="iamModalTitle">Create Custom Role</div>
-      <button class="spClose" onclick="closeRoleEditor()">✕</button>
+      <button onclick="closeRoleEditor()" style="background:var(--bone);border:1.5px solid var(--border);color:var(--galaxy);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;font-weight:600" onmouseover="this.style.background='var(--bone-dark)'" onmouseout="this.style.background='var(--bone)'">✕</button>
     </div>
     <div class="iamModalBody">
       <div style="display:grid;grid-template-columns:1fr auto auto;gap:12px;margin-bottom:20px;align-items:end">
         <div>
           <label style="font-size:11px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Role Name</label>
-          <input id="roleEditorName" style="width:100%;font-family:var(--font-ui);font-size:14px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:#131627;color:var(--text);outline:none" placeholder="e.g. Finance Viewer"/>
+          <input id="roleEditorName" style="width:100%;font-family:var(--font-ui);font-size:14px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--galaxy);outline:none" placeholder="e.g. Finance Viewer"/>
         </div>
         <div>
           <label style="font-size:11px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Icon</label>
-          <input id="roleEditorIcon" style="width:60px;font-size:22px;text-align:center;padding:6px;border:1.5px solid var(--border);border-radius:8px;background:#131627;color:var(--text);outline:none" placeholder="🔑" maxlength="2"/>
+          <input id="roleEditorIcon" style="width:60px;font-size:22px;text-align:center;padding:6px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--galaxy);outline:none" placeholder="🔑" maxlength="2"/>
         </div>
         <div>
           <label style="font-size:11px;font-weight:700;font-family:var(--font-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px">Color</label>
@@ -1357,9 +1357,9 @@ main{padding:28px 32px;max-width:1600px;margin:0 auto}
         </div>
       </div>
       <div id="roleEditorPerms"></div>
-      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
-        <button onclick="closeRoleEditor()" style="font-family:var(--font-ui);font-size:13px;font-weight:600;padding:9px 20px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer">Cancel</button>
-        <button onclick="saveRoleEditor()" style="font-family:var(--font-ui);font-size:13px;font-weight:700;padding:9px 24px;border-radius:8px;border:none;background:var(--uv);color:#fff;cursor:pointer">Save Role</button>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--bone-dark)">
+        <button onclick="closeRoleEditor()" style="font-family:var(--font-ui);font-size:13px;font-weight:600;padding:9px 20px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:var(--galaxy);cursor:pointer">Cancel</button>
+        <button onclick="saveRoleEditor()" style="font-family:var(--font-ui);font-size:13px;font-weight:700;padding:9px 24px;border-radius:8px;border:none;background:var(--uv);color:#fff;cursor:pointer;letter-spacing:.2px">Save Role</button>
       </div>
     </div>
   </div>
@@ -1986,7 +1986,7 @@ let CONTRACTS=[
   {id:"3d9nnv5",title:"Divyanshu Bali - New Ventures Associate",type:"eor",status:"user_cancelled",worker_name:"Divyanshu Bali",worker_pid:"7bc3876a"},
   {id:"m7rz6gj",title:"Elias Tsikhlakis - General Manager",type:"eor",status:"rejected",worker_name:"Elias Tsikhlakis",worker_pid:"0bb5cd4e"},
   {id:"mz2gxpx",title:"Elias Tsikhlakis - General Manager",type:"eor",status:"cancelled",worker_name:"Elias Tsikhlakis",worker_pid:"0bb5cd4e"},
-  {id:"m84n5q9",title:"Elias Tsikhlakis - Venture Chair",type:"ongoing_time_based",status:"in_progress",worker_name:"Elias Tsikhlakis",worker_pid:"0bb5cd4e"},
+  {id:"m84n5q9",title:"Untitled Contract",type:"ongoing_time_based",status:"in_progress",worker_name:"Elias Tsikhlakis",worker_pid:"0bb5cd4e"},
   {id:"mdw85ex",title:"Executive Assistant - Nigeria",type:"ongoing_time_based",status:"completed",worker_name:"Oluwatoni Ruth Abraham",worker_pid:"66bd23c0"},
   {id:"mg6jxd5",title:"Executive Assistant - Singapore",type:"pay_as_you_go_time_based",status:"completed",worker_name:"Kamarunisha Binte Mohamed Idris",worker_pid:"74ed1c00"},
   {id:"mdkqzr2",title:"Fred George Fixed Contract",type:"ongoing_time_based",status:"completed",worker_name:"Frederick Owen Lloyd George",worker_pid:"21a76df5"},
@@ -2085,7 +2085,7 @@ const LEGAL_ENTITIES=[
   {id:"5aa52242",name:"RHI INDIA IM LLP",type:"Limited Liability Partnership",country:"IN",city:"New Delhi, DL",address:"4a Plot No. 1, Local Shopping Centre, Saraswati Vihar",vat:null,reg:"ACP8413",created:"2025-09-25",phone:"+1 212 548 6566"},
 ];
 
-// ── Leave Requests (synced from Deel · last updated Mar 23, 2026) ──
+// ── Leave Requests (synced from Deel · last updated Apr 9, 2026) ──
 const LEAVE_REQUESTS=[
   // Currently on leave (overlaps today Mar 23 2026)
   {id:"lv001",worker_pid:"e40a90e6",worker_name:"Brett Kempker",type:"pto",status:"approved",start_date:"2026-03-21",end_date:"2026-03-25",days:5,notes:"Spring break"},
@@ -2750,7 +2750,21 @@ function buildAnalyticsCharts(people){
   updateAnKpis(people);
   Object.values(anCharts).forEach(c=>{try{c.destroy();}catch(e){}});
   anCharts={};
-  const pal=['#3F1046','#5a1860','#7a2080','#9425C9','#b050d8','#c27de0','#d4a8ec','#e4c4f4'];
+  // Brand palette — alternates dark/light/warm so adjacent slices are always distinct
+  const pal=[
+    '#9425C9',  // UV — primary brand purple
+    '#3F1046',  // galaxy — darkest
+    '#c27de0',  // UV light — soft lavender
+    '#7a2080',  // deep mid-purple
+    '#e8d5f5',  // UV faint-plus — near-white lavender
+    '#5a1860',  // galaxy 2
+    '#b050d8',  // bright medium purple
+    '#c4a882',  // bone-dark warm — warm contrast
+    '#d4a8ec',  // light purple
+    '#6b0f7a',  // dark purple
+    '#f3e5fb',  // UV faint — lightest cool
+    '#a07850',  // deeper warm bone
+  ];
 
   // 1. Stacked: Country + Type
   {
